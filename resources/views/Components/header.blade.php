@@ -54,137 +54,14 @@
                     <div class="notification-box">
                         <svg>
                             <use href="{{ asset('') }}assets/svg/icon-sprite.svg#notification"></use>
-                        </svg><span class="badge rounded-pill badge-primary">4 </span>
+                        </svg><span class="badge rounded-pill badge-primary">0 </span>
                     </div>
                     <div class="onhover-show-div notification-dropdown">
                         <h5 class="f-18 f-w-600 mb-0 dropdown-title">Notifications </h5>
-                        <ul class="notification-box">
-                            <li class="toast default-show-toast align-items-center border-0 fade show"
-                                aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                                <div class="d-flex justify-content-between">
-                                    <div class="toast-body d-flex p-0">
-                                        <div class="flex-shrink-0 bg-light-primary"><img class="w-auto"
-                                                src="{{ asset('') }}assets/images/dashboard/icon/wallet.png"
-                                                alt="Wallet"></div>
-                                        <div class="flex-grow-1"> <a href="private-chat.html">
-                                                <h6 class="m-0">Daily offer added</h6>
-                                            </a>
-                                            <p class="m-0">User-only offer added</p>
-                                        </div>
-                                    </div>
-                                    <button class="btn-close btn-close-white shadow-none" type="button"
-                                        data-bs-dismiss="toast" aria-label="Close"></button>
-                                </div>
-                            </li>
-                            <li class="toast default-show-toast align-items-center border-0 fade show"
-                                aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                                <div class="d-flex justify-content-between">
-                                    <div class="toast-body d-flex p-0">
-                                        <div class="flex-shrink-0 bg-light-info"><img class="w-auto"
-                                                src="{{ asset('') }}assets/images/dashboard/icon/shield-dne.png"
-                                                alt="Shield-dne"></div>
-                                        <div class="flex-grow-1"> <a href="private-chat.html">
-                                                <h6 class="m-0">Product Review</h6>
-                                            </a>
-                                            <p class="m-0">Changed to a workflow</p>
-                                        </div>
-                                    </div>
-                                    <button class="btn-close btn-close-white shadow-none" type="button"
-                                        data-bs-dismiss="toast" aria-label="Close"></button>
-                                </div>
-                            </li>
-                            <li class="toast default-show-toast align-items-center border-0 fade show"
-                                aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                                <div class="d-flex justify-content-between">
-                                    <div class="toast-body d-flex p-0">
-                                        <div class="flex-shrink-0 bg-light-warning"><img class="w-auto"
-                                                src="{{ asset('') }}assets/images/dashboard/icon/graph.png"
-                                                alt="Graph"></div>
-                                        <div class="flex-grow-1"> <a href="private-chat.html">
-                                                <h6 class="m-0">Return Products</h6>
-                                            </a>
-                                            <p class="m-0">52 items were returned</p>
-                                        </div>
-                                    </div>
-                                    <button class="btn-close btn-close-white shadow-none" type="button"
-                                        data-bs-dismiss="toast" aria-label="Close"></button>
-                                </div>
-                            </li>
-                            <li class="toast default-show-toast align-items-center border-0 fade show"
-                                aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                                <div class="d-flex justify-content-between">
-                                    <div class="toast-body d-flex p-0">
-                                        <div class="flex-shrink-0 bg-light-tertiary"><img class="w-auto"
-                                                src="{{ asset('') }}assets/images/dashboard/icon/ticket-star.png"
-                                                alt="Ticket-star"></div>
-                                        <div class="flex-grow-1"> <a href="private-chat.html">
-                                                <h6 class="m-0">Recently Paid</h6>
-                                            </a>
-                                            <p class="m-0">Card payment of $343 </p>
-                                        </div>
-                                    </div>
-                                    <button class="btn-close btn-close-white shadow-none" type="button"
-                                        data-bs-dismiss="toast" aria-label="Close"></button>
-                                </div>
-                            </li>
-                        </ul>
+
                     </div>
                 </li>
-                <li class="onhover-dropdown">
-                    <svg>
-                        <use href="{{ asset('') }}assets/svg/icon-sprite.svg#header-bookmark"></use>
-                    </svg>
-                    <div class="onhover-show-div bookmark-flip">
-                        <div class="flip-card">
-                            <div class="flip-card-inner">
-                                <div class="front">
-                                    <h5 class="f-18 f-w-600 mb-0 dropdown-title">Bookmark</h5>
-                                    <ul class="bookmark-dropdown">
-                                        <li>
-                                            <div class="row">
-                                                <div class="col-4 text-center">
-                                                    <div class="bookmark-content">
-                                                        <div class="bookmark-icon bg-light-primary"><i
-                                                                class="stroke-primary" data-feather="file-text"></i>
-                                                        </div><span class="font-primary">Forms</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-4 text-center">
-                                                    <div class="bookmark-content">
-                                                        <div class="bookmark-icon bg-light-secondary"><i
-                                                                class="stroke-secondary" data-feather="user"></i>
-                                                        </div><span class="font-secondary">Profile</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-4 text-center">
-                                                    <div class="bookmark-content">
-                                                        <div class="bookmark-icon bg-light-warning"><i
-                                                                class="stroke-warning" data-feather="server"></i>
-                                                        </div><span class="font-warning">Tables</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="text-center"><a class="flip-btn f-w-700 btn btn-primary w-100"
-                                                id="flip-btn" href="javascript:void(0)">Add Bookmark</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="back">
-                                    <ul>
-                                        <li>
-                                            <div class="bookmark-dropdown flip-back-content">
-                                                <input type="text" placeholder="search...">
-                                            </div>
-                                        </li>
-                                        <li><a class="f-w-700 d-block flip-back btn btn-primary w-100" id="flip-back"
-                                                href="javascript:void(0)">Back</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+
                 <li>
                     <div class="mode">
                         <svg>
@@ -192,127 +69,17 @@
                         </svg>
                     </div>
                 </li>
-                <li class="onhover-dropdown">
-                    <div class="notification-box">
-                        <svg>
-                            <use href="{{ asset('') }}assets/svg/icon-sprite.svg#header-message"></use>
-                        </svg><span class="badge rounded-pill badge-info">3 </span>
-                    </div>
-                    <div class="onhover-show-div notification-dropdown">
-                        <h5 class="f-18 f-w-600 mb-0 dropdown-title">Messages </h5>
-                        <ul class="messages">
-                            <li class="d-flex b-light1-primary gap-2">
-                                <div class="flex-shrink-0"><img
-                                        src="{{ asset('') }}assets/images/dashboard-2/user/1.png" alt="Graph">
-                                </div>
-                                <div class="flex-grow-1"> <a href="private-chat.html">
-                                        <h6 class="font-primary f-w-600">Hackett Yessenia</h6>
-                                    </a>
-                                    <p>Hello Miss...&#128522;</p>
-                                </div><span>2 hours</span>
-                            </li>
-                            <li class="d-flex b-light1-secondary gap-2">
-                                <div class="flex-shrink-0"><img
-                                        src="{{ asset('') }}assets/images/dashboard-2/user/2.png" alt="Graph">
-                                </div>
-                                <div class="flex-grow-1"> <a href="private-chat.html">
-                                        <h6 class="font-secondary f-w-600">schneider Adan</h6>
-                                    </a>
-                                    <p>Wishing You a Happy Birthday Dear.. 🥳&#127882;</p>
-                                </div><span>3 hours</span>
-                            </li>
-                            <li class="d-flex b-light1-success gap-2">
-                                <div class="flex-shrink-0"><img
-                                        src="{{ asset('') }}assets/images/dashboard-2/user/3.png" alt="Graph">
-                                </div>
-                                <div class="flex-grow-1"> <a href="private-chat.html">
-                                        <h6 class="font-success f-w-600">Mahdi Gholizadeh</h6>
-                                    </a>
-                                    <p>Hello Dear!! This Theme Is Very beautiful</p>
-                                </div><span>5 hours</span>
-                            </li>
-                            <li class="bg-transparent"><a class="f-w-700 btn btn-primary w-100"
-                                    href="letter-box.html">View all</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="cart-nav onhover-dropdown">
-                    <div class="cart-box">
-                        <svg>
-                            <use href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-ecommerce"></use>
-                        </svg>
-                    </div>
-                    <div class="cart-dropdown onhover-show-div">
-                        <h5 class="f-18 f-w-600 mb-0 dropdown-title">Cart</h5>
-                        <ul>
-                            <li>
-                                <div class="d-flex"><img class="img-fluid b-r-5 me-3 img-60"
-                                        src="{{ asset('') }}assets/images/other-images/cart-img.jpg"
-                                        alt="">
-                                    <div class="flex-grow-1"><span class="f-w-600">Furniture Chair for
-                                            Home</span>
-                                        <div class="qty-box">
-                                            <div class="input-group"><span class="input-group-prepend">
-                                                    <button class="btn quantity-left-minus" type="button"
-                                                        data-type="minus" data-field="">-</button></span>
-                                                <input class="form-control input-number" type="text"
-                                                    name="quantity" value="1"><span class="input-group-prepend">
-                                                    <button class="btn quantity-right-plus" type="button"
-                                                        data-type="plus" data-field="">+</button></span>
-                                            </div>
-                                        </div>
-                                        <h6 class="font-primary">$500</h6>
-                                    </div>
-                                    <div class="close-circle"><a class="bg-danger" href="#"><i
-                                                data-feather="x"></i></a></div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="d-flex"><img class="img-fluid b-r-5 me-3 img-60"
-                                        src="{{ asset('') }}assets/images/other-images/table-img.jpg"
-                                        alt="">
-                                    <div class="flex-grow-1"><span class="f-w-600">Furniture Table for
-                                            Office</span>
-                                        <div class="qty-box">
-                                            <div class="input-group"><span class="input-group-prepend">
-                                                    <button class="btn quantity-left-minus" type="button"
-                                                        data-type="minus" data-field="">-</button></span>
-                                                <input class="form-control input-number" type="text"
-                                                    name="quantity" value="1"><span class="input-group-prepend">
-                                                    <button class="btn quantity-right-plus" type="button"
-                                                        data-type="plus" data-field="">+</button></span>
-                                            </div>
-                                        </div>
-                                        <h6 class="font-primary">$500.00</h6>
-                                    </div>
-                                    <div class="close-circle"><a class="bg-danger" href="#"><i
-                                                data-feather="x"></i></a></div>
-                                </div>
-                            </li>
-                            <li class="total">
-                                <h6 class="mb-0">Order Total : <span class="f-w-600 f-right">$1000.00</span></h6>
-                            </li>
-                            <li class="text-center"><a class="d-block view-cart f-w-700 btn btn-primary w-100"
-                                    href="cart.html">View Cart</a><a
-                                    class="btn btn-primary view-checkout w-100 f-w-700"
-                                    href="checkout.html">Checkout</a></li>
-                        </ul>
-                    </div>
-                </li>
+
                 <li class="profile-nav onhover-dropdown px-0 py-0">
                     <div class="d-flex profile-media align-items-center"><img class="img-30"
                             src="{{ asset('') }}assets/images/dashboard/profile.png" alt="">
-                        <div class="flex-grow-1"><span>Alen Miller</span>
-                            <p class="mb-0 font-outfit">UI Designer<i class="fa fa-angle-down"></i></p>
+                        <div class="flex-grow-1"><span>Bella Syafina</span>
+                            <p class="mb-0 font-outfit">Administrator<i class="fa fa-angle-down"></i></p>
                         </div>
                     </div>
                     <ul class="profile-dropdown onhover-show-div">
                         <li><a href="private-chat.html"><i data-feather="user"></i><span>Account
                                 </span></a></li>
-                        <li><a href="letter-box.html"><i data-feather="mail"></i><span>Inbox</span></a>
-                        </li>
-                        <li><a href="task.html"><i data-feather="file-text"></i><span>Taskboard</span></a>
-                        </li>
                         <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Settings</span></a></li>
                         <li><a href="login.html"><i data-feather="log-in"> </i><span>Log out</span></a>
                         </li>
