@@ -1,5 +1,19 @@
 @extends('Layouts.template-admin')
 
+@section('title', 'Dashboard')
+
+@section('breadcrumb')
+    {{--  <ol class="breadcrumb justify-content-sm-start align-items-center mb-0">
+        <li class="breadcrumb-item">
+            <a href="/">
+                <i data-feather="home"> </i>
+            </a>
+        </li>
+        <li class="breadcrumb-item f-w-400">Dashboard</li>
+        <li class="breadcrumb-item f-w-400 active">Default</li>
+    </ol>  --}}
+@endsection
+
 @section('content')
     <div class="container-fluid default-dashboard">
         <div class="row widget-grid">
@@ -108,7 +122,8 @@
                             <h4>Projects</h4>
                             <div class="dropdown icon-dropdown">
                                 <button class="btn dropdown-toggle" id="userdropdown0" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-more-alt"></i></button>
+                                    data-bs-toggle="dropdown" aria-expanded="false"><i
+                                        class="icon-more-alt"></i></button>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown0"><a
                                         class="dropdown-item" href="#">Weekly</a><a class="dropdown-item"
                                         href="#">Monthly</a><a class="dropdown-item" href="#">Yearly</a>
