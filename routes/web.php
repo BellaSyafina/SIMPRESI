@@ -22,16 +22,27 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     // Logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     // Guru
     Route::get('/guru', [GuruController::class, 'index'])->name('guru.index');
+    Route::get('/guru/create', [GuruController::class, 'create'])->name('guru.create');
+    Route::post('/guru', [GuruController::class, 'store'])->name('guru.store');
+    Route::get('/guru/{id}/edit', [GuruController::class, 'edit'])->name('guru.edit');
+    Route::put('/guru/{id}', [GuruController::class, 'update'])->name('guru.update');
+    Route::delete('/guru/{id}', [GuruController::class, 'destroy'])->name('guru.destroy');
+    // IMPORT
+    Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
 
     // Kelas
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
+    // Route untuk menampilkan data kelas
+    Route::get('/data-kelas', [KelasController::class, 'index'])->name('kelas.index');
+    // Route untuk menyimpan data kelas baru
+    Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
 
     // Siswa
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');

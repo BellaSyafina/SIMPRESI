@@ -72,6 +72,8 @@
         </div>
     </div>
     @include('Components.script')
+
+    @yield('script')
 </body>
 
 </html>

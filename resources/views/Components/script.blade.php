@@ -16,16 +16,16 @@
 <script src="{{ asset('') }}assets/js/slick/slick.min.js"></script>
 <script src="{{ asset('') }}assets/js/slick/slick.js"></script>
 <script src="{{ asset('') }}assets/js/header-slick.js"></script>
-<script src="{{ asset('') }}assets/js/chart/apex-chart/apex-chart.js"></script>
+{{-- <script src="{{ asset('') }}assets/js/chart/apex-chart/apex-chart.js"></script> --}}
 <script src="{{ asset('') }}assets/js/chart/apex-chart/stock-prices.js"></script>
 <script src="{{ asset('') }}assets/js/chart/apex-chart/moment.min.js"></script>
 <script src="{{ asset('') }}assets/js/notify/bootstrap-notify.min.js"></script>
 <!-- calendar js-->
-<script src="{{ asset('') }}assets/js/dashboard/default.js"></script>
+{{-- <script src="{{ asset('') }}assets/js/dashboard/default.js"></script> --}}
 <script src="{{ asset('') }}assets/js/notify/index.js"></script>
 <script src="{{ asset('') }}assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
-<script src="{{ asset('') }}assets/js/datatable/datatables/datatable.custom.js"></script>
-<script src="{{ asset('') }}assets/js/datatable/datatables/datatable.custom1.js"></script>
+{{-- <script src="{{ asset('') }}assets/js/datatable/datatables/datatable.custom.js"></script> --}}
+{{-- <script src="{{ asset('') }}assets/js/datatable/datatables/datatable.custom1.js"></script> --}}
 <script src="{{ asset('') }}assets/js/datepicker/date-range-picker/moment.min.js"></script>
 <script src="{{ asset('') }}assets/js/datepicker/date-range-picker/datepicker-range-custom.js"></script>
 <script src="{{ asset('') }}assets/js/typeahead/handlebars.js"></script>
