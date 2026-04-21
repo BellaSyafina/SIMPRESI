@@ -29,13 +29,6 @@ Route::middleware('auth')->group(function () {
 
     // Guru
     Route::get('/guru', [GuruController::class, 'index'])->name('guru.index');
-    Route::get('/guru/create', [GuruController::class, 'create'])->name('guru.create');
-    Route::post('/guru', [GuruController::class, 'store'])->name('guru.store');
-    Route::get('/guru/{id}/edit', [GuruController::class, 'edit'])->name('guru.edit');
-    Route::put('/guru/{id}', [GuruController::class, 'update'])->name('guru.update');
-    Route::delete('/guru/{id}', [GuruController::class, 'destroy'])->name('guru.destroy');
-    // IMPORT
-    Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
 
     // Kelas
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
