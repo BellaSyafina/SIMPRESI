@@ -16,7 +16,7 @@
 
 @section('content')
     @php
-        // DATA DUMMY SISWA (sesuai migration)
+        // DATA DUMMY SISWA
         $kelasDummy = [
             1 => '7A',
             2 => '7B',
@@ -163,13 +163,13 @@
             </div>
         </div>
 
-        <!-- Filter: Search dan Kelas saja -->
+        <!-- Filter: Search dan Kelas -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
                 <form action="#" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Search:</label>
-                        <input type="text" name="search" class="form-control" placeholder="Cari nama, NIS, NISN...">
+                        <input type="text" name="search" class="form-control" placeholder="Search...">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Kelas</label>
@@ -217,10 +217,10 @@
                         <thead class="table-light">
                             <tr>
                                 <th style="width: 5%">ID</th>
-                                <th style="width: 20%">NISN / NIS</th>
+                                <th style="width: 15%">NISN / NIS</th>
                                 <th style="width: 15%">Nama Siswa</th>
                                 <th style="width: 8%">Kelas</th>
-                                <th style="width: 8%">Jenis Kelamin</th>
+                                <th style="width: 15%">Jenis Kelamin</th>
                                 <th style="width: 20%">Alamat</th>
                                 <th style="width: 8%">Status</th>
                                 <th style="width: 10%">Aksi</th>
@@ -245,10 +245,10 @@
                                     </td>
                                     <td>{{ $siswa->nama_siswa }}</td>
                                     <td>{{ getNamaKelas($siswa->id_kelas, $kelasDummy) }}</td>
-                                    <td>{{ $siswa->jenis_kelamin == 'L' ? 'L' : 'P' }}</td>
+                                    <td>{{ $siswa->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
                                     <td>{{ $siswa->alamat }}</td>
                                     <td>
-                                        {{ ucfirst($siswa->status) }} <!-- teks biasa, tanpa badge -->
+                                        {{ ucfirst($siswa->status) }}
                                     </td>
                                     <td>
                                         <div class="d-flex gap-2">

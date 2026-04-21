@@ -191,12 +191,12 @@
                                     <td class="fw-semibold">{{ $guru->nama_guru }}</td>
                                     <td>
                                         @if ($guru->nuptk)
-                                            <div><span class="text-primary fw-semibold">NUPTK:</span> {{ $guru->nuptk }}
-                                            </div>
+                                            <div><span class="text-primary fw-semibold">NUPTK:</span> <span
+                                                    class="text-primary">{{ $guru->nuptk }}</span></div>
                                         @endif
                                         @if ($guru->nip)
-                                            <div><span class="text-success fw-semibold">NIP:</span> {{ $guru->nip }}
-                                            </div>
+                                            <div><span class="text-success fw-semibold">NIP:</span> <span
+                                                    class="text-success">{{ $guru->nip }}</span></div>
                                         @endif
                                         @if (!$guru->nuptk && !$guru->nip)
                                             <span class="text-muted">-</span>
