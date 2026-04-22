@@ -70,7 +70,7 @@
             ['9C', 'Sabtu', 1, 1, '07:30', '08:30'],
         ];
 
-        // Fungsi untuk mendapatkan tanggal terdekat dari hari tertentu (misal: Senin minggu ini)
+        // Fungsi tanggal real time (tanpa lompat minggu depan)
         function getDateByDay($dayName)
         {
             $now = Carbon::now();
@@ -83,24 +83,16 @@
                 'Sabtu' => Carbon::SATURDAY,
             ];
             $targetDay = $dayMap[$dayName] ?? Carbon::MONDAY;
-            $date = $now
+            return $now
                 ->copy()
                 ->startOfWeek()
                 ->addDays($targetDay - Carbon::MONDAY);
-            // Jika hari sudah lewat dalam minggu ini, ambil minggu depan? Lebih baik tampilkan minggu ini (bisa jadi sudah lewat)
-            // Agar tidak membingungkan, kita gunakan tanggal yang paling mendekati (bisa minggu ini atau minggu depan)
-            if ($date->isPast() && !$date->isToday()) {
-                $date = $date->addWeek();
-            }
-            return $date;
         }
 
         $selectedKelas = request()->get('kelas', '7A');
         $selectedHari = request()->get('hari', 'Senin');
-
-        // Tanggal untuk hari yang dipilih
         $selectedDate = getDateByDay($selectedHari);
-        $formattedDate = $selectedDate->translatedFormat('l, d F Y'); // Misal: Senin, 21 April 2026
+        $formattedDate = $selectedDate->translatedFormat('l, d F Y');
 
         // Filter jadwal berdasarkan kelas dan hari
         $jadwalFiltered = array_filter($jadwalDummy, function ($item) use ($selectedKelas, $selectedHari) {
