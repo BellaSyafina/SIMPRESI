@@ -129,7 +129,7 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Total Siswa</h6>
+                            <h6 class="mb-1 fw-bold">Total Siswa</h6>
                             <h3 class="mb-0 fw-bold">{{ $totalSiswa }}</h3>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                             <i data-feather="user-check" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Siswa Laki-laki</h6>
+                            <h6 class="mb-1 fw-bold">Siswa Laki-laki</h6>
                             <h3 class="mb-0 fw-bold">{{ $siswaLaki }}</h3>
                         </div>
                     </div>
@@ -155,7 +155,7 @@
                             <i data-feather="user" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Siswa Perempuan</h6>
+                            <h6 class="mb-1 fw-bold">Siswa Perempuan</h6>
                             <h3 class="mb-0 fw-bold">{{ $siswaPerempuan }}</h3>
                         </div>
                     </div>

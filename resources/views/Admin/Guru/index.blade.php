@@ -14,70 +14,6 @@
 @endsection
 
 @section('content')
-    @php
-        // ==================== DATA DUMMY GURU ====================
-        $gurus = collect([
-            (object) [
-                'id_guru' => 1,
-                'nama_guru' => 'Budi Santoso, S.Pd',
-                'nuptk' => '1234567890123456',
-                'nip' => '196807111992031007',
-                'jenis_kelamin' => 'L',
-                'jabatan' => 'Wali Kelas',
-                'alamat' => 'Dusun Panggulan, RT 01 RW 02, Desa Saronggi',
-            ],
-            (object) [
-                'id_guru' => 2,
-                'nama_guru' => 'Siti Aminah, S.Pd',
-                'nuptk' => '2345678901234567',
-                'nip' => '197505152002122001',
-                'jenis_kelamin' => 'P',
-                'jabatan' => 'Guru Mapel Bahasa Indonesia',
-                'alamat' => 'Dusun Krajan, RT 03 RW 01, Desa Saronggi',
-            ],
-            (object) [
-                'id_guru' => 3,
-                'nama_guru' => 'Dedi Kurniawan, S.Si',
-                'nuptk' => '3456789012345678',
-                'nip' => null,
-                'jenis_kelamin' => 'L',
-                'jabatan' => 'Guru Mapel IPA',
-                'alamat' => 'Dusun Kebonagung, RT 02 RW 03, Desa Saronggi',
-            ],
-            (object) [
-                'id_guru' => 4,
-                'nama_guru' => 'Rina Safitri, S.Pd',
-                'nuptk' => '4567890123456789',
-                'nip' => '198206152010012001',
-                'jenis_kelamin' => 'P',
-                'jabatan' => 'Guru Mapel IPS',
-                'alamat' => 'Dusun Panggulan, RT 04 RW 02, Desa Saronggi',
-            ],
-            (object) [
-                'id_guru' => 5,
-                'nama_guru' => 'Ahmad Fauzi, S.Ag',
-                'nuptk' => '5678901234567890',
-                'nip' => '197803252005011002',
-                'jenis_kelamin' => 'L',
-                'jabatan' => 'Guru Agama',
-                'alamat' => 'Dusun Krajan, RT 01 RW 01, Desa Saronggi',
-            ],
-            (object) [
-                'id_guru' => 6,
-                'nama_guru' => 'Lestari Handayani, S.Pd',
-                'nuptk' => '6789012345678901',
-                'nip' => null,
-                'jenis_kelamin' => 'P',
-                'jabatan' => 'Guru Matematika',
-                'alamat' => 'Dusun Kebonagung, RT 05 RW 03, Desa Saronggi',
-            ],
-        ]);
-
-        $totalGuru = $gurus->count();
-        $guruLaki = $gurus->where('jenis_kelamin', 'L')->count();
-        $guruPerempuan = $gurus->where('jenis_kelamin', 'P')->count();
-    @endphp
-
     <div class="container-fluid px-0">
         <!-- Statistik Ringkas -->
         <div class="row g-3 mb-4">
@@ -88,7 +24,7 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Total Guru</h6>
+                            <h6 class="mb-1 fw-bold">Total Guru</h6>
                             <h3 class="mb-0 fw-bold">{{ $totalGuru }}</h3>
                         </div>
                     </div>
@@ -101,7 +37,7 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Guru Laki-laki</h6>
+                            <h6 class="mb-1 fw-bold">Guru Laki-laki</h6>
                             <h3 class="mb-0 fw-bold">{{ $guruLaki }}</h3>
                         </div>
                     </div>
@@ -114,7 +50,7 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Guru Perempuan</h6>
+                            <h6 class="mb-1 fw-bold">Guru Perempuan</h6>
                             <h3 class="mb-0 fw-bold">{{ $guruPerempuan }}</h3>
                         </div>
                     </div>
@@ -125,28 +61,32 @@
         <!-- Filter & Pencarian -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <form action="#" method="GET" class="row g-3 align-items-end">
+                <form action="{{ route('guru.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Search:</label>
-                        <input type="text" name="search" class="form-control" placeholder="Search...">
+                        <input type="text" name="search" class="form-control" placeholder="Search..."
+                            value="{{ request('search') }}">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Jenis Kelamin</label>
                         <select name="jenis_kelamin" class="form-select">
                             <option value="">Semua</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
+                            <option value="L" {{ request('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki
+                            </option>
+                            <option value="P" {{ request('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Jabatan</label>
-                        <input type="text" name="jabatan" class="form-control" placeholder="Cari jabatan...">
+                        <input type="text" name="jabatan" class="form-control" placeholder="Cari jabatan..."
+                            value="{{ request('jabatan') }}">
                     </div>
                     <div class="col-md-2 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1" onclick="alert('Demo filter')">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
                             <i data-feather="filter" class="me-1" width="16" height="16"></i> Filter
                         </button>
-                        <a href="#" class="btn btn-outline-secondary" onclick="alert('Reset filter')">
+                        <a href="{{ route('guru.index') }}" class="btn btn-outline-secondary">
                             <i data-feather="refresh-cw" width="16" height="16"></i>
                         </a>
                     </div>
@@ -165,9 +105,9 @@
                         data-bs-target="#importModal">
                         <i data-feather="upload" class="me-1" width="16" height="16"></i> Import Data Guru
                     </button>
-                    <button type="button" class="btn btn-sm btn-success" onclick="alert('Tambah Guru (demo)')">
+                    <a href="{{ route('guru.create') }}" class="btn btn-sm btn-success">
                         <i data-feather="plus" class="me-1" width="16" height="16"></i> Tambah Guru
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -207,40 +147,19 @@
                                     <td class="text-truncate" style="max-width: 200px;">{{ $guru->alamat }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-outline-primary btn-edit"
-                                                data-id="{{ $guru->id_guru }}"
-                                                onclick="alert('Edit guru: {{ $guru->nama_guru }}')">
+                                            <a href="{{ route('guru.show', $guru->id_guru) }}"
+                                                class="btn btn-sm btn-outline-primary">
                                                 <i data-feather="edit-2"></i> Edit
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger btn-hapus"
-                                                data-id="{{ $guru->id_guru }}" data-bs-toggle="modal"
-                                                data-bs-target="#deleteguruModal{{ $guru->id_guru }}">
-                                                <i data-feather="trash-2"></i> Hapus
-                                            </button>
-                                        </div>
-
-                                        <!-- Modal Konfirmasi Hapus -->
-                                        <div class="modal fade" id="deleteModal{{ $guru->id_guru }}" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h6 class="modal-title">Konfirmasi Hapus</h6>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        Apakah Anda yakin ingin menghapus guru
-                                                        <strong>{{ $guru->nama_guru }}</strong>?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Batal</button>
-                                                        <button type="button" class="btn btn-danger"
-                                                            onclick="alert('Demo: data tidak benar-benar dihapus.')">Hapus</button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </a>
+                                            <form action="{{ route('guru.destroy', $guru->id_guru) }}" method="POST"
+                                                onsubmit="return confirm('Yakin hapus data ini?')"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i data-feather="trash-2"></i> Hapus
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -255,63 +174,10 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination dummy -->
                 <div class="p-3 border-top">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-end mb-0">
-                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                            <li class="page-item active"><span class="page-link">1</span></li>
-                            <li class="page-item"><a class="page-link" href="#"
-                                    onclick="alert('Demo pagination')">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#"
-                                    onclick="alert('Demo pagination')">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#"
-                                    onclick="alert('Demo pagination')">Next</a></li>
-                        </ul>
-                    </nav>
+                    {{ $gurus->links() }}
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Import Data Guru -->
-    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="importModalLabel">
-                        <i data-feather="upload-cloud" class="me-2" width="18" height="18"></i> Import Data
-                        Guru
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="file_excel" class="form-label fw-semibold">Upload File Excel</label>
-                            <input type="file" name="file_excel" id="file_excel" class="form-control"
-                                accept=".xls, .xlsx" required>
-                            <div class="form-text">Format file: .xls atau .xlsx (Max. 2MB)</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary"
-                            onclick="alert('Import data (demo)'); return false;">
-                            <i data-feather="upload" class="me-1" width="16" height="16"></i> Import
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            feather.replace();
-        });
-    </script>
-@endpush

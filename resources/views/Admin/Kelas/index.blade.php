@@ -163,8 +163,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-1">Total Kelas</h6>
-                                <h3 class="mb-0">{{ $totalKelas }}</h3>
+                                <h6 class="mb-1 fw-bold">Total Kelas</h6>
+                                <h3 class="mb-0 fw-bold">{{ $totalKelas }}</h3>
                             </div>
                             <i data-feather="grid" width="40" height="40"></i>
                         </div>
@@ -176,8 +176,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-1">Kelas 7</h6>
-                                <h3 class="mb-0">{{ $kelas7Count }}</h3>
+                                <h6 class="mb-1 fw-bold">Kelas 7</h6>
+                                <h3 class="mb-0 fw-bold">{{ $kelas7Count }}</h3>
                             </div>
                             <i data-feather="book-open" width="40" height="40"></i>
                         </div>
@@ -189,8 +189,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-1">Kelas 8</h6>
-                                <h3 class="mb-0">{{ $kelas8Count }}</h3>
+                                <h6 class="mb-1 fw-bold">Kelas 8</h6>
+                                <h3 class="mb-0 fw-bold">{{ $kelas8Count }}</h3>
                             </div>
                             <i data-feather="users" width="40" height="40"></i>
                         </div>
@@ -202,8 +202,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-1">Kelas 9</h6>
-                                <h3 class="mb-0">{{ $kelas9Count }}</h3>
+                                <h6 class="mb-1 fw-bold">Kelas 9</h6>
+                                <h3 class="mb-0 fw-bold">{{ $kelas9Count }}</h3>
                             </div>
                             <i data-feather="award" width="40" height="40"></i>
                         </div>

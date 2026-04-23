@@ -78,7 +78,7 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Total Orang Tua</h6>
+                            <h6 class="mb-1 fw-bold">Total Orang Tua</h6>
                             <h3 class="mb-0 fw-bold">{{ $total }}</h3>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                             <i data-feather="user-check" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Orang Tua Laki-laki</h6>
+                            <h6 class="mb-1 fw-bold">Orang Tua Laki-laki</h6>
                             <h3 class="mb-0 fw-bold">{{ $ortuLaki }}</h3>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                             <i data-feather="user" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Orang Tua Perempuan</h6>
+                            <h6 class="mb-1 fw-bold">Orang Tua Perempuan</h6>
                             <h3 class="mb-0 fw-bold">{{ $ortuPerempuan }}</h3>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
                             <i data-feather="phone" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">Memiliki No. HP</h6>
+                            <h6 class="mb-1 fw-bold">Memiliki No. HP</h6>
                             <h3 class="mb-0 fw-bold">{{ $memilikiHp }}</h3>
                         </div>
                     </div>

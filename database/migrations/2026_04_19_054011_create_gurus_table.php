@@ -12,9 +12,9 @@ return new class extends Migration {
     {
         Schema::create('guru', function (Blueprint $table) {
             $table->id('id_guru');
-            $table->string('nuptk')->nullable();
-            $table->string('nip')->nullable();
             $table->string('nama_guru');
+            $table->string('nuptk', 20)->nullable();
+            $table->string('nip', 20)->nullable();
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->string('jabatan')->nullable();
             $table->text('alamat')->nullable();

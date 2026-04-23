@@ -211,7 +211,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-primary bg-opacity-10">
                     <div class="card-body text-center">
                         <i data-feather="users" class="text-primary mb-2" width="28" height="28"></i>
-                        <h6 class="text-muted mb-1">Total Siswa</h6>
+                        <h6 class="mb-1 fw-bold">Total Siswa</h6>
                         <h3 class="mb-0 fw-bold">{{ $totalSiswa }}</h3>
                     </div>
                 </div>
@@ -220,7 +220,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-success bg-opacity-10">
                     <div class="card-body text-center">
                         <i data-feather="check-circle" class="text-success mb-2" width="28" height="28"></i>
-                        <h6 class="text-muted mb-1">Total Hadir</h6>
+                        <h6 class="mb-1 fw-bold">Total Hadir</h6>
                         <h3 class="mb-0 fw-bold">{{ $totalHadir }}</h3>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-warning bg-opacity-10">
                     <div class="card-body text-center">
                         <i data-feather="file-text" class="text-warning mb-2" width="28" height="28"></i>
-                        <h6 class="text-muted mb-1">Total Izin</h6>
+                        <h6 class="mb-1 fw-bold">Total Izin</h6>
                         <h3 class="mb-0 fw-bold">{{ $totalIzin }}</h3>
                     </div>
                 </div>
@@ -238,7 +238,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-info bg-opacity-10">
                     <div class="card-body text-center">
                         <i data-feather="thermometer" class="text-info mb-2" width="28" height="28"></i>
-                        <h6 class="text-muted mb-1">Total Sakit</h6>
+                        <h6 class="mb-1 fw-bold">Total Sakit</h6>
                         <h3 class="mb-0 fw-bold">{{ $totalSakit }}</h3>
                     </div>
                 </div>
@@ -247,7 +247,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-danger bg-opacity-10">
                     <div class="card-body text-center">
                         <i data-feather="x-circle" class="text-danger mb-2" width="28" height="28"></i>
-                        <h6 class="text-muted mb-1">Total Alpa</h6>
+                        <h6 class="mb-1 fw-bold">Total Alpa</h6>
                         <h3 class="mb-0 fw-bold">{{ $totalAlpa }}</h3>
                     </div>
                 </div>
@@ -256,7 +256,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-secondary bg-opacity-10">
                     <div class="card-body text-center">
                         <i data-feather="percent" class="text-secondary mb-2" width="28" height="28"></i>
-                        <h6 class="text-muted mb-1">Rata-rata Kehadiran</h6>
+                        <h6 class="mb-1 fw-bold">Rata-rata Kehadiran</h6>
                         <h3 class="mb-0 fw-bold">{{ $rataPersen }}%</h3>
                     </div>
                 </div>

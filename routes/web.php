@@ -29,6 +29,12 @@ Route::middleware('auth')->group(function () {
 
     // Guru
     Route::get('/guru', [GuruController::class, 'index'])->name('guru.index');
+    Route::get('/guru/create', [GuruController::class, 'create'])->name('guru.create');
+    Route::post('/guru/store', [GuruController::class, 'store'])->name('guru.store');
+    Route::get('/guru/{guru}/edit', [GuruController::class, 'show'])->name('guru.show');
+    Route::put('/guru/{guru}', [GuruController::class, 'update'])->name('guru.update');
+    Route::delete('/guru/{guru}', [GuruController::class, 'destroy'])->name('guru.destroy');
+    Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
 
     // Kelas
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
