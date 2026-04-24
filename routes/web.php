@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AbsensiSiswaController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\JadwalPelajaranController;
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function () {
 
     // Jadwal Pelajaran
     Route::get('/jadwal', [JadwalPelajaranController::class, 'index'])->name('jadwal.index');
+
+    // Absensi Siswa
+    Route::get('/absensi', [AbsensiSiswaController::class, 'index'])->name('absensi.index');
 
     // Laporan
     Route::get('/laporan-kehadiran', [LaporanController::class, 'index'])->name('laporan.index');

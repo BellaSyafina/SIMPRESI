@@ -153,6 +153,29 @@
                         </li>
                     @endif
 
+                    @if (Auth::user()->role == 'guru')
+                        <li class="sidebar-main-title">
+                            <div>
+                                <h6>Aktivitas</h6>
+                            </div>
+                        </li>
+                    @endif
+
+                    @if (Auth::user()->role == 'guru')
+                        <li class="sidebar-list">
+                            <i class="fa fa-thumb-tack"></i>
+                            <a class="sidebar-link sidebar-title link-nav" href="/absensi">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-form"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-form"> </use>
+                                </svg>
+                                <span>Data Absensi Siswa</span>
+                            </a>
+                        </li>
+                    @endif
+
                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'guru' || Auth::user()->role == 'orang_tua')
                         <li class="sidebar-main-title">
                             <div>
