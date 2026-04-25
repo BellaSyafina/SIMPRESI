@@ -13,13 +13,17 @@ class Kelas extends Model
     protected $primaryKey = 'id_kelas';
 
     // Kolom yang boleh diisi (mass assignment)
-    protected $fillable = [
-        'nama_kelas',
-        'wali_kelas',
-        'ruang',
-        'jumlah_siswa',
-        'tingkat'
-    ];
+    protected $guarded = ['id_kelas'];
 
     public $timestamps = true;
+
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'id_guru');
+    }
+
+    public function siswa()
+    {
+        return $this->hasMany(Siswa::class, 'id_kelas');
+    }
 }

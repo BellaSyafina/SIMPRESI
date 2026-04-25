@@ -24,8 +24,8 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Total Guru</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalGuru }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Total Guru</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalGuru }}</h3>
                         </div>
                     </div>
                 </div>
@@ -37,8 +37,8 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Guru Laki-laki</h6>
-                            <h3 class="mb-0 fw-bold">{{ $guruLaki }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Guru Laki-laki</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $guruLaki }}</h3>
                         </div>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Guru Perempuan</h6>
-                            <h3 class="mb-0 fw-bold">{{ $guruPerempuan }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Guru Perempuan</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $guruPerempuan }}</h3>
                         </div>
                     </div>
                 </div>
@@ -93,6 +93,8 @@
                 </form>
             </div>
         </div>
+
+        @include('Components.alert')
 
         <!-- Tabel Data Guru -->
         <div class="card shadow-sm border-0">
@@ -151,6 +153,10 @@
                                                 class="btn btn-sm btn-outline-primary">
                                                 <i data-feather="edit-2"></i> Edit
                                             </a>
+                                            <button type="button" class="btn btn-sm btn-outline-info"
+                                                data-bs-toggle="modal" data-bs-target="#akunModal{{ $guru->id_guru }}">
+                                                <i data-feather="eye"></i> Akun
+                                            </button>
                                             <form action="{{ route('guru.destroy', $guru->id_guru) }}" method="POST"
                                                 onsubmit="return confirm('Yakin hapus data ini?')"
                                                 style="display:inline;">
@@ -163,6 +169,40 @@
                                         </div>
                                     </td>
                                 </tr>
+
+                                <div class="modal fade" id="akunModal{{ $guru->id_guru }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Informasi Akun</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-2">
+                                                    <strong>Nama:</strong><br>
+                                                    {{ $guru->nama_guru }}
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <strong>Email:</strong><br>
+                                                    {{ $guru->user->email ?? '-' }}
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <strong>Password:</strong><br>
+                                                    <span class="text-muted">password123</span>
+                                                </div>
+
+                                                <div class="alert alert-warning mt-3 d-flex align-items-start gap-2">
+                                                    <span>
+                                                        Password adalah default saat import. Disarankan segera diganti.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center py-5 text-muted">
@@ -180,4 +220,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Import -->
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('guru.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Import Data Guru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Upload File Excel</label>
+                            <input type="file" name="file_excel" class="form-control">
+                        </div>
+                        <small class="text-muted">
+                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), jabatan, alamat
+                        </small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('script')
+    <script>
+        feather.replace();
+
+        document.addEventListener("shown.bs.modal", function() {
+            feather.replace();
+        });
+    </script>
+@endpush

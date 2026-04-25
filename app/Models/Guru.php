@@ -14,10 +14,15 @@ class Guru extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
-    protected $fillable = ['nuptk', 'nip', 'nama_guru', 'jenis_kelamin', 'jabatan', 'alamat', 'id_user'];
+    protected $guarded = ['id_guru'];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function kelas()
+    {
+        return $this->hasMany(Kelas::class, 'id_guru');
     }
 }

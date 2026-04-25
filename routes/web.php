@@ -39,10 +39,10 @@ Route::middleware('auth')->group(function () {
 
     // Kelas
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
-    // Route untuk menampilkan data kelas
     Route::get('/data-kelas', [KelasController::class, 'index'])->name('kelas.index');
-    // Route untuk menyimpan data kelas baru
     Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+    Route::post('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
     // Siswa
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
