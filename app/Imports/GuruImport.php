@@ -27,6 +27,7 @@ class GuruImport implements ToModel, WithHeadingRow, WithValidation
             'name' => $row['nama_guru'],
             'email' => $email,
             'password' => Hash::make('password123'), // default password
+            'role' => 'guru',
         ]);
 
         return new guru([

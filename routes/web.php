@@ -41,14 +41,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::get('/data-kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
-    Route::post('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
+    Route::put('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
     Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
     // Siswa
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+    Route::get('/siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
+    Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
+    Route::get('/siswa/{siswa}/edit', [SiswaController::class, 'show'])->name('siswa.show');
+    Route::put('/siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
+    Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+    Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
 
     // Orang Tua
     Route::get('/orangtua', [OrangTuaController::class, 'index'])->name('orangtua.index');
+    Route::get('/orangtua/create', [OrangTuaController::class, 'create'])->name('orangtua.create');
+    Route::post('/orangtua/store', [OrangTuaController::class, 'store'])->name('orangtua.store');
+    Route::post('/orangtua/import', [OrangTuaController::class, 'import'])->name('orangtua.import');
+    Route::get('/orangtua/{orangTua}/edit', [OrangTuaController::class, 'edit'])->name('orangtua.edit');
+    Route::put('/orangtua/{orangTua}', [OrangTuaController::class, 'update'])->name('orangtua.update');
+    Route::delete('/orangtua/{orangTua}', [OrangTuaController::class, 'destroy'])->name('orangtua.destroy');
 
     // Jadwal Pelajaran
     Route::get('/jadwal', [JadwalPelajaranController::class, 'index'])->name('jadwal.index');

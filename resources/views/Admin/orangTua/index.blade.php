@@ -15,59 +15,6 @@
 @endsection
 
 @section('content')
-    @php
-        // DATA DUMMY ORANG TUA
-        $orangTua = collect([
-            (object) [
-                'id_orang_tua' => 1,
-                'nama_orang_tua' => 'Bapak Hadi',
-                'jenis_kelamin' => 'L',
-                'no_hp' => '081234567890',
-                'alamat' => 'Jl. Merdeka No. 12',
-            ],
-            (object) [
-                'id_orang_tua' => 2,
-                'nama_orang_tua' => 'Ibu Ani',
-                'jenis_kelamin' => 'P',
-                'no_hp' => '081234567891',
-                'alamat' => 'Jl. Sudirman No. 45',
-            ],
-            (object) [
-                'id_orang_tua' => 3,
-                'nama_orang_tua' => 'Bapak Joko',
-                'jenis_kelamin' => 'L',
-                'no_hp' => '081234567892',
-                'alamat' => 'Jl. Pahlawan No. 8',
-            ],
-            (object) [
-                'id_orang_tua' => 4,
-                'nama_orang_tua' => 'Ibu Sari',
-                'jenis_kelamin' => 'P',
-                'no_hp' => '081234567893',
-                'alamat' => 'Jl. Pemuda No. 23',
-            ],
-            (object) [
-                'id_orang_tua' => 5,
-                'nama_orang_tua' => 'Bapak Slamet',
-                'jenis_kelamin' => 'L',
-                'no_hp' => '081234567894',
-                'alamat' => 'Jl. Kartini No. 7',
-            ],
-            (object) [
-                'id_orang_tua' => 6,
-                'nama_orang_tua' => 'Ibu Ratna',
-                'jenis_kelamin' => 'P',
-                'no_hp' => null,
-                'alamat' => 'Jl. Diponegoro No. 31',
-            ],
-        ]);
-
-        $total = $orangTua->count();
-        $ortuLaki = $orangTua->where('jenis_kelamin', 'L')->count();
-        $ortuPerempuan = $orangTua->where('jenis_kelamin', 'P')->count();
-        $memilikiHp = $orangTua->whereNotNull('no_hp')->count();
-    @endphp
-
     <div class="container-fluid px-0">
         <!-- Statistik Ringkas (4 card) -->
         <div class="row g-3 mb-4">
@@ -78,8 +25,8 @@
                             <i data-feather="users" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Total Orang Tua</h6>
-                            <h3 class="mb-0 fw-bold">{{ $total }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Total Orang Tua</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $total }}</h3>
                         </div>
                     </div>
                 </div>
@@ -91,8 +38,8 @@
                             <i data-feather="user-check" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Orang Tua Laki-laki</h6>
-                            <h3 class="mb-0 fw-bold">{{ $ortuLaki }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Orang Tua Laki-laki</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $ortuLaki }}</h3>
                         </div>
                     </div>
                 </div>
@@ -104,8 +51,8 @@
                             <i data-feather="user" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Orang Tua Perempuan</h6>
-                            <h3 class="mb-0 fw-bold">{{ $ortuPerempuan }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Orang Tua Perempuan</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $ortuPerempuan }}</h3>
                         </div>
                     </div>
                 </div>
@@ -117,8 +64,8 @@
                             <i data-feather="phone" class="text-white" width="24" height="24"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1 fw-bold">Memiliki No. HP</h6>
-                            <h3 class="mb-0 fw-bold">{{ $memilikiHp }}</h3>
+                            <h6 class="mb-1 fw-bold text-white">Memiliki No. HP</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $memilikiHp }}</h3>
                         </div>
                     </div>
                 </div>
@@ -128,23 +75,25 @@
         <!-- Filter & Pencarian -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <form action="#" method="GET" class="row g-3 align-items-end">
+                <form action="{{ route('orangtua.index') }}" class="row g-3 align-items-end">
                     <div class="col-md-8">
                         <label class="form-label fw-semibold">Search:</label>
-                        <input type="text" name="search" class="form-control"
-                            placeholder="Search...">
+                        <input type="text" name="search" class="form-control" placeholder="Search..."
+                            value="{{ request('search') }}">
                     </div>
                     <div class="col-md-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1" onclick="alert('Demo filter')">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
                             <i data-feather="filter" class="me-1" width="16" height="16"></i> Filter
                         </button>
-                        <a href="#" class="btn btn-outline-secondary" onclick="alert('Reset filter')">
+                        <a href="{{ route('orangtua.index') }}" class="btn btn-outline-secondary">
                             <i data-feather="refresh-cw" width="16" height="16"></i>
                         </a>
                     </div>
                 </form>
             </div>
         </div>
+
+        @include('Components.alert')
 
         <!-- Tabel Data Orang Tua (dengan kolom JK) -->
         <div class="card shadow-sm border-0">
@@ -157,7 +106,8 @@
                         data-bs-target="#importModalOrtu">
                         <i data-feather="upload" class="me-1" width="16" height="16"></i> Import Data Orang Tua
                     </button>
-                    <button type="button" class="btn btn-sm btn-success" onclick="alert('Tambah Orang Tua (demo)')">
+                    <button type="button" class="btn btn-sm btn-success"
+                        onclick="window.location='{{ route('orangtua.create') }}'">
                         <i data-feather="plus" class="me-1" width="16" height="16"></i> Tambah Orang Tua
                     </button>
                 </div>
@@ -165,7 +115,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead class="table">
                             <tr>
                                 <th style="width: 5%">ID</th>
                                 <th style="width: 20%">Nama Orang Tua</th>
@@ -193,38 +143,19 @@
                                         <div class="d-flex gap-2">
                                             <button class="btn btn-sm btn-outline-primary btn-edit"
                                                 data-id="{{ $ortu->id_orang_tua }}"
-                                                onclick="alert('Edit orang tua: {{ $ortu->nama_orang_tua }}')">
+                                                onclick="window.location='{{ route('orangtua.edit', $ortu->id_orang_tua) }}'">
                                                 <i data-feather="edit-2"></i> Edit
                                             </button>
+                                            <button class="btn btn-sm btn-outline-info btn-akun"
+                                                data-id="{{ $ortu->id_orang_tua }}"
+                                                data-email="{{ $ortu->user->email ?? '-' }}">
+                                                <i data-feather="eye"></i> Akun
+                                            </button>
                                             <button class="btn btn-sm btn-outline-danger btn-hapus"
-                                                data-id="{{ $ortu->id_orang_tua }}" data-bs-toggle="modal"
-                                                data-bs-target="#deleteOrtuModal{{ $ortu->id_orang_tua }}">
+                                                data-id="{{ $ortu->id_orang_tua }}"
+                                                data-nama="{{ $ortu->nama_orang_tua }}">
                                                 <i data-feather="trash-2"></i> Hapus
                                             </button>
-                                        </div>
-
-                                        <!-- Modal Hapus -->
-                                        <div class="modal fade" id="deleteOrtuModal{{ $ortu->id_orang_tua }}"
-                                            tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h6 class="modal-title">Konfirmasi Hapus</h6>
-                                                        <button type="button" class="btn-close"
-                                                            data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        Apakah Anda yakin ingin menghapus data orang tua
-                                                        <strong>{{ $ortu->nama_orang_tua }}</strong>?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Batal</button>
-                                                        <button type="button" class="btn btn-danger"
-                                                            onclick="alert('Demo: data tidak benar-benar dihapus.')">Hapus</button>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -241,19 +172,59 @@
                 </div>
                 <!-- Pagination dummy -->
                 <div class="p-3 border-top">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-end mb-0">
-                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                            <li class="page-item active"><span class="page-link">1</span></li>
-                            <li class="page-item"><a class="page-link" href="#"
-                                    onclick="alert('Demo pagination')">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#"
-                                    onclick="alert('Demo pagination')">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#"
-                                    onclick="alert('Demo pagination')">Next</a></li>
-                        </ul>
-                    </nav>
+                    {{ $orangTua->links() }}
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalHapusOrtu" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form id="formHapusOrtu" method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="modal-header">
+                        <h6 class="modal-title">Konfirmasi Hapus</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        Hapus data orang tua <strong id="namaOrtuHapus"></strong>?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAkunOrtu" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5>Informasi Akun</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Email: <strong id="emailOrtu"></strong></p>
+                    <p>Password: <strong>12345678</strong></p>
+
+                    <div class="alert alert-warning mt-2">
+                        <i data-feather="alert-triangle"></i>
+                        Password default, segera diganti!
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -270,20 +241,30 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('orangtua.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="file_excel_ortu" class="form-label fw-semibold">Upload File Excel</label>
                             <input type="file" name="file_excel" id="file_excel_ortu" class="form-control"
                                 accept=".xls, .xlsx" required>
-                            <div class="form-text">Format file: .xls atau .xlsx (Max. 2MB)</div>
+
+                            <div class="form-text text-white">
+                                Format file: .xls atau .xlsx (Max. 2MB)
+                            </div>
+
+                            {{-- 🔥 DOWNLOAD TEMPLATE --}}
+                            <div class="mt-2">
+                                <a href="{{ asset('template-orangtua.xlsx') }}" class="text-decoration-none small">
+                                    <i data-feather="download" class="me-1" width="14" height="14"></i>
+                                    Download Template Excel
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary"
-                            onclick="alert('Import data orang tua (demo)'); return false;">
+                        <button type="submit" class="btn btn-primary">
                             <i data-feather="upload" class="me-1" width="16" height="16"></i> Import
                         </button>
                     </div>
@@ -293,10 +274,30 @@
     </div>
 @endsection
 
-@push('scripts')
+@push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
+
+            document.querySelectorAll('.btn-hapus').forEach(button => {
+                button.addEventListener('click', function() {
+
+                    let id = this.dataset.id;
+                    let nama = this.dataset.nama;
+
+                    document.getElementById('namaOrtuHapus').innerText = nama;
+                    document.getElementById('formHapusOrtu').action = '/orangtua/' + id;
+
+                    new bootstrap.Modal(document.getElementById('modalHapusOrtu')).show();
+                });
+            });
+
+            document.querySelectorAll('.btn-akun').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('emailOrtu').innerText = this.dataset.email;
+                    new bootstrap.Modal(document.getElementById('modalAkunOrtu')).show();
+                });
+            });
         });
     </script>
 @endpush

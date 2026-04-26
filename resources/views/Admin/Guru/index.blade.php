@@ -115,7 +115,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead class="table">
                             <tr>
                                 <th style="width: 5%">ID</th>
                                 <th style="width: 15%">Nama Guru</th>
@@ -130,7 +130,15 @@
                             @forelse($gurus as $guru)
                                 <tr>
                                     <td>{{ $guru->id_guru }}</td>
-                                    <td class="fw-semibold">{{ $guru->nama_guru }}</td>
+                                    <td class="fw-semibold">
+                                        {{ $guru->nama_guru }}
+
+                                        @if ($guru->kelas)
+                                            <span class="badge bg-success ms-1">
+                                                Wali {{ $guru->kelas->nama_kelas }}
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($guru->nuptk)
                                             <div><span class="text-primary fw-semibold">NUPTK:</span> <span

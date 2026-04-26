@@ -14,10 +14,15 @@ class OrangTua extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
-    protected $fillable = ['nama_orang_tua', 'jenis_kelamin', 'no_hp', 'alamat', 'id_user'];
+    protected $guarded = ['id_orang_tua'];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function siswa()
+    {
+        return $this->hasMany(Siswa::class, 'id_orang_tua');
     }
 }

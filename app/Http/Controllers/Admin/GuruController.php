@@ -16,7 +16,7 @@ class GuruController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Guru::with('user'); // 🔥 penting
+        $query = Guru::with('user', 'kelas'); // 🔥 penting
 
         // Filter pencarian
         if ($request->filled('search')) {
@@ -79,6 +79,7 @@ class GuruController extends Controller
                 'name' => $request->nama_guru,
                 'email' => $email,
                 'password' => Hash::make('password123'),
+                'role' => 'guru',
             ]);
 
             // 🔥 Simpan guru + relasi user
@@ -135,6 +136,7 @@ class GuruController extends Controller
             if ($guru->user) {
                 $guru->user->update([
                     'name' => $request->nama_guru,
+                    'role' => 'guru',
                     // email tidak diubah biar tidak bentrok
                 ]);
             }
