@@ -135,7 +135,7 @@
 
                                         @if ($guru->kelas)
                                             <span class="badge bg-success ms-1">
-                                                Wali {{ $guru->kelas->nama_kelas }}
+                                                Wali Kelas {{ $guru->kelas->nama_kelas }}
                                             </span>
                                         @endif
                                     </td>

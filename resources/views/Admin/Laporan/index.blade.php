@@ -17,8 +17,6 @@
 @section('content')
     @if (Auth::user()->role == 'admin')
         @php
-            use Carbon\Carbon;
-
             // DAFTAR KELAS (11 kelas)
             $kelasList = ['7A', '7B', '7C', '7D', '8A', '8B', '8C', '9A', '9B', '9C', '9D'];
 
@@ -111,10 +109,8 @@
                 ],
             ];
 
-            // Data kehadiran dummy untuk setiap siswa di bulan & tahun terpilih
-            // Format: ['hadir', 'izin', 'sakit', 'alpa']
             // Jumlah hari dalam bulan (28-31) untuk tahun dan bulan terpilih
-            $jumlahHari = Carbon::create($selectedTahun, (int) $selectedBulan, 1)->daysInMonth;
+            $jumlahHari = \Carbon\Carbon::create($selectedTahun, (int) $selectedBulan, 1)->daysInMonth;
             $siswaList = $siswaPerKelas[$selectedKelas] ?? [];
 
             $rekap = [];
@@ -212,54 +208,54 @@
                 <div class="col-md-2">
                     <div class="card h-100 shadow-sm border-0 bg-primary bg-opacity-10">
                         <div class="card-body text-center">
-                            <i data-feather="users" class="text-primary mb-2" width="28" height="28"></i>
-                            <h6 class="mb-1 fw-bold">Total Siswa</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalSiswa }}</h3>
+                            <i data-feather="users" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Siswa</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalSiswa }}</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="card h-100 shadow-sm border-0 bg-success bg-opacity-10">
                         <div class="card-body text-center">
-                            <i data-feather="check-circle" class="text-success mb-2" width="28" height="28"></i>
-                            <h6 class="mb-1 fw-bold">Total Hadir</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalHadir }}</h3>
+                            <i data-feather="check-circle" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Hadir</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalHadir }}</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="card h-100 shadow-sm border-0 bg-warning bg-opacity-10">
                         <div class="card-body text-center">
-                            <i data-feather="file-text" class="text-warning mb-2" width="28" height="28"></i>
-                            <h6 class="mb-1 fw-bold">Total Izin</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalIzin }}</h3>
+                            <i data-feather="file-text" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Izin</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalIzin }}</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="card h-100 shadow-sm border-0 bg-info bg-opacity-10">
                         <div class="card-body text-center">
-                            <i data-feather="thermometer" class="text-info mb-2" width="28" height="28"></i>
-                            <h6 class="mb-1 fw-bold">Total Sakit</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalSakit }}</h3>
+                            <i data-feather="thermometer" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Sakit</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalSakit }}</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="card h-100 shadow-sm border-0 bg-danger bg-opacity-10">
                         <div class="card-body text-center">
-                            <i data-feather="x-circle" class="text-danger mb-2" width="28" height="28"></i>
-                            <h6 class="mb-1 fw-bold">Total Alpa</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalAlpa }}</h3>
+                            <i data-feather="x-circle" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Alpa</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalAlpa }}</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="card h-100 shadow-sm border-0 bg-secondary bg-opacity-10">
                         <div class="card-body text-center">
-                            <i data-feather="percent" class="text-secondary mb-2" width="28" height="28"></i>
-                            <h6 class="mb-1 fw-bold">Rata-rata Kehadiran</h6>
-                            <h3 class="mb-0 fw-bold">{{ $rataPersen }}%</h3>
+                            <i data-feather="percent" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Rata-rata Kehadiran</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $rataPersen }}%</h3>
                         </div>
                     </div>
                 </div>
@@ -347,10 +343,489 @@
     @endif
 
     @if (Auth::user()->role == 'guru')
+        @php
+            // Guru hanya bisa melihat satu kelas (contoh: 7A)
+            $kelasList = ['7A'];
+            $selectedKelas = request()->get('kelas', '7A');
+            $selectedBulan = request()->get('bulan', date('m'));
+            $selectedTahun = request()->get('tahun', date('Y'));
+
+            $namaBulan = [
+                '01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember',
+            ];
+
+            $siswaPerKelas = [
+                '7A' => [
+                    ['nis' => '2024070001', 'nama' => 'Ahmad Zaki'],
+                    ['nis' => '2024070002', 'nama' => 'Siti Aisyah'],
+                    ['nis' => '2024070003', 'nama' => 'Budi Santoso'],
+                    ['nis' => '2024070004', 'nama' => 'Dewi Lestari'],
+                    ['nis' => '2024070005', 'nama' => 'Rizki Ramadhan'],
+                ],
+            ];
+
+            $jumlahHari = \Carbon\Carbon::create($selectedTahun, (int) $selectedBulan, 1)->daysInMonth;
+            $siswaList = $siswaPerKelas[$selectedKelas] ?? [];
+
+            $rekap = [];
+            $totalHadir = $totalIzin = $totalSakit = $totalAlpa = 0;
+
+            foreach ($siswaList as $siswa) {
+                $hadir = rand(round($jumlahHari * 0.6), round($jumlahHari * 0.95));
+                $izin = rand(0, round($jumlahHari * 0.1));
+                $sakit = rand(0, round($jumlahHari * 0.1));
+                $alpa = $jumlahHari - ($hadir + $izin + $sakit);
+                if ($alpa < 0) {
+                    $alpa = 0;
+                }
+                $persen = round(($hadir / $jumlahHari) * 100, 1);
+                $rekap[] = [
+                    'nis' => $siswa['nis'],
+                    'nama' => $siswa['nama'],
+                    'hadir' => $hadir,
+                    'izin' => $izin,
+                    'sakit' => $sakit,
+                    'alpa' => $alpa,
+                    'persen' => $persen,
+                ];
+                $totalHadir += $hadir;
+                $totalIzin += $izin;
+                $totalSakit += $sakit;
+                $totalAlpa += $alpa;
+            }
+
+            $totalSiswa = count($siswaList);
+            $rataPersen = $totalSiswa > 0 ? round(($totalHadir / ($totalSiswa * $jumlahHari)) * 100, 1) : 0;
+        @endphp
+
+        <div class="container-fluid px-0">
+            <!-- Filter (hanya menampilkan kelas yang diizinkan) -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form action="#" method="GET" class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Pilih Kelas</label>
+                            <select name="kelas" class="form-select" onchange="this.form.submit()">
+                                @foreach ($kelasList as $kelas)
+                                    <option value="{{ $kelas }}" {{ $selectedKelas == $kelas ? 'selected' : '' }}>
+                                        {{ $kelas }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Bulan</label>
+                            <select name="bulan" class="form-select" onchange="this.form.submit()">
+                                @foreach ($namaBulan as $angka => $nama)
+                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
+                                        {{ $nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Tahun</label>
+                            <select name="tahun" class="form-select" onchange="this.form.submit()">
+                                @for ($t = 2024; $t <= 2026; $t++)
+                                    <option value="{{ $t }}" {{ $selectedTahun == $t ? 'selected' : '' }}>
+                                        {{ $t }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#" class="btn btn-outline-secondary w-100"
+                                onclick="alert('Reset filter (demo)'); return false;">
+                                <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-primary w-100"
+                                    onclick="alert('Export Excel (demo)'); return false;">
+                                    <i data-feather="file-text" class="me-1" width="16" height="16"></i> Export
+                                    Excel
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary w-100"
+                                    onclick="alert('Export PDF (demo)'); return false;">
+                                    <i data-feather="printer" class="me-1" width="16" height="16"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Statistik Ringkasan (kartu) -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-primary bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="users" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Siswa</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalSiswa }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-success bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="check-circle" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Hadir</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalHadir }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-warning bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="file-text" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Izin</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalIzin }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-info bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="thermometer" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Sakit</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalSakit }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-danger bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="x-circle" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Alpa</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalAlpa }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-secondary bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="percent" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Rata-rata Kehadiran</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $rataPersen }}%</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Rekap Kehadiran -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-5">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i data-feather="list" class="me-2" width="18" height="18"></i>
+                        Rekap Kehadiran Siswa - Kelas {{ $selectedKelas }} ({{ $namaBulan[$selectedBulan] }}
+                        {{ $selectedTahun }})
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="fs-6 py-2" style="width: 15%">NIS</th>
+                                    <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Hadir</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Izin</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Sakit</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Alpa</th>
+                                    <th class="fs-6 py-2" style="width: 10%">% Kehadiran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($rekap as $item)
+                                    <tr>
+                                        <td class="fs-6">{{ $item['nis'] }}</td>
+                                        <td class="fs-6">{{ $item['nama'] }}</td>
+                                        <td class="fs-6">{{ $item['hadir'] }}</td>
+                                        <td class="fs-6">{{ $item['izin'] }}</td>
+                                        <td class="fs-6">{{ $item['sakit'] }}</td>
+                                        <td class="fs-6">{{ $item['alpa'] }}</td>
+                                        <td
+                                            class="fs-6 @if ($item['persen'] < 75) text-danger fw-bold @elseif($item['persen'] < 85) text-warning fw-bold @else text-success fw-bold @endif">
+                                            {{ $item['persen'] }}%
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i data-feather="inbox" width="48" height="48"
+                                                class="mb-3"></i><br>
+                                            Belum ada data siswa untuk kelas ini.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 border-top">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-end mb-0">
+                                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                                <li class="page-item active"><span class="page-link">1</span></li>
+                                <li class="page-item"><a class="page-link" href="#"
+                                        onclick="alert('Demo pagination')">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#"
+                                        onclick="alert('Demo pagination')">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#"
+                                        onclick="alert('Demo pagination')">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-light border shadow-sm mb-0" role="alert">
+                        <i data-feather="info" class="me-2" width="16" height="16"></i>
+                        Menampilkan rekap kehadiran untuk kelas <strong>{{ $selectedKelas }}</strong> periode
+                        <strong>{{ $namaBulan[$selectedBulan] }} {{ $selectedTahun }}</strong>.
+                        Jumlah hari dalam bulan ini: <strong>{{ $jumlahHari }} hari</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
 
     @if (Auth::user()->role == 'orang_tua')
+        @php
+            // Orang tua hanya melihat data satu anak (contoh: Ahmad Zaki, kelas 7A)
+            $anak = (object) [
+                'nis' => '2024070001',
+                'nama' => 'Ahmad Zaki',
+                'kelas' => '7A',
+            ];
+            $selectedKelas = $anak->kelas;
+            $selectedBulan = request()->get('bulan', date('m'));
+            $selectedTahun = request()->get('tahun', date('Y'));
+
+            $namaBulan = [
+                '01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember',
+            ];
+
+            $jumlahHari = \Carbon\Carbon::create($selectedTahun, (int) $selectedBulan, 1)->daysInMonth;
+
+            // Data dummy untuk satu siswa
+            $hadir = rand(round($jumlahHari * 0.6), round($jumlahHari * 0.95));
+            $izin = rand(0, round($jumlahHari * 0.1));
+            $sakit = rand(0, round($jumlahHari * 0.1));
+            $alpa = $jumlahHari - ($hadir + $izin + $sakit);
+            if ($alpa < 0) {
+                $alpa = 0;
+            }
+            $persen = round(($hadir / $jumlahHari) * 100, 1);
+            $rekap = [
+                [
+                    'nis' => $anak->nis,
+                    'nama' => $anak->nama,
+                    'hadir' => $hadir,
+                    'izin' => $izin,
+                    'sakit' => $sakit,
+                    'alpa' => $alpa,
+                    'persen' => $persen,
+                ],
+            ];
+
+            $totalSiswa = 1;
+            $totalHadir = $hadir;
+            $totalIzin = $izin;
+            $totalSakit = $sakit;
+            $totalAlpa = $alpa;
+            $rataPersen = $persen;
+            $kelasList = [$anak->kelas];
+        @endphp
+
+        <div class="container-fluid px-0">
+            <!-- Filter (kelas hanya menampilkan kelas anak, tidak bisa pilih lain) -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form action="#" method="GET" class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Kelas</label>
+                            <input type="text" class="form-control" value="{{ $selectedKelas }}" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Bulan</label>
+                            <select name="bulan" class="form-select" onchange="this.form.submit()">
+                                @foreach ($namaBulan as $angka => $nama)
+                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
+                                        {{ $nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Tahun</label>
+                            <select name="tahun" class="form-select" onchange="this.form.submit()">
+                                @for ($t = 2024; $t <= 2026; $t++)
+                                    <option value="{{ $t }}" {{ $selectedTahun == $t ? 'selected' : '' }}>
+                                        {{ $t }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#" class="btn btn-outline-secondary w-100"
+                                onclick="alert('Reset filter (demo)'); return false;">
+                                <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-primary w-100"
+                                    onclick="alert('Export Excel (demo)'); return false;">
+                                    <i data-feather="file-text" class="me-1" width="16" height="16"></i> Export
+                                    Excel
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary w-100"
+                                    onclick="alert('Export PDF (demo)'); return false;">
+                                    <i data-feather="printer" class="me-1" width="16" height="16"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Statistik Ringkasan (kartu) -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-primary bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="users" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Siswa</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalSiswa }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-success bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="check-circle" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Hadir</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalHadir }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-warning bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="file-text" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Izin</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalIzin }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-info bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="thermometer" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Sakit</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalSakit }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-danger bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="x-circle" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Total Alpa</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $totalAlpa }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card h-100 shadow-sm border-0 bg-secondary bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i data-feather="percent" class="mb-2" width="28" height="28" style="color: white;"></i>
+                            <h6 class="mb-1 fw-bold text-white">Rata-rata Kehadiran</h6>
+                            <h3 class="mb-0 fw-bold text-white">{{ $rataPersen }}%</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Rekap Kehadiran (hanya satu baris) -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-5">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i data-feather="list" class="me-2" width="18" height="18"></i>
+                        Rekap Kehadiran Siswa - {{ $anak->nama }} ({{ $namaBulan[$selectedBulan] }}
+                        {{ $selectedTahun }})
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="fs-6 py-2" style="width: 15%">NIS</th>
+                                    <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Hadir</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Izin</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Sakit</th>
+                                    <th class="fs-6 py-2" style="width: 10%">Alpa</th>
+                                    <th class="fs-6 py-2" style="width: 10%">% Kehadiran</th>
+                                <tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($rekap as $item)
+                                    <tr>
+                                        <td class="fs-6">{{ $item['nis'] }}</td>
+                                        <td class="fs-6">{{ $item['nama'] }}</td>
+                                        <td class="fs-6">{{ $item['hadir'] }}</td>
+                                        <td class="fs-6">{{ $item['izin'] }}</td>
+                                        <td class="fs-6">{{ $item['sakit'] }}</td>
+                                        <td class="fs-6">{{ $item['alpa'] }}</td>
+                                        <td
+                                            class="fs-6 @if ($item['persen'] < 75) text-danger fw-bold @elseif($item['persen'] < 85) text-warning fw-bold @else text-success fw-bold @endif">
+                                            {{ $item['persen'] }}%
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- tidak ada pagination karena hanya satu siswa -->
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-light border shadow-sm mb-0" role="alert">
+                        <i data-feather="info" class="me-2" width="16" height="16"></i>
+                        Menampilkan rekap kehadiran untuk <strong>{{ $anak->nama }}</strong> periode
+                        <strong>{{ $namaBulan[$selectedBulan] }} {{ $selectedTahun }}</strong>.
+                        Jumlah hari dalam bulan ini: <strong>{{ $jumlahHari }} hari</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
+
 @endsection
 
 @push('scripts')
