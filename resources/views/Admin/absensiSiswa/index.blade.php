@@ -226,7 +226,7 @@
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 fw-semibold">
                     <i data-feather="message-circle" class="me-2" width="18" height="18"></i>
-                    Notifikasi WhatsApp Otomatis
+                    Notifikasi Email & WhatsApp Otomatis
                 </h5>
             </div>
             <div class="card-body">
