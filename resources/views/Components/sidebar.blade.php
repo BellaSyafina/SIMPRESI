@@ -72,6 +72,21 @@
 
                     @if (Auth::user()->role == 'admin')
                         <li class="sidebar-list">
+                            <i class="fa fa-thumb-tack"></i>
+                            <a class="sidebar-link sidebar-title link-nav" href="/mata-pelajaran">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-ecommerce"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-ecommerce"></use>
+                                </svg>
+                                <span>Data Mata Pelajaran</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (Auth::user()->role == 'admin')
+                        <li class="sidebar-list">
                             <i class="fa fa-thumb-tack"> </i>
                             <a class="sidebar-link sidebar-title link-nav" href="/guru">
                                 <svg class="stroke-icon">
