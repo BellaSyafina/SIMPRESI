@@ -17,20 +17,247 @@
 @section('content')
     @if (Auth::user()->role == 'admin')
         <div class="container-fluid default-dashboard">
-            <div class="row widget-grid">
-                <div class="col-xl-5 col-md-6 proorder-xl-1 proorder-md-1">
-                    <div class="card profile-greeting p-0">
+
+            <div class="row g-3">
+
+                {{-- ================= GREETING (KIRI) ================= --}}
+                <div class="col-xl-5 col-md-6">
+                    <div class="card profile-greeting p-0 h-100">
                         <div class="card-body">
                             <div class="img-overlay">
                                 <h1>Hallo, {{ Auth::user()->name }}!</h1>
-                                <p>Selamat datang di Sistem Absensi SMPN 2 Saronggi. Kelola kehadiran siswa dengan mudah.
-                                </p><a class="btn" href="#">View Profile</a>
+                                <p>
+                                    Selamat datang di Sistem Absensi SMPN 2 Saronggi.<br>
+                                    Kelola kehadiran siswa dengan mudah.
+                                </p>
+                                <a class="btn" href="#">View Profile</a>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {{-- ================= CARD STATISTIK ================= --}}
+                <div class="col-xl-7 col-md-6">
+                    <div class="row g-3">
+
+                        <div class="col-6">
+                            <div class="card text-white shadow-sm border-0" style="background: #40a7eb;">
+                                <div class="card-body">
+                                    <h6 class="mb-1">Total Siswa</h6>
+                                    <h3 class="fw-bold mb-0">309</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="card text-white shadow-sm border-0" style="background: #f19040;">
+                                <div class="card-body">
+                                    <h6 class="mb-1">Total Guru</h6>
+                                    <h3 class="fw-bold mb-0">28</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="card text-white shadow-sm border-0" style="background: #f4d942;">
+                                <div class="card-body">
+                                    <h6 class="mb-1">Total Kelas</h6>
+                                    <h3 class="fw-bold mb-0">11</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="card text-white shadow-sm border-0" style="background: #ed41b3;">
+                                <div class="card-body">
+                                    <h6 class="mb-1">Total Orang Tua</h6>
+                                    <h3 class="fw-bold mb-0">309</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
+
+            {{-- ================= CHART AREA ================= --}}
+            <div class="row mt-4 g-3">
+
+                {{-- BAR CHART: Kehadiran per Kelas Hari Ini (11 kelas) --}}
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 p-3">
+                        <h5 class="mb-3">Kehadiran per Kelas Hari Ini</h5>
+                        <canvas id="barChartKelas" style="width:100%; max-height:350px;"></canvas>
+                    </div>
+                </div>
+
+                {{-- LINE CHART: Tren Kehadiran Minggu Ini --}}
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 p-3">
+                        <h5 class="mb-3">Tren Kehadiran Minggu Ini</h5>
+                        <canvas id="lineChartMinggu" style="width:100%; max-height:350px;"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // ========== BAR CHART: 11 KELAS ==========
+                const kelas = ['7A', '7B', '7C', '7D', '8A', '8B', '8C', '9A', '9B', '9C', '9D'];
+                // Data dummy (jumlah kehadiran per status)
+                const hadir = [42, 38, 40, 36, 44, 41, 37, 39, 42, 38, 40];
+                const izin = [2, 1, 3, 2, 1, 2, 1, 3, 1, 2, 1];
+                const sakit = [1, 2, 1, 1, 2, 1, 0, 1, 2, 1, 1];
+                const alpha = [0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0];
+
+                const ctxBar = document.getElementById('barChartKelas').getContext('2d');
+                new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: kelas,
+                        datasets: [{
+                                label: 'Hadir',
+                                data: hadir,
+                                backgroundColor: '#28a745',
+                                borderRadius: 6
+                            },
+                            {
+                                label: 'Izin',
+                                data: izin,
+                                backgroundColor: '#ffc107',
+                                borderRadius: 6
+                            },
+                            {
+                                label: 'Sakit',
+                                data: sakit,
+                                backgroundColor: '#17a2b8',
+                                borderRadius: 6
+                            },
+                            {
+                                label: 'Alpha',
+                                data: alpha,
+                                backgroundColor: '#dc3545',
+                                borderRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Jumlah Siswa',
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    autoSkip: false,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Kelas',
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // ========== LINE CHART: Tren Kehadiran Minggu Ini ==========
+                const hari = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum'];
+                const persen = [100, 96, 93, 90, 94];
+
+                const ctxLine = document.getElementById('lineChartMinggu').getContext('2d');
+                new Chart(ctxLine, {
+                    type: 'line',
+                    data: {
+                        labels: hari,
+                        datasets: [{
+                            label: 'Persentase Kehadiran (%)',
+                            data: persen,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#0d6efd',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `${ctx.raw}%`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Persentase (%)',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Hari',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
     @endif
 
     @if (Auth::user()->role == 'guru')
@@ -209,7 +436,6 @@
 
     @if (Auth::user()->role == 'orang_tua')
         <div class="container-fluid default-dashboard">
-            <!-- Baris pertama: Greeting (kiri) dan Data Anak (kanan) -->
             <div class="row align-items-stretch">
                 <!-- Card Greeting (kiri) -->
                 <div class="col-xl-5 col-md-6 mb-4 d-flex">
@@ -228,31 +454,30 @@
 
                 <!-- Data Anak + Tombol Laporan (kanan) -->
                 <div class="col-xl-7 col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0"
-                        style="border-left: 5px solid #0d6efd; background-color: #f8f9fc;">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="card-body">
                             <h4 class="fw-bold mb-4" style="color: #2c3e50;">
                                 <i data-feather="user" class="me-2" width="24" height="24"></i> Profil Anak
                             </h4>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted fw-semibold">Nama Lengkap :</div>
-                                <div class="col-7 fw-bold">Ahmad Zaki</div>
+                                <div class="col-5 fw-semibold text-dark">Nama Lengkap :</div>
+                                <div class="col-7 fw-bold text-dark">Ahmad Zaki</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted fw-semibold">NIS :</div>
-                                <div class="col-7 fw-bold">2024080001</div>
+                                <div class="col-5 fw-semibold text-dark">NIS :</div>
+                                <div class="col-7 fw-bold text-dark">2024080001</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted fw-semibold">Kelas :</div>
-                                <div class="col-7 fw-bold">8A</div>
+                                <div class="col-5 fw-semibold text-dark">Kelas :</div>
+                                <div class="col-7 fw-bold text-dark">8A</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted fw-semibold">Wali Kelas :</div>
-                                <div class="col-7 fw-bold">Budi Santoso, S.Pd</div>
+                                <div class="col-5 fw-semibold text-dark">Wali Kelas :</div>
+                                <div class="col-7 fw-bold text-dark">Budi Santoso, S.Pd</div>
                             </div>
                             <div class="row mb-4">
-                                <div class="col-5 text-muted fw-semibold">Total Kehadiran (Bulan Ini) :</div>
-                                <div class="col-7 fw-bold">19 Hadir, 1 Izin, 1 Sakit, 0 Alpha</div>
+                                <div class="col-5 fw-semibold text-dark">Total Kehadiran (Bulan Ini) :</div>
+                                <div class="col-7 fw-bold text-dark">19 Hadir, 1 Izin, 1 Sakit, 0 Alpha</div>
                             </div>
                             <div class="mt-3">
                                 <a href="{{ route('laporan.index') }}"
@@ -326,8 +551,8 @@
             </div>
 
             <script>
-                function loadKehadiranHariIni() {
-                    // Data jadwal berdasarkan hari (0 = Minggu, 1 = Senin, ..., 6 = Sabtu)
+                (function() {
+                    // Data jadwal berdasarkan hari (0 Minggu, 1 Senin ... 6 Sabtu)
                     const jadwal = {
                         0: [], // Minggu libur
                         1: [ // Senin
@@ -411,7 +636,6 @@
                                 guru: "Rina Safitri, S.Pd",
                                 status: "Alpha"
                             }
-
                         ],
                         6: [ // Sabtu
                             {
@@ -423,56 +647,62 @@
                         ]
                     };
 
-                    const today = new Date().getDay(); // 0 Minggu, 1 Senin ... 6 Sabtu
-                    const jadwalHariIni = jadwal[today] || [];
+                    function loadKehadiranHariIni() {
+                        const today = new Date().getDay(); // 0 Minggu, 1 Senin ... 6 Sabtu
+                        const jadwalHariIni = jadwal[today] || [];
+                        const container = document.getElementById('kehadiranHariIniContainer');
+                        if (!container) return;
 
-                    const container = document.getElementById('kehadiranHariIniContainer');
-                    if (jadwalHariIni.length === 0) {
-                        container.innerHTML =
-                            '<div class="list-group-item py-3 text-center text-muted">Tidak ada jadwal untuk hari ini.</div>';
-                        return;
+                        if (jadwalHariIni.length === 0) {
+                            container.innerHTML =
+                                '<div class="list-group-item py-3 text-center text-muted">Tidak ada jadwal untuk hari ini.</div>';
+                            return;
+                        }
+
+                        let html = '';
+                        jadwalHariIni.forEach(item => {
+                            let statusClass = '';
+                            switch (item.status) {
+                                case 'Hadir':
+                                    statusClass = 'text-success fw-bold';
+                                    break;
+                                case 'Izin':
+                                    statusClass = 'text-warning fw-bold';
+                                    break;
+                                case 'Sakit':
+                                    statusClass = 'text-info fw-bold';
+                                    break;
+                                case 'Alpha':
+                                    statusClass = 'text-danger fw-bold';
+                                    break;
+                                default:
+                                    statusClass = 'text-secondary fw-bold';
+                            }
+                            html += `
+                    <div class="list-group-item py-3">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <div>
+                                <div class="fw-bold fs-5">${item.mapel}</div>
+                                <div class="text-muted small">${item.waktu} • ${item.guru}</div>
+                            </div>
+                            <div class="${statusClass}">${item.status}</div>
+                        </div>
+                    </div>
+                `;
+                        });
+                        container.innerHTML = html;
                     }
 
-                    let html = '';
-                    jadwalHariIni.forEach(item => {
-                        let statusClass = '';
-                        switch (item.status) {
-                            case 'Hadir':
-                                statusClass = 'text-success fw-bold';
-                                break;
-                            case 'Izin':
-                                statusClass = 'text-warning fw-bold';
-                                break;
-                            case 'Sakit':
-                                statusClass = 'text-info fw-bold';
-                                break;
-                            case 'Alpha':
-                                statusClass = 'text-danger fw-bold';
-                                break;
-                            default:
-                                statusClass = 'text-secondary fw-bold';
-                        }
-                        html += `
-                <div class="list-group-item py-3">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <div>
-                            <div class="fw-bold fs-5">${item.mapel}</div>
-                            <div class="text-muted small">${item.waktu} • ${item.guru}</div>
-                        </div>
-                        <div class="${statusClass}">${item.status}</div>
-                    </div>
-                </div>
-            `;
-                    });
-                    container.innerHTML = html;
-                }
-
-                document.addEventListener('DOMContentLoaded', function() {
-                    loadKehadiranHariIni();
-                });
+                    // Panggil fungsi setelah DOM siap
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', loadKehadiranHariIni);
+                    } else {
+                        loadKehadiranHariIni();
+                    }
+                })();
             </script>
 
-            <!-- Tren Kehadiran Harian + Diagram Lingkaran -->
+            <!-- Tren Kehadiran Harian (Bar Chart) + Diagram Lingkaran -->
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="card shadow-sm border-0">
@@ -484,64 +714,14 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <!-- Kolom Tabel -->
+                                <!-- Kolom Bar Chart -->
                                 <div class="col-md-7">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered align-middle">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Tanggal</th>
-                                                    <th>Hadir</th>
-                                                    <th>Izin</th>
-                                                    <th>Sakit</th>
-                                                    <th>Alpha</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>08 Apr</td>
-                                                    <td>61</td>
-                                                    <td>1</td>
-                                                    <td>2</td>
-                                                    <td>0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>09 Apr</td>
-                                                    <td>60</td>
-                                                    <td>1</td>
-                                                    <td>2</td>
-                                                    <td>0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>10 Apr</td>
-                                                    <td>30</td>
-                                                    <td>1</td>
-                                                    <td>2</td>
-                                                    <td>0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>11 Apr</td>
-                                                    <td>32</td>
-                                                    <td>1</td>
-                                                    <td>2</td>
-                                                    <td>0</td>
-                                                </tr>
-                                                <tr class="table-secondary">
-                                                    <td><strong>Persentase</strong></td>
-                                                    <td><strong>93%</strong></td>
-                                                    <td><strong>4%</strong></td>
-                                                    <td><strong>3%</strong></td>
-                                                    <td><strong>0%</strong></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <canvas id="barChartKehadiran" style="width:100%; max-height: 300px;"></canvas>
                                 </div>
-
                                 <!-- Kolom Diagram Lingkaran (Bulat) -->
                                 <div class="col-md-5 text-center">
                                     <canvas id="pieChartPersentase"
-                                        style="max-width: 250px; max-height: 250px; margin: 0 auto;"></canvas>
+                                        style="max-width: 200px; max-height: 200px; margin: 0 auto;"></canvas>
                                     <div class="mt-3">
                                         <span class="badge bg-success me-2">Hadir 93%</span>
                                         <span class="badge bg-warning me-2">Izin 4%</span>
@@ -555,6 +735,117 @@
                 </div>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // BAR CHART untuk Tren Kehadiran Harian (Grouped Bar)
+                const ctxBar = document.getElementById('barChartKehadiran').getContext('2d');
+                new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: ['08 Apr', '09 Apr', '10 Apr', '11 Apr', '14 Apr'],
+                        datasets: [{
+                                label: 'Hadir',
+                                data: [61, 60, 30, 32, 45],
+                                backgroundColor: '#28a745',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Izin',
+                                data: [1, 1, 1, 1, 2],
+                                backgroundColor: '#ffc107',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Sakit',
+                                data: [2, 2, 2, 2, 1],
+                                backgroundColor: '#17a2b8',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Alpha',
+                                data: [0, 0, 0, 0, 1],
+                                backgroundColor: '#dc3545',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Jumlah Siswa',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tanggal',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // PIE CHART untuk Persentase
+                const ctxPie = document.getElementById('pieChartPersentase').getContext('2d');
+                new Chart(ctxPie, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Hadir (93%)', 'Izin (4%)', 'Sakit (3%)', 'Alpha (0%)'],
+                        datasets: [{
+                            data: [93, 4, 3, 0],
+                            backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `${ctx.label}: ${ctx.raw}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
     @endif
 
 @endsection

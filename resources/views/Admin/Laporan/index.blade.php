@@ -263,7 +263,7 @@
 
             <!-- Tabel Rekap Kehadiran -->
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-5">
+                <div class="card-header bg-white py-4">
                     <h5 class="card-title mb-0 fw-semibold">
                         <i data-feather="list" class="me-2" width="18" height="18"></i>
                         Rekap Kehadiran Siswa - Kelas {{ $selectedKelas }} ({{ $namaBulan[$selectedBulan] }}
@@ -273,7 +273,7 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover align-middle mb-0">
-                            <thead class="table-light">
+                            <thead class="table">
                                 <tr>
                                     <th class="fs-6 py-2" style="width: 15%">NIS</th>
                                     <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
@@ -524,7 +524,7 @@
 
             <!-- Tabel Rekap Kehadiran -->
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-5">
+                <div class="card-header bg-white py-4">
                     <h5 class="card-title mb-0 fw-semibold">
                         <i data-feather="list" class="me-2" width="18" height="18"></i>
                         Rekap Kehadiran Siswa - Kelas {{ $selectedKelas }} ({{ $namaBulan[$selectedBulan] }}
@@ -534,7 +534,7 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover align-middle mb-0">
-                            <thead class="table-light">
+                            <thead class="table">
                                 <tr>
                                     <th class="fs-6 py-2" style="width: 15%">NIS</th>
                                     <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
@@ -770,7 +770,7 @@
 
             <!-- Tabel Rekap Kehadiran (hanya satu baris) -->
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-5">
+                <div class="card-header bg-white py-4">
                     <h5 class="card-title mb-0 fw-semibold">
                         <i data-feather="list" class="me-2" width="18" height="18"></i>
                         Rekap Kehadiran Siswa - {{ $anak->nama }} ({{ $namaBulan[$selectedBulan] }}
@@ -780,7 +780,7 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover align-middle mb-0">
-                            <thead class="table-light">
+                            <thead class="table">
                                 <tr>
                                     <th class="fs-6 py-2" style="width: 15%">NIS</th>
                                     <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
