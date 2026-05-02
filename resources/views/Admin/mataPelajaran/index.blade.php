@@ -15,19 +15,16 @@
 @endsection
 
 @section('content')
-    <div class="row">
-
-        {{-- 🔥 STATISTIK --}}
-        <div class="col-md-4">
-            <div class="card shadow-sm">
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 bg-primary bg-opacity-10">
                 <div class="card-body text-center">
-                    <i data-feather="book" class="mb-2"></i>
-                    <h6 class="text-muted">Total Mata Pelajaran</h6>
-                    <h3 class="fw-bold">{{ $totalMapel }}</h3>
+                    <i data-feather="book" class="mb-2" width="32" height="32"></i>
+                    <h6 class="mb-1 fw-bold text-white"">Total Mata Pelajaran</h6>
+                    <h3 class="mb-0 fw-bold text-white">{{ $totalMapel ?? $mapel->total() }}</h3>
                 </div>
             </div>
         </div>
-
     </div>
 
     @include('Components.alert')
@@ -35,8 +32,8 @@
     <div class="card shadow-sm">
         <div class="card-body">
 
-            {{-- 🔍 SEARCH + BUTTON --}}
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            {{-- SEARCH + BUTTON --}}
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                 <form action="{{ route('mata-pelajaran.index') }}" method="GET" class="d-flex gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Cari mata pelajaran..."
                         value="{{ request('search') }}">
@@ -49,12 +46,12 @@
                 </button>
             </div>
 
-            {{-- 📋 TABEL --}}
+            {{-- TABEL --}}
             <div class="table-responsive">
                 <table class="table table-bordered table-striped align-middle">
                     <thead class="table">
                         <tr>
-                            <th width="5%">No</th>
+                            <th width="10%">ID</th>
                             <th>Nama Mata Pelajaran</th>
                             <th width="20%" class="text-center">Aksi</th>
                         </tr>
@@ -62,27 +59,33 @@
                     <tbody>
                         @forelse ($mapel as $index => $item)
                             <tr>
-                                <td>{{ $mapel->firstItem() + $index }}</td>
+                                <td class="text-center">{{ $item->id_mata_pelajaran }}</td>
                                 <td>{{ $item->nama_mata_pelajaran }}</td>
                                 <td class="text-center">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <!-- Tombol Edit (buka modal) -->
+                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
+                                            data-id="{{ $item->id_mata_pelajaran }}"
+                                            data-nama="{{ $item->nama_mata_pelajaran }}">
+                                            <i data-feather="edit-2"></i> Edit
+                                        </button>
 
-                                    {{-- EDIT --}}
-                                    <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $item->id_mata_pelajaran }}"
-                                        data-nama="{{ $item->nama_mata_pelajaran }}">
-                                        <i data-feather="edit"></i>
-                                    </button>
-
-                                    {{-- HAPUS --}}
-                                    <button class="btn btn-sm btn-danger btn-hapus"
-                                        data-id="{{ $item->id_mata_pelajaran }}">
-                                        <i data-feather="trash"></i>
-                                    </button>
-
+                                        <!-- Form Hapus dengan confirm -->
+                                        <form action="{{ route('mata-pelajaran.destroy', $item->id_mata_pelajaran) }}"
+                                            method="POST" onsubmit="return confirm('Yakin hapus data mata pelajaran ini?')"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i data-feather="trash-2"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center">Belum ada data</td>
+                                <td colspan="4" class="text-center text-muted py-4">Belum ada data mata pelajaran.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -97,34 +100,30 @@
         </div>
     </div>
 
-    {{-- ========================= MODAL TAMBAH ========================= --}}
-    <div class="modal fade" id="modalTambah">
+    {{-- MODAL TAMBAH --}}
+    <div class="modal fade" id="modalTambah" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('mata-pelajaran.store') }}" method="POST">
                     @csrf
-
                     <div class="modal-header">
                         <h5 class="modal-title">Tambah Mata Pelajaran</h5>
-                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-
                     <div class="modal-body">
-                        <label>Nama Mata Pelajaran</label>
+                        <label class="form-label">Nama Mata Pelajaran</label>
                         <input type="text" name="nama_mata_pelajaran" class="form-control" required>
                     </div>
-
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-
                 </form>
             </div>
         </div>
     </div>
 
-    {{-- ========================= MODAL EDIT ========================= --}}
-    <div class="modal fade" id="modalEdit">
+    {{-- MODAL EDIT --}}
+    <div class="modal fade" id="modalEdit" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form method="POST" id="formEdit">
@@ -133,16 +132,17 @@
 
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Mata Pelajaran</h5>
-                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <label>Nama Mata Pelajaran</label>
-                        <input type="text" name="nama_mata_pelajaran" id="edit_nama" class="form-control">
+
+                        <label class="form-label">Nama Mata Pelajaran</label>
+                        <input type="text" name="nama_mata_pelajaran" id="edit_nama" class="form-control" required>
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </div>
 
                 </form>
@@ -150,28 +150,24 @@
         </div>
     </div>
 
-    {{-- ========================= MODAL HAPUS ========================= --}}
-    <div class="modal fade" id="modalHapus">
+    {{-- MODAL HAPUS --}}
+    <div class="modal fade" id="modalHapus" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h5 class="modal-title">Hapus Data</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-                    Yakin ingin menghapus data ini?
+                    Yakin ingin menghapus data mata pelajaran ini?
                 </div>
-
                 <div class="modal-footer">
                     <form method="POST" id="formHapus">
                         @csrf
                         @method('DELETE')
-                        <button class="btn btn-danger">Hapus</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -180,18 +176,16 @@
 @push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // EDIT
             document.querySelectorAll('.btn-edit').forEach(btn => {
                 btn.addEventListener('click', function() {
 
-                    let id = this.dataset.id;
+                    let id = this.dataset.id; // 🔥 ambil id
                     let nama = this.dataset.nama;
 
                     document.getElementById('edit_nama').value = nama;
 
-                    // 🔥 FIX ROUTE
-                    document.getElementById('formEdit').action = `/mata-pelajaran/${id}`;
+                    // 🔥 FIX ROUTE (SESUAI ROUTE KAMU)
+                    document.getElementById('formEdit').action = `/mata-pelajaran/${id}/update`;
 
                     new bootstrap.Modal(document.getElementById('modalEdit')).show();
                 });
@@ -204,12 +198,11 @@
                     let id = this.dataset.id;
 
                     // 🔥 FIX ROUTE
-                    document.getElementById('formHapus').action = `/mata-pelajaran/${id}`;
+                    document.getElementById('formHapus').action = `/mata-pelajaran/${id}/delete`;
 
                     new bootstrap.Modal(document.getElementById('modalHapus')).show();
                 });
             });
-
         });
     </script>
 @endpush

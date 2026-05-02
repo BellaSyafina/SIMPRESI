@@ -78,9 +78,15 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold">Jabatan</label>
-                        <input type="text" name="jabatan" class="form-control" placeholder="Cari jabatan..."
-                            value="{{ request('jabatan') }}">
+                        <label class="form-label fw-semibold">Mata Pelajaran</label>
+                        <select name="mapel" class="form-select">
+                            <option value="">Semua Mata Pelajaran</option>
+                            @foreach ($mapelList as $id => $nama)
+                                <option value="{{ $id }}" {{ request('mapel') == $id ? 'selected' : '' }}>
+                                    {{ $nama }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-2 d-flex gap-2">
                         <button type="submit" class="btn btn-primary flex-grow-1">
@@ -153,7 +159,17 @@
                                         @endif
                                     </td>
                                     <td>{{ $guru->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
-                                    <td>{{ $guru->jabatan ?? '-' }}</td>
+                                    <td>
+                                        @if ($guru->mataPelajaran->count())
+                                            @foreach ($guru->mataPelajaran as $mapel)
+                                                <span class="badge bg-primary mb-1">
+                                                    {{ $mapel->nama_mata_pelajaran }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td class="text-truncate" style="max-width: 200px;">{{ $guru->alamat }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
@@ -245,7 +261,7 @@
                             <input type="file" name="file_excel" class="form-control">
                         </div>
                         <small class="text-muted">
-                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), jabatan, alamat
+                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), mata_pelajaran (pisahkan dengan koma jika lebih dari 1), alamat
                         </small>
                     </div>
                     <div class="modal-footer">

@@ -71,14 +71,22 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Jabatan</label>
-                        <select name="id_mata_pelajaran[]" multiple class="form-select">
-                            @foreach ($mapel as $id => $nama)
-                                <option value="{{ $id }}" {{ in_array($id, old('id_mata_pelajaran', [])) ? 'selected' : '' }}>
+                        <label class="form-label fw-semibold">Mata Pelajaran</label>
+
+                        <select name="id_mata_pelajaran[]" multiple
+                            class="form-select @error('id_mata_pelajaran') is-invalid @enderror">
+
+                            @foreach ($mapelList as $id => $nama)
+                                <option value="{{ $id }}"
+                                    {{ in_array($id, old('id_mata_pelajaran', $guru->mataPelajaran->pluck('id_mata_pelajaran')->toArray())) ? 'selected' : '' }}>
                                     {{ $nama }}
                                 </option>
                             @endforeach
+
                         </select>
+                        <small class="text-muted">
+                            Gunakan Ctrl (Windows) / Cmd (Mac) untuk memilih lebih dari satu
+                        </small>
                         @error('id_mata_pelajaran')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
