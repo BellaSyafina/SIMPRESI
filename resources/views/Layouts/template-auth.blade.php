@@ -12,7 +12,7 @@
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="{{ asset('') }}assets/images/favicon.png" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('') }}assets/images/favicon.png" type="image/x-icon">
-    <title>Login With Image | Mofi - Premium Admin Template By Pixelstrap</title>
+    <title>Login | SIMPRESI</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
