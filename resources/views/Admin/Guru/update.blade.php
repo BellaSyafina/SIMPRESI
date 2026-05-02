@@ -27,7 +27,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('guru.update', $guru->id_guru) }}" method="POST">
+                <form action="{{ route('guru.update', $guru->id_guru) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="mb-3">
@@ -61,8 +61,10 @@
                         <select name="jenis_kelamin" class="form-select @error('jenis_kelamin') is-invalid @enderror"
                             required>
                             <option value="">Pilih</option>
-                            <option value="L" {{ old('jenis_kelamin', $guru->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="P" {{ old('jenis_kelamin', $guru->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="L"
+                                {{ old('jenis_kelamin', $guru->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="P"
+                                {{ old('jenis_kelamin', $guru->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('jenis_kelamin')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -70,9 +72,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Jabatan</label>
-                        <input type="text" name="jabatan" class="form-control @error('jabatan') is-invalid @enderror"
-                            value="{{ old('jabatan', $guru->jabatan) }}">
-                        @error('jabatan')
+                        <select name="id_mata_pelajaran[]" multiple class="form-select">
+                            @foreach ($mapel as $id => $nama)
+                                <option value="{{ $id }}" {{ in_array($id, old('id_mata_pelajaran', [])) ? 'selected' : '' }}>
+                                    {{ $nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_mata_pelajaran')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

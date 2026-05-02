@@ -25,7 +25,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('guru.store') }}" method="POST">
+                <form action="{{ route('guru.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Guru <span class="text-danger">*</span></label>
@@ -66,10 +66,14 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Jabatan</label>
-                        <input type="text" name="jabatan" class="form-control @error('jabatan') is-invalid @enderror"
-                            value="{{ old('jabatan') }}">
-                        @error('jabatan')
+                        <label class="form-label fw-semibold">Mata Pelajaran</label>
+                        <select name="id_mata_pelajaran[]" multiple class="form-select">
+                            <option value="" selected disabled>-- Pilih Mata Pelajaran --</option>
+                            @foreach ($mapel as $id => $nama)
+                                <option value="{{ $id }}">{{ $nama }}</option>
+                            @endforeach
+                        </select>
+                        @error('id_mata_pelajaran')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

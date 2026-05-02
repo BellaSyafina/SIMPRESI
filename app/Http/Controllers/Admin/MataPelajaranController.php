@@ -37,8 +37,10 @@ class MataPelajaranController extends Controller
         }
     }
 
-    public function update(Request $request, MataPelajaran $mataPelajaran)
+    public function update(Request $request, $id)
     {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
+
         try {
             $request->validate([
                 'nama_mata_pelajaran' => 'required|unique:mata_pelajaran,nama_mata_pelajaran,' . $mataPelajaran->id_mata_pelajaran . ',id_mata_pelajaran',
@@ -52,8 +54,9 @@ class MataPelajaranController extends Controller
         }
     }
 
-    public function destroy(MataPelajaran $mataPelajaran)
+    public function destroy($id)
     {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
         try {
             $mataPelajaran->delete();
 

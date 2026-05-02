@@ -177,7 +177,7 @@
     </div>
 @endsection
 
-@push('scripts')
+@push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -191,7 +191,7 @@
                     document.getElementById('edit_nama').value = nama;
 
                     // 🔥 FIX ROUTE
-                    document.getElementById('formEdit').action = `/mata-pelajaran/${id}/update`;
+                    document.getElementById('formEdit').action = `/mata-pelajaran/${id}`;
 
                     new bootstrap.Modal(document.getElementById('modalEdit')).show();
                 });
@@ -204,7 +204,7 @@
                     let id = this.dataset.id;
 
                     // 🔥 FIX ROUTE
-                    document.getElementById('formHapus').action = `/mata-pelajaran/${id}/delete`;
+                    document.getElementById('formHapus').action = `/mata-pelajaran/${id}`;
 
                     new bootstrap.Modal(document.getElementById('modalHapus')).show();
                 });
