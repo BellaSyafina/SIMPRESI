@@ -71,6 +71,14 @@ Route::middleware('auth')->group(function () {
 
     // Jadwal Pelajaran
     Route::get('/jadwal', [JadwalPelajaranController::class, 'index'])->name('jadwal.index');
+    Route::post('/jadwal', [JadwalPelajaranController::class, 'store'])->name('jadwal.store');
+    Route::get('/guru-by-mapel/{id}', function ($id) {
+        return \App\Models\Guru::whereHas('mataPelajaran', function ($q) use ($id) {
+            $q->where('mata_pelajaran.id_mata_pelajaran', $id);
+        })->pluck('nama_guru', 'id_guru');
+    });
+    Route::put('/jadwal/{id}', [JadwalPelajaranController::class, 'update'])->name('jadwal.update');
+    Route::delete('/jadwal/{id}', [JadwalPelajaranController::class, 'destroy'])->name('jadwal.destroy');
 
     // Absensi Siswa
     Route::get('/absensi', [AbsensiSiswaController::class, 'index'])->name('absensi.index');

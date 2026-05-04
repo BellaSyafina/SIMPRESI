@@ -18,57 +18,8 @@
     @php
         use Carbon\Carbon;
 
-        // DAFTAR KELAS
-        $kelasList = ['7A', '7B', '7C', '7D', '8A', '8B', '8C', '9A', '9B', '9C', '9D'];
-
         // DAFTAR HARI
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-
-        // DATA GURU DUMMY
-        $guruList = [
-            1 => 'Budi Santoso, S.Pd',
-            2 => 'Siti Aminah, S.Pd',
-            3 => 'Dedi Kurniawan, S.Si',
-            4 => 'Rina Safitri, S.Pd',
-            5 => 'Ahmad Fauzi, S.Ag',
-            6 => 'Lestari Handayani, S.Pd',
-        ];
-
-        // DATA MATA PELAJARAN DUMMY
-        $mapelList = [
-            1 => 'Matematika',
-            2 => 'Bahasa Indonesia',
-            3 => 'IPA',
-            4 => 'IPS',
-            5 => 'Agama',
-            6 => 'Bahasa Inggris',
-            7 => 'PJOK',
-        ];
-
-        // DATA JADWAL DUMMY (tanpa tanggal, nanti kita generate tanggal otomatis)
-        $jadwalDummy = [
-            // Kelas 7A
-            ['7A', 'Senin', 1, 1, '07:30', '08:30'],
-            ['7A', 'Senin', 2, 2, '08:30', '09:30'],
-            ['7A', 'Senin', 3, 3, '10:00', '11:00'],
-            ['7A', 'Selasa', 4, 4, '07:30', '08:30'],
-            ['7A', 'Selasa', 5, 5, '08:30', '09:30'],
-            ['7A', 'Rabu', 1, 1, '07:30', '08:30'],
-            ['7A', 'Kamis', 2, 2, '07:30', '08:30'],
-            // Kelas 7B
-            ['7B', 'Senin', 3, 3, '07:30', '08:30'],
-            ['7B', 'Senin', 4, 4, '08:30', '09:30'],
-            ['7B', 'Selasa', 5, 5, '07:30', '08:30'],
-            ['7B', 'Rabu', 1, 1, '07:30', '08:30'],
-            // Kelas 8A
-            ['8A', 'Senin', 1, 1, '07:30', '08:30'],
-            ['8A', 'Rabu', 2, 2, '07:30', '08:30'],
-            ['8A', 'Jumat', 3, 3, '07:30', '08:30'],
-            // Kelas 9C
-            ['9C', 'Selasa', 4, 4, '07:30', '08:30'],
-            ['9C', 'Kamis', 5, 5, '07:30', '08:30'],
-            ['9C', 'Sabtu', 1, 1, '07:30', '08:30'],
-        ];
 
         // Fungsi tanggal real time (tanpa lompat minggu depan)
         function getDateByDay($dayName)
@@ -89,40 +40,25 @@
                 ->addDays($targetDay - Carbon::MONDAY);
         }
 
-        $selectedKelas = request()->get('kelas', '7A');
+        $selectedKelas = request('kelas') ?? optional($kelasList->keys())->first();
         $selectedHari = request()->get('hari', 'Senin');
         $selectedDate = getDateByDay($selectedHari);
         $formattedDate = $selectedDate->translatedFormat('l, d F Y');
-
-        // Filter jadwal berdasarkan kelas dan hari
-        $jadwalFiltered = array_filter($jadwalDummy, function ($item) use ($selectedKelas, $selectedHari) {
-            return $item[0] == $selectedKelas && $item[1] == $selectedHari;
-        });
-
-        // Hitung ringkasan mingguan untuk kelas terpilih
-        $ringkasan = [];
-        foreach ($hariList as $hari) {
-            $count = 0;
-            foreach ($jadwalDummy as $j) {
-                if ($j[0] == $selectedKelas && $j[1] == $hari) {
-                    $count++;
-                }
-            }
-            $ringkasan[$hari] = $count;
-        }
+        $namaKelas = $kelasList[$selectedKelas] ?? '-';
     @endphp
 
     <div class="container-fluid px-0">
         <!-- Filter dan Tombol Tambah -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <form action="#" method="GET" class="row g-3 align-items-end">
+                <form action="{{ route('jadwal.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Pilih Kelas</label>
                         <select name="kelas" class="form-select" onchange="this.form.submit()">
-                            @foreach ($kelasList as $kelas)
-                                <option value="{{ $kelas }}" {{ $selectedKelas == $kelas ? 'selected' : '' }}>
-                                    {{ $kelas }}</option>
+                            @foreach ($kelasList as $id => $kelas)
+                                <option value="{{ $id }}" {{ $selectedKelas == $id ? 'selected' : '' }}>
+                                    {{ $kelas }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -136,8 +72,7 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <a href="#" class="btn btn-outline-secondary w-100"
-                            onclick="alert('Reset filter (demo)'); return false;">
+                        <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
                             <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
                         </a>
                     </div>
@@ -151,6 +86,8 @@
             </div>
         </div>
 
+        @include('Components.alert')
+
         <div class="row g-4">
             <!-- Kolom Kiri: Jadwal Hari Ini dengan Tanggal -->
             <div class="col-md-7">
@@ -158,35 +95,44 @@
                     <div class="card-header bg-white py-3">
                         <h5 class="card-title mb-0 fw-semibold">
                             <i data-feather="calendar" class="me-2" width="18" height="18"></i>
-                            Jadwal {{ $selectedHari }} - {{ $selectedKelas }}
+                            Jadwal {{ $selectedHari }} - {{ $namaKelas }}
                             <span class="text-muted fs-6 ms-2">({{ $formattedDate }})</span>
                         </h5>
                     </div>
                     <div class="card-body">
-                        @if (count($jadwalFiltered) > 0)
+                        @if ($jadwal->count() > 0)
                             <div class="list-group list-group-flush">
-                                @foreach ($jadwalFiltered as $j)
-                                    @php
-                                        $namaGuru = $guruList[$j[2]] ?? 'Guru tidak ditemukan';
-                                        $namaMapel = $mapelList[$j[3]] ?? 'Mapel tidak ditemukan';
-                                        $jamMulai = $j[4];
-                                        $jamSelesai = $j[5];
-                                    @endphp
+                                @foreach ($jadwal as $j)
                                     <div class="list-group-item px-0 py-3">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div class="flex-grow-1">
-                                                <h5 class="mb-1 fw-semibold">{{ $namaMapel }}</h5>
+                                                <h5 class="mb-1 fw-semibold">
+                                                    {{ $j->mataPelajaran->nama_mata_pelajaran }}
+                                                </h5>
                                                 <p class="mb-0 text-secondary fs-6">
-                                                    <i data-feather="user" class="me-1" width="16" height="16"></i>
-                                                    Pengajar: {{ $namaGuru }}
+                                                    <i data-feather="user"></i>
+                                                    Pengajar: {{ $j->guru->nama_guru }}
                                                 </p>
                                             </div>
                                             <div class="ms-3">
                                                 <span class="badge bg-light text-dark border px-3 py-2 fs-6">
-                                                    <i data-feather="clock" class="me-1" width="14"
-                                                        height="14"></i>
-                                                    {{ $jamMulai }} - {{ $jamSelesai }}
+                                                    {{ $j->jam_mulai }} - {{ $j->jam_selesai }}
                                                 </span>
+                                            </div>
+                                            <div class="ms-2">
+                                                <button class="btn btn-sm btn-outline-primary btn-edit"
+                                                    data-id="{{ $j->id_jadwal_pelajaran }}"
+                                                    data-kelas="{{ $j->id_kelas }}" data-hari="{{ $j->hari }}"
+                                                    data-mapel="{{ $j->id_mata_pelajaran }}"
+                                                    data-guru="{{ $j->id_guru }}" data-jam_mulai="{{ $j->jam_mulai }}"
+                                                    data-jam_selesai="{{ $j->jam_selesai }}"
+                                                    data-tanggal="{{ $j->tanggal }}">
+                                                    <i data-feather="edit-2"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger btn-hapus"
+                                                    data-id="{{ $j->id_jadwal_pelajaran }}">
+                                                    <i data-feather="trash-2"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -195,7 +141,7 @@
                         @else
                             <div class="text-center py-5 text-muted">
                                 <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
-                                Tidak ada jadwal pelajaran untuk hari {{ $selectedHari }} di kelas {{ $selectedKelas }}.
+                                Tidak ada jadwal pelajaran untuk hari {{ $selectedHari }} di kelas {{ $namaKelas }}.
                             </div>
                         @endif
                     </div>
@@ -208,7 +154,7 @@
                     <div class="card-header bg-white py-3">
                         <h5 class="card-title mb-0 fw-semibold">
                             <i data-feather="bar-chart-2" class="me-2" width="18" height="18"></i>
-                            Ringkasan Mingguan - {{ $selectedKelas }}
+                            Ringkasan Mingguan - {{ $namaKelas }}
                         </h5>
                     </div>
                     <div class="card-body">
@@ -230,7 +176,8 @@
                                                             aria-valuenow="{{ $ringkasan[$hari] }}" aria-valuemin="0"
                                                             aria-valuemax="{{ $maxPelajaran }}"></div>
                                                     </div>
-                                                    <span class="badge bg-secondary fs-6 px-3 py-2">{{ $ringkasan[$hari] }}
+                                                    <span
+                                                        class="badge bg-secondary fs-6 px-3 py-2">{{ $ringkasan[$hari] }}
                                                         pelajaran</span>
                                                 </div>
                                             </td>
@@ -249,7 +196,7 @@
             <div class="col-12">
                 <div class="alert alert-light border shadow-sm mb-0" role="alert">
                     <i data-feather="info" class="me-2" width="16" height="16"></i>
-                    Menampilkan jadwal untuk kelas <strong>{{ $selectedKelas }}</strong> pada hari
+                    Menampilkan jadwal untuk kelas <strong>{{ $namaKelas }}</strong> pada hari
                     <strong>{{ $selectedHari }}</strong> ({{ $formattedDate }}). Ringkasan mingguan dihitung berdasarkan
                     jumlah mata pelajaran per hari.
                 </div>
@@ -269,14 +216,16 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="#" method="POST">
+                <form action="{{ route('jadwal.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Kelas</label>
-                            <select class="form-select" name="kelas">
-                                @foreach ($kelasList as $kelas)
-                                    <option value="{{ $kelas }}">{{ $kelas }}</option>
+                            <select class="form-select" name="id_kelas">
+                                @foreach ($kelasList as $id => $kelas)
+                                    <option value="{{ $id }}" {{ old('id_kelas') == $id ? 'selected' : '' }}>
+                                        {{ $kelas }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -284,23 +233,31 @@
                             <label class="form-label fw-semibold">Hari</label>
                             <select class="form-select" name="hari">
                                 @foreach ($hariList as $hari)
-                                    <option value="{{ $hari }}">{{ $hari }}</option>
+                                    <option value="{{ $hari }}" {{ old('hari') == $hari ? 'selected' : '' }}>
+                                        {{ $hari }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Mata Pelajaran</label>
-                            <select class="form-select" name="mapel">
+                            <select class="form-select" name="id_mata_pelajaran" id="mapelSelect">
+                                <option value="" disabled selected>Pilih Mata Pelajaran</option>
                                 @foreach ($mapelList as $id => $mapel)
-                                    <option value="{{ $id }}">{{ $mapel }}</option>
+                                    <option value="{{ $id }}"
+                                        {{ old('id_mata_pelajaran') == $id ? 'selected' : '' }}>
+                                        {{ $mapel }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Guru Pengajar</label>
-                            <select class="form-select" name="guru">
+                            <select class="form-select" name="id_guru" id="guruSelect">
                                 @foreach ($guruList as $id => $guru)
-                                    <option value="{{ $id }}">{{ $guru }}</option>
+                                    <option value="{{ $id }}" {{ old('id_guru') == $id ? 'selected' : '' }}>
+                                        {{ $guru }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -318,17 +275,120 @@
                             <label class="form-label fw-semibold">Tanggal (sesuai hari)</label>
                             <input type="date" class="form-control" name="tanggal"
                                 value="{{ $selectedDate->format('Y-m-d') }}">
-                            <div class="form-text">Tanggal akan otomatis disesuaikan dengan hari yang dipilih.</div>
+                            <small class="text-muted">
+                                Tanggal akan otomatis disesuaikan dengan hari yang dipilih.
+                            </small>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary"
-                            onclick="alert('Demo: Jadwal akan ditambahkan (fitur belum tersedia).'); return false;">
+                        <button type="submit" class="btn btn-primary">
                             <i data-feather="save" class="me-1" width="16" height="16"></i> Simpan
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editJadwalModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" id="formEditJadwal">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Jadwal</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden" name="id_kelas" id="edit_kelas">
+
+                        <div class="mb-3">
+                            <label>Hari</label>
+                            <select name="hari" id="edit_hari" class="form-select">
+                                @foreach ($hariList as $hari)
+                                    <option value="{{ $hari }}">{{ $hari }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Mata Pelajaran</label>
+                            <select name="id_mata_pelajaran" id="edit_mapel" class="form-select">
+                                @foreach ($mapelList as $id => $mapel)
+                                    <option value="{{ $id }}">{{ $mapel }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Guru</label>
+                            <select name="id_guru" id="edit_guru" class="form-select"></select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>Jam Mulai</label>
+                                <input type="time" name="jam_mulai" id="edit_mulai" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label>Jam Selesai</label>
+                                <input type="time" name="jam_selesai" id="edit_selesai" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label>Tanggal</label>
+                            <input type="date" name="tanggal" id="edit_tanggal" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Update</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="hapusJadwalModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form method="POST" id="formHapusJadwal">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i data-feather="alert-triangle" class="me-2"></i>
+                            Konfirmasi Hapus
+                        </h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <p class="mb-0">
+                            Yakin ingin menghapus jadwal ini?
+                        </p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+
+                        <button type="submit" class="btn btn-danger">
+                            Hapus
+                        </button>
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>
@@ -338,6 +398,87 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
+
+            const mapelSelect = document.getElementById('mapelSelect');
+            const guruSelect = document.getElementById('guruSelect');
+
+            mapelSelect.addEventListener('change', function() {
+
+                let mapelId = this.value;
+
+                // 🔥 TARUH DI SINI
+                guruSelect.innerHTML = '<option disabled selected>Loading...</option>';
+
+                fetch(`/guru-by-mapel/${mapelId}`)
+                    .then(res => res.json())
+                    .then(data => {
+
+                        guruSelect.innerHTML = '<option value="" disabled selected>Pilih Guru</option>';
+
+                        if (Object.keys(data).length === 0) {
+                            guruSelect.innerHTML = '<option value="">Tidak ada guru</option>';
+                            return;
+                        }
+
+                        for (const id in data) {
+                            guruSelect.innerHTML += `<option value="${id}">${data[id]}</option>`;
+                        }
+
+                    });
+
+            });
+
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+
+                btn.addEventListener('click', function() {
+
+                    let id = this.dataset.id;
+
+                    document.getElementById('formEditJadwal').action = `/jadwal/${id}`;
+
+                    document.getElementById('edit_kelas').value = this.dataset.kelas;
+                    document.getElementById('edit_hari').value = this.dataset.hari;
+                    document.getElementById('edit_mapel').value = this.dataset.mapel;
+
+                    function formatJam(jam) {
+                        return jam ? jam.substring(0, 5) : '';
+                    }
+
+                    document.getElementById('edit_mulai').value = formatJam(this.dataset.jam_mulai);
+                    document.getElementById('edit_selesai').value = formatJam(this.dataset
+                        .jam_selesai);
+                    document.getElementById('edit_tanggal').value = this.dataset.tanggal;
+
+                    // 🔥 LOAD GURU SESUAI MAPEL
+                    fetch(`/guru-by-mapel/${this.dataset.mapel}`)
+                        .then(res => res.json())
+                        .then(data => {
+
+                            let guruSelect = document.getElementById('edit_guru');
+                            guruSelect.innerHTML = '';
+
+                            for (const gid in data) {
+                                let selected = gid == this.dataset.guru ? 'selected' : '';
+                                guruSelect.innerHTML +=
+                                    `<option value="${gid}" ${selected}>${data[gid]}</option>`;
+                            }
+                        });
+
+                    new bootstrap.Modal(document.getElementById('editJadwalModal')).show();
+                });
+
+            });
+
+            document.querySelectorAll('.btn-hapus').forEach(btn => {
+                btn.addEventListener('click', function() {
+
+                    let id = this.dataset.id;
+
+                    document.getElementById('formHapusJadwal').action = `/jadwal/${id}`;
+
+                    new bootstrap.Modal(document.getElementById('hapusJadwalModal')).show();
+                });
+            });
         });
     </script>
 @endpush

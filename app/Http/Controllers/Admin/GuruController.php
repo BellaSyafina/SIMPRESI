@@ -32,7 +32,7 @@ class GuruController extends Controller
         // Filter jabatan
         if ($request->filled('mapel')) {
             $query->whereHas('mataPelajaran', function ($q) use ($request) {
-                $q->where('id_mata_pelajaran', $request->mapel);
+                $q->where('mata_pelajaran.id_mata_pelajaran', $request->mapel);
             });
         }
 
