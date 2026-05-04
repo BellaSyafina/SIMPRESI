@@ -127,7 +127,7 @@
                                 <th style="width: 15%">Nama Guru</th>
                                 <th style="width: 20%">NUPTK/NIP</th>
                                 <th style="width: 10%">Jenis Kelamin</th>
-                                <th style="width: 15%">Jabatan</th>
+                                <th style="width: 15%">Mata Pelajaran</th>
                                 <th style="width: 20%">Alamat</th>
                                 <th style="width: 15%">Aksi</th>
                             </tr>

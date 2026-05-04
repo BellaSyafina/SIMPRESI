@@ -48,160 +48,172 @@
     @endphp
 
     <div class="container-fluid px-0">
-        <!-- Filter dan Tombol Tambah -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body">
-                <form action="{{ route('jadwal.index') }}" method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Pilih Kelas</label>
-                        <select name="kelas" class="form-select" onchange="this.form.submit()">
-                            @foreach ($kelasList as $id => $kelas)
-                                <option value="{{ $id }}" {{ $selectedKelas == $id ? 'selected' : '' }}>
-                                    {{ $kelas }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Pilih Hari</label>
-                        <select name="hari" class="form-select" onchange="this.form.submit()">
-                            @foreach ($hariList as $hari)
-                                <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>
-                                    {{ $hari }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
-                            <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
-                            data-bs-target="#tambahJadwalModal">
-                            <i data-feather="plus" class="me-1" width="16" height="16"></i> Tambah Jadwal Pelajaran
-                        </button>
-                    </div>
-                </form>
+        @if ($kelasList->isEmpty())
+            <div class="alert alert-warning text-center">
+                <strong>Data kelas belum tersedia.</strong><br>
+                Silakan tambah data kelas terlebih dahulu sebelum membuat jadwal.
             </div>
-        </div>
-
-        @include('Components.alert')
-
-        <div class="row g-4">
-            <!-- Kolom Kiri: Jadwal Hari Ini dengan Tanggal -->
-            <div class="col-md-7">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="card-title mb-0 fw-semibold">
-                            <i data-feather="calendar" class="me-2" width="18" height="18"></i>
-                            Jadwal {{ $selectedHari }} - {{ $namaKelas }}
-                            <span class="text-muted fs-6 ms-2">({{ $formattedDate }})</span>
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        @if ($jadwal->count() > 0)
-                            <div class="list-group list-group-flush">
-                                @foreach ($jadwal as $j)
-                                    <div class="list-group-item px-0 py-3">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div class="flex-grow-1">
-                                                <h5 class="mb-1 fw-semibold">
-                                                    {{ $j->mataPelajaran->nama_mata_pelajaran }}
-                                                </h5>
-                                                <p class="mb-0 text-secondary fs-6">
-                                                    <i data-feather="user"></i>
-                                                    Pengajar: {{ $j->guru->nama_guru }}
-                                                </p>
-                                            </div>
-                                            <div class="ms-3">
-                                                <span class="badge bg-light text-dark border px-3 py-2 fs-6">
-                                                    {{ $j->jam_mulai }} - {{ $j->jam_selesai }}
-                                                </span>
-                                            </div>
-                                            <div class="ms-2">
-                                                <button class="btn btn-sm btn-outline-primary btn-edit"
-                                                    data-id="{{ $j->id_jadwal_pelajaran }}"
-                                                    data-kelas="{{ $j->id_kelas }}" data-hari="{{ $j->hari }}"
-                                                    data-mapel="{{ $j->id_mata_pelajaran }}"
-                                                    data-guru="{{ $j->id_guru }}" data-jam_mulai="{{ $j->jam_mulai }}"
-                                                    data-jam_selesai="{{ $j->jam_selesai }}"
-                                                    data-tanggal="{{ $j->tanggal }}">
-                                                    <i data-feather="edit-2"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger btn-hapus"
-                                                    data-id="{{ $j->id_jadwal_pelajaran }}">
-                                                    <i data-feather="trash-2"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+        @else
+            <!-- Filter dan Tombol Tambah -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form action="{{ route('jadwal.index') }}" method="GET" class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Pilih Kelas</label>
+                            <select name="kelas" class="form-select" onchange="this.form.submit()">
+                                @foreach ($kelasList as $id => $kelas)
+                                    <option value="{{ $id }}" {{ $selectedKelas == $id ? 'selected' : '' }}>
+                                        {{ $kelas }}
+                                    </option>
                                 @endforeach
-                            </div>
-                        @else
-                            <div class="text-center py-5 text-muted">
-                                <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
-                                Tidak ada jadwal pelajaran untuk hari {{ $selectedHari }} di kelas {{ $namaKelas }}.
-                            </div>
-                        @endif
-                    </div>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Pilih Hari</label>
+                            <select name="hari" class="form-select" onchange="this.form.submit()">
+                                @foreach ($hariList as $hari)
+                                    <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>
+                                        {{ $hari }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
+                                <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                                data-bs-target="#tambahJadwalModal">
+                                <i data-feather="plus" class="me-1" width="16" height="16"></i> Tambah Jadwal
+                                Pelajaran
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <!-- Kolom Kanan: Ringkasan Mingguan -->
-            <div class="col-md-5">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="card-title mb-0 fw-semibold">
-                            <i data-feather="bar-chart-2" class="me-2" width="18" height="18"></i>
-                            Ringkasan Mingguan - {{ $namaKelas }}
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-borderless">
-                                <tbody>
-                                    @foreach ($hariList as $hari)
-                                        <tr>
-                                            <td style="width: 30%"><strong class="fs-5">{{ $hari }}</strong></td>
-                                            <td style="width: 70%">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <div class="progress flex-grow-1" style="height: 12px;">
-                                                        @php
-                                                            $maxPelajaran = max($ringkasan) ?: 1;
-                                                            $percent = ($ringkasan[$hari] / $maxPelajaran) * 100;
-                                                        @endphp
-                                                        <div class="progress-bar bg-primary" role="progressbar"
-                                                            style="width: {{ $percent }}%;"
-                                                            aria-valuenow="{{ $ringkasan[$hari] }}" aria-valuemin="0"
-                                                            aria-valuemax="{{ $maxPelajaran }}"></div>
-                                                    </div>
-                                                    <span
-                                                        class="badge bg-secondary fs-6 px-3 py-2">{{ $ringkasan[$hari] }}
-                                                        pelajaran</span>
+            @include('Components.alert')
+
+            <div class="row g-4">
+                <!-- Kolom Kiri: Jadwal Hari Ini dengan Tanggal -->
+                <div class="col-md-7">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0 fw-semibold">
+                                <i data-feather="calendar" class="me-2" width="18" height="18"></i>
+                                Jadwal {{ $selectedHari }} - {{ $namaKelas }}
+                                <span class="text-muted fs-6 ms-2">({{ $formattedDate }})</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            @if ($jadwal->count() > 0)
+                                <div class="list-group list-group-flush">
+                                    @foreach ($jadwal as $j)
+                                        <div class="list-group-item px-0 py-3">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="flex-grow-1">
+                                                    <h5 class="mb-1 fw-semibold">
+                                                        {{ $j->mataPelajaran->nama_mata_pelajaran }}
+                                                    </h5>
+                                                    <p class="mb-0 text-secondary fs-6">
+                                                        <i data-feather="user"></i>
+                                                        Pengajar: {{ $j->guru->nama_guru }}
+                                                    </p>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                                <div class="ms-3">
+                                                    <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                                                        {{ $j->jam_mulai }} - {{ $j->jam_selesai }}
+                                                    </span>
+                                                </div>
+                                                <div class="ms-2">
+                                                    <button class="btn btn-sm btn-outline-primary btn-edit"
+                                                        data-id="{{ $j->id_jadwal_pelajaran }}"
+                                                        data-kelas="{{ $j->id_kelas }}" data-hari="{{ $j->hari }}"
+                                                        data-mapel="{{ $j->id_mata_pelajaran }}"
+                                                        data-guru="{{ $j->id_guru }}"
+                                                        data-jam_mulai="{{ $j->jam_mulai }}"
+                                                        data-jam_selesai="{{ $j->jam_selesai }}"
+                                                        data-tanggal="{{ $j->tanggal }}">
+                                                        <i data-feather="edit-2"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger btn-hapus"
+                                                        data-id="{{ $j->id_jadwal_pelajaran }}">
+                                                        <i data-feather="trash-2"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
-                                </tbody>
-                            </table>
+                                </div>
+                            @else
+                                <div class="text-center py-5 text-muted">
+                                    <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
+                                    Tidak ada jadwal pelajaran untuk hari {{ $selectedHari }} di kelas
+                                    {{ $namaKelas }}.
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Ringkasan Mingguan -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0 fw-semibold">
+                                <i data-feather="bar-chart-2" class="me-2" width="18" height="18"></i>
+                                Ringkasan Mingguan - {{ $namaKelas }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        @foreach ($hariList as $hari)
+                                            <tr>
+                                                <td style="width: 30%"><strong class="fs-5">{{ $hari }}</strong>
+                                                </td>
+                                                <td style="width: 70%">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <div class="progress flex-grow-1" style="height: 12px;">
+                                                            @php
+                                                                $maxPelajaran = max($ringkasan) ?: 1;
+                                                                $percent = ($ringkasan[$hari] / $maxPelajaran) * 100;
+                                                            @endphp
+                                                            <div class="progress-bar bg-primary" role="progressbar"
+                                                                style="width: {{ $percent }}%;"
+                                                                aria-valuenow="{{ $ringkasan[$hari] }}" aria-valuemin="0"
+                                                                aria-valuemax="{{ $maxPelajaran }}"></div>
+                                                        </div>
+                                                        <span
+                                                            class="badge bg-secondary fs-6 px-3 py-2">{{ $ringkasan[$hari] }}
+                                                            pelajaran</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Informasi catatan -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="alert alert-light border shadow-sm mb-0" role="alert">
-                    <i data-feather="info" class="me-2" width="16" height="16"></i>
-                    Menampilkan jadwal untuk kelas <strong>{{ $namaKelas }}</strong> pada hari
-                    <strong>{{ $selectedHari }}</strong> ({{ $formattedDate }}). Ringkasan mingguan dihitung berdasarkan
-                    jumlah mata pelajaran per hari.
+            <!-- Informasi catatan -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-light border shadow-sm mb-0" role="alert">
+                        <i data-feather="info" class="me-2" width="16" height="16"></i>
+                        Menampilkan jadwal untuk kelas <strong>{{ $namaKelas }}</strong> pada hari
+                        <strong>{{ $selectedHari }}</strong> ({{ $formattedDate }}). Ringkasan mingguan dihitung
+                        berdasarkan
+                        jumlah mata pelajaran per hari.
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 
     <!-- Modal Tambah Jadwal (sama seperti sebelumnya) -->
@@ -222,11 +234,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Kelas</label>
                             <select class="form-select" name="id_kelas">
-                                @foreach ($kelasList as $id => $kelas)
-                                    <option value="{{ $id }}" {{ old('id_kelas') == $id ? 'selected' : '' }}>
-                                        {{ $kelas }}
-                                    </option>
-                                @endforeach
+                                @if ($kelasList->isEmpty())
+                                    <option disabled selected>Tidak ada kelas</option>
+                                @else
+                                    @foreach ($kelasList as $id => $kelas)
+                                        <option value="{{ $id }}">{{ $kelas }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="mb-3">
