@@ -136,6 +136,10 @@
                     </div>
 
                     <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">ID Mata Pelajaran</label>
+                            <input type="text" id="edit_id" class="form-control" readonly>
+                        </div>
 
                         <label class="form-label">Nama Mata Pelajaran</label>
                         <input type="text" name="nama_mata_pelajaran" id="edit_nama" class="form-control" required>
@@ -182,6 +186,7 @@
                     let id = this.dataset.id; // 🔥 ambil id
                     let nama = this.dataset.nama;
 
+                    document.getElementById('edit_id').value = id;
                     document.getElementById('edit_nama').value = nama;
 
                     // 🔥 FIX ROUTE (SESUAI ROUTE KAMU)

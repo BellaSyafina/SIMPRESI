@@ -38,47 +38,142 @@
 
                 {{-- ================= CARD STATISTIK ================= --}}
                 <div class="col-xl-7 col-md-6">
-                    <div class="row g-3">
+                    <div class="row g-4">
 
+                        {{-- Total Siswa --}}
                         <div class="col-6">
-                            <div class="card text-white shadow-sm border-0" style="background: #40a7eb;">
-                                <div class="card-body">
-                                    <h6 class="mb-1">Total Siswa</h6>
-                                    <h3 class="fw-bold mb-0">309</h3>
+                            <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
+                                style="
+                    border-radius: 24px;
+                    height: 145px;
+                    background: linear-gradient(135deg,#2b96ef,#9cccf6);
+                 ">
+
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                                    <div>
+                                        <p class="mb-1 fw-medium text-white" style="font-size:15px;">
+                                            Total Siswa
+                                        </p>
+
+                                        <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
+                                            309
+                                        </h1>
+                                    </div>
+
+                                    <div class="position-absolute"
+                                        style="
+                            right:-10px;
+                            bottom:-20px;
+                            font-size:90px;
+                            opacity:.15;
+                         ">
+                                        👨‍🎓
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        {{-- Total Guru --}}
                         <div class="col-6">
-                            <div class="card text-white shadow-sm border-0" style="background: #f19040;">
-                                <div class="card-body">
-                                    <h6 class="mb-1">Total Guru</h6>
-                                    <h3 class="fw-bold mb-0">28</h3>
+                            <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
+                                style="
+                    border-radius: 24px;
+                    height: 145px;
+                    background: linear-gradient(135deg,#f78812,#fdc389);
+                 ">
+
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                                    <div>
+                                        <p class="mb-1 fw-medium text-white" style="font-size:15px;">
+                                            Total Guru
+                                        </p>
+
+                                        <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
+                                            28
+                                        </h1>
+                                    </div>
+
+                                    <div class="position-absolute"
+                                        style="
+                            right:-10px;
+                            bottom:-20px;
+                            font-size:90px;
+                            opacity:.15;
+                         ">
+                                        👨‍🏫
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        {{-- Total Kelas --}}
                         <div class="col-6">
-                            <div class="card text-white shadow-sm border-0" style="background: #f4d942;">
-                                <div class="card-body">
-                                    <h6 class="mb-1">Total Kelas</h6>
-                                    <h3 class="fw-bold mb-0">11</h3>
+                            <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
+                                style="
+                    border-radius: 24px;
+                    height: 145px;
+                    background: linear-gradient(135deg,#f6c80e,#f6e09d);
+                 ">
+
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                                    <div>
+                                        <p class="mb-1 fw-medium text-white" style="font-size:15px;">
+                                            Total Kelas
+                                        </p>
+
+                                        <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
+                                            11
+                                        </h1>
+                                    </div>
+
+                                    <div class="position-absolute"
+                                        style="
+                            right:-10px;
+                            bottom:-20px;
+                            font-size:90px;
+                            opacity:.15;
+                         ">
+                                        🏫
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        {{-- Total Orang Tua --}}
                         <div class="col-6">
-                            <div class="card text-white shadow-sm border-0" style="background: #ed41b3;">
-                                <div class="card-body">
-                                    <h6 class="mb-1">Total Orang Tua</h6>
-                                    <h3 class="fw-bold mb-0">309</h3>
+                            <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
+                                style="
+                    border-radius: 24px;
+                    height: 145px;
+                    background: linear-gradient(135deg,#e8237f,#ffc2d5);
+                 ">
+
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                                    <div>
+                                        <p class="mb-1 fw-medium text-white" style="font-size:15px;">
+                                            Total Orang Tua
+                                        </p>
+
+                                        <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
+                                            309
+                                        </h1>
+                                    </div>
+
+                                    <div class="position-absolute"
+                                        style="
+                            right:-10px;
+                            bottom:-20px;
+                            font-size:90px;
+                            opacity:.15;
+                         ">
+                                        👨‍👩‍👧
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-
             </div>
 
             {{-- ================= CHART AREA ================= --}}
@@ -316,7 +411,8 @@
                             <div class="card w-100 bg-info shadow-sm border-0">
                                 <div
                                     class="card-body d-flex flex-column justify-content-center align-items-center text-center">
-                                    <i data-feather="file-text" class="mb-2 text-white" width="40" height="155"></i>
+                                    <i data-feather="file-text" class="mb-2 text-white" width="40"
+                                        height="155"></i>
                                     <a href="{{ route('laporan.index') }}" class="btn btn-sm btn-primary mt-2">Lihat
                                         Laporan</a>
                                 </div>
