@@ -73,8 +73,8 @@
                 <li class="profile-nav onhover-dropdown px-0 py-0">
                     <div class="d-flex profile-media align-items-center"><img class="img-30"
                             src="{{ asset('') }}assets/images/dashboard/profile.png" alt="">
-                        <div class="flex-grow-1"><span>Bella Syafina</span>
-                            <p class="mb-0 font-outfit">Administrator<i class="fa fa-angle-down"></i></p>
+                        <div class="flex-grow-1"><span>{{ Auth::user()->name }}</span>
+                            <p class="mb-0 font-outfit">{{ Auth::user()->role }}<i class="fa fa-angle-down"></i></p>
                         </div>
                     </div>
                     <ul class="profile-dropdown onhover-show-div">

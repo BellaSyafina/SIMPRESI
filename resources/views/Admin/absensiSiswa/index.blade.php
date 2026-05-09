@@ -14,44 +14,11 @@
 @endsection
 
 @section('content')
-    @php
-        // Data dummy
-        $today = date('Y-m-d');
-        $kelasList = ['7A', '7B', '7C', '7D', '8A', '8B', '8C', '9A', '9B', '9C', '9D'];
-        $mapelList = ['Matematika', 'Bahasa Indonesia', 'IPA', 'IPS', 'Agama', 'Bahasa Inggris', 'PJOK'];
-
-        $selectedKelas = request()->get('kelas', '7A');
-        $selectedMapel = request()->get('mapel', 'Matematika');
-        $selectedTanggal = request()->get('tanggal', $today);
-
-        // Daftar siswa
-        $siswa = [
-            ['no' => 1, 'nis' => '2024070001', 'nama' => 'Ahmad Zaki'],
-            ['no' => 2, 'nis' => '2024070002', 'nama' => 'Siti Aisyah'],
-            ['no' => 3, 'nis' => '2024070003', 'nama' => 'Budi Santoso'],
-            ['no' => 4, 'nis' => '2024070004', 'nama' => 'Dewi Lestari'],
-            ['no' => 5, 'nis' => '2024070005', 'nama' => 'Rizki Ramadhan'],
-            ['no' => 6, 'nis' => '2024070006', 'nama' => 'Rini Hanayani'],
-            ['no' => 7, 'nis' => '2024070007', 'nama' => 'Gilang Ramadhan'],
-            ['no' => 8, 'nis' => '2024070008', 'nama' => 'Hana Safitri'],
-            ['no' => 9, 'nis' => '2024070009', 'nama' => 'Indra Wijaya'],
-            ['no' => 10, 'nis' => '2024070010', 'nama' => 'Jihan Ayu'],
-        ];
-
-        // Statistik awal (semua hadir)
-        $totalSiswa = count($siswa);
-        $totalHadir = $totalSiswa;
-        $totalIzin = 0;
-        $totalSakit = 0;
-        $totalAlpha = 0;
-        $persenHadir = 100;
-    @endphp
-
     <div class="container-fluid px-0">
         <!-- Filter -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <form action="#" method="GET" class="row g-3 align-items-end">
+                <form action="{{ route('absensi.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Tanggal</label>
                         <input type="date" name="tanggal" class="form-control" value="{{ $selectedTanggal }}"
@@ -60,28 +27,49 @@
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Kelas</label>
                         <select name="kelas" class="form-select" onchange="this.form.submit()">
-                            @foreach ($kelasList as $kelas)
-                                <option value="{{ $kelas }}" {{ $selectedKelas == $kelas ? 'selected' : '' }}>
-                                    {{ $kelas }}</option>
+                            @foreach ($kelasList as $id => $kelas)
+                                <option value="{{ $id }}" {{ $selectedKelas == $id ? 'selected' : '' }}>
+                                    {{ $kelas }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Mata Pelajaran</label>
                         <select name="mapel" class="form-select" onchange="this.form.submit()">
-                            @foreach ($mapelList as $mapel)
-                                <option value="{{ $mapel }}" {{ $selectedMapel == $mapel ? 'selected' : '' }}>
-                                    {{ $mapel }}</option>
+                            @foreach ($mapelList as $id => $mapel)
+                                <option value="{{ $id }}" {{ $selectedMapel == $id ? 'selected' : '' }}>
+                                    {{ $mapel }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <a href="#" class="btn btn-outline-secondary w-100"
-                            onclick="alert('Reset filter (demo)'); return false;">
+                        <a href="{{ route('absensi.index') }}" class="btn btn-outline-secondary w-100">
                             <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
                         </a>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div class="alert alert-primary border-0 shadow-sm">
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+                <div>
+                    <strong>Hari:</strong> {{ now()->translatedFormat('l') }}
+                </div>
+
+                <div>
+                    <strong>Jam:</strong> {{ $jadwalAktif->jam_mulai ?? '-' }} - {{ $jadwalAktif->jam_selesai ?? '-' }}
+                </div>
+
+                <div>
+                    <strong>Kelas:</strong> {{ $kelasList[$selectedKelas] ?? '-' }}
+                </div>
+
+                <div>
+                    <strong>Mata Pelajaran:</strong> {{ $mapelList[$selectedMapel] ?? '-' }}
+                </div>
             </div>
         </div>
 
@@ -129,7 +117,7 @@
                 <div class="card h-100 shadow-sm border-0 bg-danger text-white">
                     <div class="card-body text-center">
                         <i data-feather="x-circle" class="mb-2" width="32" height="32" style="color: white;"></i>
-                        <h6 class="mb-1 fw-bold text-white">Alpha</h6>
+                        <h6 class="mb-1 fw-bold text-white">Alpa</h6>
                         <h3 class="mb-0 fw-bold text-white" id="totalAlpha">{{ $totalAlpha }}</h3>
                     </div>
                 </div>
@@ -137,13 +125,13 @@
         </div>
 
         <!-- Persentase Kehadiran (Card FULL WIDTH, tanpa sisa ruang) -->
-        <div class="row mb-4">
+        <div class="row">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-body text-center py-4">
                         <h5 class="card-title fw-semibold mb-3">Persentase Kehadiran</h5>
-                        <p class="text-muted mb-2" id="persenKelasMapel">Kelas {{ $selectedKelas }} -
-                            {{ $selectedMapel }}</p>
+                        <p class="text-muted mb-2" id="persenKelasMapel">Kelas {{ $kelasList[$selectedKelas] ?? '-' }} -
+                            {{ $mapelList[$selectedMapel] ?? '-' }}</p>
                         <h2 class="fw-bold text-primary display-4" id="persenValue">{{ $persenHadir }}%</h2>
                         <div class="progress mt-3 mx-auto" style="height: 10px; max-width: 80%;">
                             <div class="progress-bar bg-primary" id="persenProgress" role="progressbar"
@@ -155,65 +143,81 @@
             </div>
         </div>
 
+        @include('Components.alert')
+
         <!-- Tabel Daftar Siswa -->
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card shadow-sm border-0">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 fw-semibold">
                     <i data-feather="list" class="me-2" width="18" height="18"></i>
-                    Daftar Siswa Kelas {{ $selectedKelas }}
+                    Daftar Siswa Kelas {{ $kelasList[$selectedKelas] ?? '-' }} - {{ $mapelList[$selectedMapel] ?? '-' }}
                 </h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <form action="#" method="POST" id="formAbsensi">
+                    <form action="{{ route('absensi.store') }}" method="POST" id="formAbsensi">
                         @csrf
+                        <input type="hidden" name="tanggal" value="{{ $selectedTanggal }}">
+                        <input type="hidden" name="id_jadwal_pelajaran"
+                            value="{{ $jadwalAktif->id_jadwal_pelajaran }}">
                         <table class="table table-hover align-middle mb-0" id="siswaTable">
-                            <thead class="table-light">
+                            <thead class="table">
                                 <tr>
                                     <th style="width: 5%">No</th>
                                     <th style="width: 20%">Nama Siswa</th>
                                     <th style="width: 15%">NIS</th>
+                                    <th style="width: 10%">L/P</th>
                                     <th style="width: 30%">Status</th>
                                     <th style="width: 30%">Keterangan (Opsional)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($siswa as $s)
+                                @forelse ($siswa as $s)
                                     <tr>
-                                        <td class="fs-6">{{ $s['no'] }}</td>
-                                        <td class="fs-6">{{ $s['nama'] }}</td>
-                                        <td class="fs-6">{{ $s['nis'] }}</td>
+                                        <td class="fs-6">{{ $loop->iteration }}</td>
+                                        <td class="fs-6">{{ $s->nama_siswa }}</td>
+                                        <td class="fs-6">{{ $s->nis }}</td>
+                                        <td class="fs-6">{{ $s->jenis_kelamin }}</td>
+                                        @php
+                                            $status = $absensi[$s->id_siswa]->status ?? 'hadir';
+                                        @endphp
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <label class="btn btn-outline-success">
-                                                    <input type="radio" name="status[{{ $s['nis'] }}]"
+                                                    <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="hadir" class="status-radio"
-                                                        data-nis="{{ $s['nis'] }}" checked> Hadir
+                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'hadir' ? 'checked' : '' }}> Hadir
                                                 </label>
                                                 <label class="btn btn-outline-warning">
-                                                    <input type="radio" name="status[{{ $s['nis'] }}]"
+                                                    <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="izin" class="status-radio"
-                                                        data-nis="{{ $s['nis'] }}"> Izin
+                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'izin' ? 'checked' : '' }}> Izin
                                                 </label>
                                                 <label class="btn btn-outline-info">
-                                                    <input type="radio" name="status[{{ $s['nis'] }}]"
+                                                    <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="sakit" class="status-radio"
-                                                        data-nis="{{ $s['nis'] }}"> Sakit
+                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'sakit' ? 'checked' : '' }}> Sakit
                                                 </label>
                                                 <label class="btn btn-outline-danger">
-                                                    <input type="radio" name="status[{{ $s['nis'] }}]"
-                                                        value="alpha" class="status-radio"
-                                                        data-nis="{{ $s['nis'] }}"> Alpha
+                                                    <input type="radio" name="status[{{ $s->id_siswa }}]"
+                                                        value="alpa" class="status-radio"
+                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'alpa' ? 'checked' : '' }}> Alpa
                                                 </label>
                                             </div>
                                         </td>
                                         <td>
                                             <input type="text" class="form-control form-control-sm"
-                                                name="keterangan[{{ $s['nis'] }}]"
+                                                name="keterangan[{{ $s->id_siswa }}]"
                                                 placeholder="Tambahkan keterangan..." style="font-size: 0.875rem;">
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5 text-muted">
+                                            Tidak ada data siswa
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </form>
@@ -232,13 +236,13 @@
             <div class="card-body">
                 <p class="small text-muted">
                     Setelah Anda menyimpan data absensi, sistem akan otomatis mengirim notifikasi ke nomor WhatsApp orang
-                    tua siswa yang statusnya <strong>Izin, Sakit, atau Alpha</strong>. Orang tua siswa yang hadir
+                    tua siswa yang statusnya <strong>Izin, Sakit, atau Alpa</strong>. Orang tua siswa yang hadir
                     <strong>tidak akan menerima notifikasi</strong>.
                 </p>
-                <button type="button" class="btn btn-primary w-100 py-2"
-                    onclick="alert('Demo: Simpan absensi & kirim notifikasi (backend belum tersedia)');">
-                    <i data-feather="save" class="me-1" width="16" height="16"></i> Simpan Absensi & Kirim
-                    Notifikasi
+                <button type="submit" form="formAbsensi" class="btn btn-primary w-100 py-2">
+
+                    <i data-feather="save" class="me-1"></i>
+                    Simpan Absensi
                 </button>
             </div>
         </div>
@@ -259,7 +263,7 @@
                     if (value === 'hadir') totalHadir++;
                     else if (value === 'izin') totalIzin++;
                     else if (value === 'sakit') totalSakit++;
-                    else if (value === 'alpha') totalAlpha++;
+                    else if (value === 'alpa') totalAlpha++;
                 });
                 const totalSiswa = radios.length;
                 const persen = totalSiswa > 0 ? ((totalHadir / totalSiswa) * 100).toFixed(1) : 0;
@@ -283,6 +287,13 @@
             updateStats();
         });
     </script>
+
+    <style>
+        .btn-group input[type="radio"]:checked+label,
+        .btn-check:checked+.btn {
+            color: #fff !important;
+        }
+    </style>
 @endsection
 
 @push('scripts')

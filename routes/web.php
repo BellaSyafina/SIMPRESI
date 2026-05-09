@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
 
     // Absensi Siswa
     Route::get('/absensi', [AbsensiSiswaController::class, 'index'])->name('absensi.index');
+    Route::post('/absensi', [AbsensiSiswaController::class, 'store'])->name('absensi.store');
 
     // Laporan
     Route::get('/laporan-kehadiran', [LaporanController::class, 'index'])->name('laporan.index');

@@ -3,12 +3,154 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi;
+use App\Models\JadwalPelajaran;
+use App\Models\Siswa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AbsensiSiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('Admin.AbsensiSiswa.index');
+        $today = now()->format('Y-m-d');
+
+        $hariList = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+        ];
+
+        $hariIni = $hariList[now()->format('l')];
+
+        // 🔥 Guru login
+        $guru = Auth::user()->guru;
+
+        // 🔥 Jadwal guru hari ini
+        $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
+            ->where('id_guru', $guru->id_guru)
+            ->where('hari', $hariIni)
+            ->orderBy('jam_mulai')
+            ->get();
+
+        // 🔥 Jika belum ada jadwal
+        if ($jadwalHariIni->isEmpty()) {
+            return view('Admin.absensiSiswa.index', [
+                'kelasList' => collect(),
+                'mapelList' => collect(),
+                'selectedKelas' => null,
+                'selectedMapel' => null,
+                'selectedTanggal' => $today,
+                'siswa' => collect(),
+                'absensi' => collect(),
+                'jadwalAktif' => null,
+                'totalSiswa' => 0,
+                'totalHadir' => 0,
+                'totalIzin' => 0,
+                'totalSakit' => 0,
+                'totalAlpha' => 0,
+                'persenHadir' => 0,
+            ]);
+        }
+
+        // 🔥 Dropdown kelas & mapel
+        $kelasList = $jadwalHariIni->pluck('kelas.nama_kelas', 'id_kelas');
+
+        $mapelList = $jadwalHariIni->pluck('mataPelajaran.nama_mata_pelajaran', 'id_mata_pelajaran');
+
+        // 🔥 Jadwal default pertama
+        $jadwalPertama = $jadwalHariIni->first();
+
+        $selectedKelas = $request->kelas ?? $jadwalPertama->id_kelas;
+
+        $selectedMapel = $request->mapel ?? $jadwalPertama->id_mata_pelajaran;
+
+        $selectedTanggal = $request->tanggal ?? $today;
+
+        // 🔥 Jadwal aktif
+        $jadwalAktif = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
+            ->where('id_guru', $guru->id_guru)
+            ->where('id_kelas', $selectedKelas)
+            ->where('id_mata_pelajaran', $selectedMapel)
+            ->where('hari', $hariIni)
+            ->first();
+
+        // 🔥 Siswa
+        $siswa = Siswa::where('id_kelas', $selectedKelas)->orderBy('nama_siswa')->get();
+
+        // 🔥 Absensi existing
+        $absensi = collect();
+
+        if ($jadwalAktif) {
+            $absensi = Absensi::where('id_jadwal_pelajaran', $jadwalAktif->id_jadwal_pelajaran)->where('tanggal', $selectedTanggal)->get()->keyBy('id_siswa');
+        }
+
+        // 🔥 Statistik
+        $totalSiswa = $siswa->count();
+
+        $totalHadir = $absensi->where('status', 'hadir')->count();
+
+        $totalIzin = $absensi->where('status', 'izin')->count();
+
+        $totalSakit = $absensi->where('status', 'sakit')->count();
+
+        $totalAlpha = $absensi->where('status', 'alpa')->count();
+
+        $persenHadir = $totalSiswa > 0 ? round(($totalHadir / $totalSiswa) * 100, 1) : 0;
+
+        return view('Admin.absensiSiswa.index', compact('kelasList', 'mapelList', 'selectedKelas', 'selectedMapel', 'selectedTanggal', 'siswa', 'absensi', 'jadwalAktif', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $request->validate(
+                [
+                    'id_jadwal_pelajaran' => 'required|exists:jadwal_pelajaran,id_jadwal_pelajaran',
+                    'tanggal' => 'required|date',
+                    'status' => 'required|array',
+                    'status.*' => 'required|in:hadir,izin,sakit,alpa',
+                    'keterangan' => 'nullable|array',
+                ],
+                [
+                    'id_jadwal_pelajaran.required' => 'Jadwal pelajaran harus dipilih',
+                    'id_jadwal_pelajaran.exists' => 'Jadwal pelajaran tidak valid',
+
+                    'tanggal.required' => 'Tanggal harus diisi',
+                    'tanggal.date' => 'Format tanggal tidak valid',
+
+                    'status.required' => 'Data absensi tidak ditemukan',
+                    'status.array' => 'Format status tidak valid',
+
+                    'status.*.required' => 'Status absensi wajib diisi',
+                    'status.*.in' => 'Status absensi tidak valid',
+                ],
+            );
+
+            foreach ($request->status as $idSiswa => $status) {
+                Absensi::updateOrCreate(
+                    [
+                        'id_jadwal_pelajaran' => $request->id_jadwal_pelajaran,
+                        'tanggal' => $request->tanggal,
+                        'id_siswa' => $idSiswa,
+                    ],
+                    [
+                        'status' => $status,
+                        'keterangan' => $request->keterangan[$idSiswa] ?? null,
+                    ],
+                );
+            }
+
+            return redirect()->route('absensi.index')->with('success', 'Absensi berhasil disimpan.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menyimpan absensi: ' . $e->getMessage());
+        }
     }
 }
