@@ -223,48 +223,78 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
                     <form action="{{ route('laporan.index') }}" method="GET" class="row g-3 align-items-end">
+
                         <input type="hidden" name="kelas" value="{{ $selectedKelas }}">
+
+                        {{-- KELAS --}}
                         <div class="col-md-3">
                             <label class="form-label fw-semibold">Pilih Kelas</label>
                             <input type="text" value="{{ $kelasList[$selectedKelas] ?? '-' }}" class="form-control"
                                 disabled>
                         </div>
+
+                        {{-- MATA PELAJARAN --}}
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Bulan</label>
-                            <select name="bulan" class="form-select" onchange="this.form.submit()">
-                                @foreach ($namaBulan as $angka => $nama)
-                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
-                                        {{ $nama }}</option>
+                            <label class="form-label fw-semibold">Mata Pelajaran</label>
+
+                            <select name="mapel" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua Mapel</option>
+
+                                @foreach ($mapelList as $mapel)
+                                    <option value="{{ $mapel->id }}"
+                                        {{ request('mapel') == $mapel->id ? 'selected' : '' }}>
+                                        {{ $mapel->nama_mapel }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+
+                        {{-- BULAN --}}
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Bulan</label>
+
+                            <select name="bulan" class="form-select" onchange="this.form.submit()">
+                                @foreach ($namaBulan as $angka => $nama)
+                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
+                                        {{ $nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- TAHUN --}}
                         <div class="col-md-2">
                             <label class="form-label fw-semibold">Tahun</label>
+
                             <select name="tahun" class="form-select" onchange="this.form.submit()">
                                 @for ($t = 2024; $t <= 2026; $t++)
                                     <option value="{{ $t }}" {{ $selectedTahun == $t ? 'selected' : '' }}>
-                                        {{ $t }}</option>
+                                        {{ $t }}
+                                    </option>
                                 @endfor
                             </select>
                         </div>
-                        <div class="col-md-2">
+
+                        {{-- RESET --}}
+                        <div class="col-md-1">
                             <a href="{{ route('laporan.index') }}" class="btn btn-outline-secondary w-100">
-                                <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
+                                Reset
                             </a>
                         </div>
-                        <div class="col-md-3">
+
+                        {{-- EXPORT --}}
+                        <div class="col-md-2">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary w-100"
-                                    onclick="alert('Export Excel (demo)'); return false;">
-                                    <i data-feather="file-text" class="me-1" width="16" height="16"></i> Export
+                                <button type="button" class="btn btn-primary w-100">
                                     Excel
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary w-100"
-                                    onclick="alert('Export PDF (demo)'); return false;">
-                                    <i data-feather="printer" class="me-1" width="16" height="16"></i> PDF
+
+                                <button type="button" class="btn btn-outline-secondary w-100">
+                                    PDF
                                 </button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\Kelas;
 use App\Models\Siswa;
+use App\Models\MataPelajaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ class LaporanController extends Controller
 
         // 🔥 ROLE HANDLING
         if (Auth::user()->role == 'guru') {
-            $selectedKelas = optional(Auth::user()->guru->kelas)->id_kelas;
+            $selectedKelas = Auth::user()->guru?->kelas?->id_kelas;
         } elseif (Auth::user()->role == 'orang_tua') {
             $anak = optional(Auth::user()->orangTua->siswa);
             $selectedKelas = $anak->id_kelas ?? null;
@@ -26,8 +27,19 @@ class LaporanController extends Controller
             $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
         }
 
+        // 🔥 FILTER BULAN & TAHUN
         $selectedBulan = $request->bulan ?? date('m');
         $selectedTahun = $request->tahun ?? date('Y');
+
+        // 🔥 FILTER MAPEL KHUSUS GURU
+        $mapelList = [];
+
+        if (Auth::user()->role == 'guru' && Auth::user()->guru) {
+            $mapelList = MataPelajaran::where(
+                'id_guru',
+                Auth::user()->guru->id_guru
+            )->get();
+        }
 
         $namaBulan = [
             '01' => 'Januari',
@@ -44,23 +56,47 @@ class LaporanController extends Controller
             '12' => 'Desember',
         ];
 
-        $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
+        $jumlahHari = Carbon::create(
+            $selectedTahun,
+            $selectedBulan
+        )->daysInMonth;
 
         // 🔥 AMBIL SISWA SESUAI ROLE
         if (Auth::user()->role == 'orang_tua') {
+
             $anak = optional(Auth::user()->orangTua->siswa);
-            $siswaList = $anak ? collect([$anak]) : collect();
+
+            $siswaList = $anak
+                ? collect([$anak])
+                : collect();
+
         } else {
-            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
+
+            $siswaList = Siswa::where(
+                'id_kelas',
+                $selectedKelas
+            )->get();
         }
 
-        // 🔥 AMBIL SEMUA ABSENSI SEKALI (ANTI N+1)
-        $absensiAll = Absensi::whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->get()->groupBy('id_siswa');
+        // 🔥 AMBIL ABSENSI
+        $absensiAll = Absensi::whereIn(
+            'id_siswa',
+            $siswaList->pluck('id_siswa')
+        )
+        ->whereMonth('tanggal', $selectedBulan)
+        ->whereYear('tanggal', $selectedTahun)
+        ->get()
+        ->groupBy('id_siswa');
 
         $rekap = [];
-        $totalHadir = $totalIzin = $totalSakit = $totalAlpa = 0;
+
+        $totalHadir = 0;
+        $totalIzin = 0;
+        $totalSakit = 0;
+        $totalAlpa = 0;
 
         foreach ($siswaList as $siswa) {
+
             $absensi = $absensiAll[$siswa->id_siswa] ?? collect();
 
             $hadir = $absensi->where('status', 'hadir')->count();
@@ -68,7 +104,9 @@ class LaporanController extends Controller
             $sakit = $absensi->where('status', 'sakit')->count();
             $alpa = $absensi->where('status', 'alpa')->count();
 
-            $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
+            $persen = $jumlahHari > 0
+                ? round(($hadir / $jumlahHari) * 100, 1)
+                : 0;
 
             $rekap[] = [
                 'nis' => $siswa->nis,
@@ -88,8 +126,29 @@ class LaporanController extends Controller
 
         $totalSiswa = $siswaList->count();
 
-        $rataPersen = $totalSiswa > 0 && $jumlahHari > 0 ? round(($totalHadir / ($totalSiswa * $jumlahHari)) * 100, 1) : 0;
+        $rataPersen =
+            $totalSiswa > 0 && $jumlahHari > 0
+            ? round(
+                ($totalHadir / ($totalSiswa * $jumlahHari)) * 100,
+                1
+            )
+            : 0;
 
-        return view('Admin.Laporan.index', compact('kelasList', 'selectedKelas', 'selectedBulan', 'selectedTahun', 'namaBulan', 'jumlahHari', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen'));
+        return view('Admin.Laporan.index', compact(
+            'mapelList',
+            'kelasList',
+            'selectedKelas',
+            'selectedBulan',
+            'selectedTahun',
+            'namaBulan',
+            'jumlahHari',
+            'rekap',
+            'totalSiswa',
+            'totalHadir',
+            'totalIzin',
+            'totalSakit',
+            'totalAlpa',
+            'rataPersen'
+        ));
     }
 }
