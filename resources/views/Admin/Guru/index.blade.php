@@ -238,9 +238,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="p-3 border-top">
-                    {{ $gurus->links() }}
-                </div>
+                @include('Components.pagination', ['data' => $gurus])
             </div>
         </div>
     </div>
@@ -261,7 +259,8 @@
                             <input type="file" name="file_excel" class="form-control">
                         </div>
                         <small class="text-muted">
-                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), mata_pelajaran (pisahkan dengan koma jika lebih dari 1), alamat
+                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), mata_pelajaran (pisahkan dengan koma jika
+                            lebih dari 1), alamat
                         </small>
                     </div>
                     <div class="modal-footer">

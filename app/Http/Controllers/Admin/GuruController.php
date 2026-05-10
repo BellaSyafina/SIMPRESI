@@ -36,7 +36,7 @@ class GuruController extends Controller
             });
         }
 
-        $gurus = $query->paginate(10)->appends($request->all());
+        $gurus = $query->paginate(10)->withQueryString();
 
         $mapelList = MataPelajaran::pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
 

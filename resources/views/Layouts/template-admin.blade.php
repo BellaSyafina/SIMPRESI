@@ -20,6 +20,53 @@
     @include('Components.styles')
 
     @stack('style')
+    <style>
+        .custom-pagination nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        .custom-pagination .pagination {
+            gap: 6px;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .custom-pagination .page-item {
+            list-style: none;
+        }
+
+        .custom-pagination .page-link {
+            background: transparent !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            color: #fff !important;
+            border-radius: 8px !important;
+            min-width: 38px;
+            text-align: center;
+            transition: 0.2s ease;
+            box-shadow: none !important;
+        }
+
+        .custom-pagination .page-link:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .custom-pagination .active .page-link {
+            background: #7366ff !important;
+            border-color: #7366ff !important;
+            color: #fff !important;
+        }
+
+        .custom-pagination .disabled .page-link {
+            opacity: .5;
+        }
+
+        /* 🔥 HAPUS ICON ANEH TEMPLATE */
+        .custom-pagination svg {
+            width: 14px !important;
+            height: 14px !important;
+        }
+    </style>
 </head>
 
 <body>

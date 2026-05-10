@@ -45,9 +45,9 @@
                         {{-- Jenis Kelamin --}}
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">
-                                Jenis Kelamin <span class="text-danger">*</span>
+                                Jenis Kelamin
                             </label>
-                            <select name="jenis_kelamin" class="form-select" required>
+                            <select name="jenis_kelamin" class="form-select">
                                 <option value="">Pilih</option>
                                 <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>
                                     Laki-laki
@@ -60,9 +60,16 @@
 
                         {{-- No HP --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">No. HP</label>
-                            <input type="text" name="no_hp" class="form-control" value="{{ old('no_hp') }}"
-                                placeholder="Contoh: 081234567890">
+                            <label class="form-label fw-semibold">
+                                No. HP <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="no_hp" class="form-control @error('no_hp') is-invalid @enderror"
+                                value="{{ old('no_hp') }}" placeholder="Contoh: 081234567890" required>
+                            @error('no_hp')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         {{-- Alamat --}}

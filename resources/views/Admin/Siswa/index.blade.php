@@ -177,10 +177,7 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination dummy -->
-                <div class="p-3 border-top">
-                    {{ $siswas->links() }}
-                </div>
+                @include('Components.pagination', ['data' => $siswas])
             </div>
         </div>
     </div>

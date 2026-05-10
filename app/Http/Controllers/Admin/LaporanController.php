@@ -9,6 +9,7 @@ use App\Models\Siswa;
 use App\Models\MataPelajaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
@@ -35,10 +36,7 @@ class LaporanController extends Controller
         $mapelList = [];
 
         if (Auth::user()->role == 'guru' && Auth::user()->guru) {
-            $mapelList = MataPelajaran::where(
-                'id_guru',
-                Auth::user()->guru->id_guru
-            )->get();
+            $mapelList = MataPelajaran::where('id_guru', Auth::user()->guru->id_guru)->get();
         }
 
         $namaBulan = [
@@ -56,37 +54,19 @@ class LaporanController extends Controller
             '12' => 'Desember',
         ];
 
-        $jumlahHari = Carbon::create(
-            $selectedTahun,
-            $selectedBulan
-        )->daysInMonth;
+        $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
 
         // 🔥 AMBIL SISWA SESUAI ROLE
         if (Auth::user()->role == 'orang_tua') {
-
             $anak = optional(Auth::user()->orangTua->siswa);
 
-            $siswaList = $anak
-                ? collect([$anak])
-                : collect();
-
+            $siswaList = $anak ? collect([$anak]) : collect();
         } else {
-
-            $siswaList = Siswa::where(
-                'id_kelas',
-                $selectedKelas
-            )->get();
+            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
         // 🔥 AMBIL ABSENSI
-        $absensiAll = Absensi::whereIn(
-            'id_siswa',
-            $siswaList->pluck('id_siswa')
-        )
-        ->whereMonth('tanggal', $selectedBulan)
-        ->whereYear('tanggal', $selectedTahun)
-        ->get()
-        ->groupBy('id_siswa');
+        $absensiAll = Absensi::whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->get()->groupBy('id_siswa');
 
         $rekap = [];
 
@@ -96,7 +76,6 @@ class LaporanController extends Controller
         $totalAlpa = 0;
 
         foreach ($siswaList as $siswa) {
-
             $absensi = $absensiAll[$siswa->id_siswa] ?? collect();
 
             $hadir = $absensi->where('status', 'hadir')->count();
@@ -104,9 +83,7 @@ class LaporanController extends Controller
             $sakit = $absensi->where('status', 'sakit')->count();
             $alpa = $absensi->where('status', 'alpa')->count();
 
-            $persen = $jumlahHari > 0
-                ? round(($hadir / $jumlahHari) * 100, 1)
-                : 0;
+            $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
 
             $rekap[] = [
                 'nis' => $siswa->nis,
@@ -124,31 +101,19 @@ class LaporanController extends Controller
             $totalAlpa += $alpa;
         }
 
+        $page = request()->get('page', 1);
+
+        $perPage = 10;
+
+        $rekap = new LengthAwarePaginator(collect($rekap)->forPage($page, $perPage), count($rekap), $perPage, $page, [
+            'path' => request()->url(),
+            'query' => request()->query(),
+        ]);
+
         $totalSiswa = $siswaList->count();
 
-        $rataPersen =
-            $totalSiswa > 0 && $jumlahHari > 0
-            ? round(
-                ($totalHadir / ($totalSiswa * $jumlahHari)) * 100,
-                1
-            )
-            : 0;
+        $rataPersen = $totalSiswa > 0 && $jumlahHari > 0 ? round(($totalHadir / ($totalSiswa * $jumlahHari)) * 100, 1) : 0;
 
-        return view('Admin.Laporan.index', compact(
-            'mapelList',
-            'kelasList',
-            'selectedKelas',
-            'selectedBulan',
-            'selectedTahun',
-            'namaBulan',
-            'jumlahHari',
-            'rekap',
-            'totalSiswa',
-            'totalHadir',
-            'totalIzin',
-            'totalSakit',
-            'totalAlpa',
-            'rataPersen'
-        ));
+        return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedBulan', 'selectedTahun', 'namaBulan', 'jumlahHari', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen'));
     }
 }

@@ -62,10 +62,13 @@ class OrangTuaController extends Controller
             $request->validate([
                 'nama_orang_tua' => 'required',
                 'jenis_kelamin' => 'required|in:L,P',
+                'no_hp' => 'required|unique:orang_tua,no_hp',
             ], [
                 'nama_orang_tua.required' => 'Nama orang tua wajib diisi.',
                 'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
                 'jenis_kelamin.in' => 'Jenis kelamin harus L (Laki-laki) atau P (Perempuan).',
+                'no_hp.required' => 'No. HP wajib diisi.',
+                'no_hp.unique' => 'No. HP sudah digunakan oleh orang tua lain.',
             ]);
 
             // 🔥 BUAT USER
@@ -108,13 +111,15 @@ class OrangTuaController extends Controller
                 [
                     'nama_orang_tua' => 'required|string|max:255',
                     'jenis_kelamin' => 'required|in:L,P',
-                    'no_hp' => 'nullable|string|max:20',
+                    'no_hp' => 'required|string|max:20|unique:orang_tua,no_hp,' . $orangTua->id,
                 ],
                 [
                     'nama_orang_tua.required' => 'Nama orang tua wajib diisi.',
                     'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
                     'jenis_kelamin.in' => 'Jenis kelamin harus L (Laki-laki) atau P (Perempuan).',
+                    'no_hp.required' => 'No. HP wajib diisi.',
                     'no_hp.max' => 'No. HP maksimal 20 karakter.',
+                    'no_hp.unique' => 'No. HP sudah digunakan oleh orang tua lain.',
                 ],
             );
 

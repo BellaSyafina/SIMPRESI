@@ -15,12 +15,12 @@
 @endsection
 
 @section('content')
-    <div class="row justify-content-center mb-4">
+    <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm border-0 bg-primary bg-opacity-10">
                 <div class="card-body text-center">
                     <i data-feather="book" class="mb-2" width="32" height="32"></i>
-                    <h6 class="mb-1 fw-bold text-white"">Total Mata Pelajaran</h6>
+                    <h6 class="mb-1 fw-bold text-white">Total Mata Pelajaran</h6>
                     <h3 class="mb-0 fw-bold text-white">{{ $totalMapel ?? $mapel->total() }}</h3>
                 </div>
             </div>
@@ -92,10 +92,7 @@
                 </table>
             </div>
 
-            {{-- PAGINATION --}}
-            <div class="mt-3">
-                {{ $mapel->links() }}
-            </div>
+            @include('Components.pagination', ['data' => $mapel])
 
         </div>
     </div>

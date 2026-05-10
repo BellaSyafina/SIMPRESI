@@ -184,21 +184,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Pagination dummy -->
-                    <div class="p-3 border-top">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                                <li class="page-item active"><span class="page-link">1</span></li>
-                                <li class="page-item"><a class="page-link" href="#"
-                                        onclick="alert('Demo pagination')">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#"
-                                        onclick="alert('Demo pagination')">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#"
-                                        onclick="alert('Demo pagination')">Next</a></li>
-                            </ul>
-                        </nav>
-                    </div>
+                    @include('Components.pagination', [
+                        'data' => $rekap,
+                    ])
                 </div>
             </div>
 
@@ -413,20 +401,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="p-3 border-top">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                                <li class="page-item active"><span class="page-link">1</span></li>
-                                <li class="page-item"><a class="page-link" href="#"
-                                        onclick="alert('Demo pagination')">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#"
-                                        onclick="alert('Demo pagination')">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#"
-                                        onclick="alert('Demo pagination')">Next</a></li>
-                            </ul>
-                        </nav>
-                    </div>
+                    @include('Components.pagination', [
+                        'data' => $rekap,
+                    ])
                 </div>
             </div>
 

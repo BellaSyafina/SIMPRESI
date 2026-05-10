@@ -170,10 +170,7 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination dummy -->
-                <div class="p-3 border-top">
-                    {{ $orangTua->links() }}
-                </div>
+                @include('Components.pagination', ['data' => $orangTua])
             </div>
         </div>
     </div>
