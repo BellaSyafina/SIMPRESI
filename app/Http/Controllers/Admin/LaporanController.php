@@ -11,6 +11,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\LaporanExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
 {
@@ -115,5 +118,87 @@ class LaporanController extends Controller
         $rataPersen = $totalSiswa > 0 && $jumlahHari > 0 ? round(($totalHadir / ($totalSiswa * $jumlahHari)) * 100, 1) : 0;
 
         return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedBulan', 'selectedTahun', 'namaBulan', 'jumlahHari', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $rekap = $this->getLaporanData($request);
+
+        return Excel::download(new LaporanExport($rekap), 'laporan-kehadiran.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $rekap = $this->getLaporanData($request);
+
+        $pdf = Pdf::loadView('Admin.Laporan.pdf', [
+            'rekap' => $rekap,
+            'bulan' => $request->bulan,
+            'tahun' => $request->tahun,
+        ]);
+
+        return $pdf->download('laporan-kehadiran.pdf');
+    }
+
+    private function getLaporanData($request)
+    {
+        $kelasList = \App\Models\Kelas::pluck('nama_kelas', 'id_kelas');
+
+        // ROLE
+        if (auth()->user()->role == 'guru') {
+            $selectedKelas = auth()->user()->guru?->kelas?->id_kelas;
+        } elseif (auth()->user()->role == 'orang_tua') {
+            $anak = optional(auth()->user()->orangTua->siswa);
+
+            $selectedKelas = $anak->id_kelas ?? null;
+        } else {
+            $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
+        }
+
+        $selectedBulan = $request->bulan ?? date('m');
+
+        $selectedTahun = $request->tahun ?? date('Y');
+
+        $jumlahHari = \Carbon\Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
+
+        // SISWA
+        if (auth()->user()->role == 'orang_tua') {
+            $anak = optional(auth()->user()->orangTua->siswa);
+
+            $siswaList = $anak ? collect([$anak]) : collect();
+        } else {
+            $siswaList = \App\Models\Siswa::where('id_kelas', $selectedKelas)->get();
+        }
+
+        // ABSENSI
+        $absensiAll = \App\Models\Absensi::whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->get()->groupBy('id_siswa');
+
+        $rekap = [];
+
+        foreach ($siswaList as $siswa) {
+            $absensi = $absensiAll[$siswa->id_siswa] ?? collect();
+
+            $hadir = $absensi->where('status', 'hadir')->count();
+
+            $izin = $absensi->where('status', 'izin')->count();
+
+            $sakit = $absensi->where('status', 'sakit')->count();
+
+            $alpa = $absensi->where('status', 'alpa')->count();
+
+            $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
+
+            $rekap[] = [
+                'nis' => $siswa->nis,
+                'nama' => $siswa->nama_siswa,
+                'hadir' => $hadir,
+                'izin' => $izin,
+                'sakit' => $sakit,
+                'alpa' => $alpa,
+                'persen' => $persen,
+            ];
+        }
+
+        return $rekap;
     }
 }

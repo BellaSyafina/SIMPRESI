@@ -21,30 +21,12 @@
         // DAFTAR HARI
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-        // Fungsi tanggal real time (tanpa lompat minggu depan)
-        function getDateByDay($dayName)
-        {
-            $now = Carbon::now();
-            $dayMap = [
-                'Senin' => Carbon::MONDAY,
-                'Selasa' => Carbon::TUESDAY,
-                'Rabu' => Carbon::WEDNESDAY,
-                'Kamis' => Carbon::THURSDAY,
-                'Jumat' => Carbon::FRIDAY,
-                'Sabtu' => Carbon::SATURDAY,
-            ];
-            $targetDay = $dayMap[$dayName] ?? Carbon::MONDAY;
-            return $now
-                ->copy()
-                ->startOfWeek()
-                ->addDays($targetDay - Carbon::MONDAY);
-        }
-
         $selectedKelas = request('kelas') ?? optional($kelasList->keys())->first();
-        $selectedHari = request()->get('hari', 'Senin');
-        $selectedDate = getDateByDay($selectedHari);
-        $formattedDate = $selectedDate->translatedFormat('l, d F Y');
         $namaKelas = $kelasList[$selectedKelas] ?? '-';
+        \Carbon\Carbon::setLocale('id');
+        $selectedDate = Carbon::parse($selectedTanggal);
+        $selectedHari = $selectedDate->translatedFormat('l');
+        $formattedDate = $selectedDate->translatedFormat('l, d F Y');
     @endphp
 
     <div class="container-fluid px-0">
@@ -69,13 +51,10 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label fw-semibold">Pilih Hari</label>
-                            <select name="hari" class="form-select" onchange="this.form.submit()">
-                                @foreach ($hariList as $hari)
-                                    <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>
-                                        {{ $hari }}</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label fw-semibold">Pilih Tanggal</label>
+
+                            <input type="date" name="tanggal" class="form-control" value="{{ $selectedTanggal }}"
+                                onchange="this.form.submit()">
                         </div>
                         <div class="col-md-3">
                             <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
@@ -164,6 +143,11 @@
                             <h5 class="card-title mb-0 fw-semibold">
                                 <i data-feather="bar-chart-2" class="me-2" width="18" height="18"></i>
                                 Ringkasan Mingguan - {{ $namaKelas }}
+
+                                <span class="text-muted fs-6">
+                                    ({{ $startOfWeek->translatedFormat('d M') }} -
+                                    {{ $endOfWeek->translatedFormat('d M Y') }})
+                                </span>
                             </h5>
                         </div>
                         <div class="card-body">

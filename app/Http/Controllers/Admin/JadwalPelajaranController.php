@@ -33,29 +33,38 @@ class JadwalPelajaranController extends Controller
         }
 
         $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
-        $selectedHari = $request->hari ?? 'Senin';
 
-        $selectedDate = Carbon::now()->startOfWeek()->addDays(array_search($selectedHari, $hariList));
+        $selectedTanggal = $request->tanggal ?? now()->format('Y-m-d');
+
+        $selectedDate = Carbon::parse($selectedTanggal);
+        $selectedHari = $selectedDate->translatedFormat('l');
         $formattedDate = $selectedDate->translatedFormat('l, d F Y');
 
         // 🔥 DATA JADWAL REAL
         $jadwal = JadwalPelajaran::with(['guru', 'mataPelajaran'])
             ->where('id_kelas', $selectedKelas)
-            ->where('hari', $selectedHari)
+            ->whereDate('tanggal', $selectedTanggal)
             ->orderBy('jam_mulai')
             ->get();
 
-        // 🔥 RINGKASAN
+        $startOfWeek = Carbon::parse($selectedTanggal)->startOfWeek(Carbon::MONDAY);
+
+        $endOfWeek = Carbon::parse($selectedTanggal)->endOfWeek(Carbon::SATURDAY);
+
         $ringkasan = [];
+
         foreach ($hariList as $hari) {
-            $ringkasan[$hari] = JadwalPelajaran::where('id_kelas', $selectedKelas)->where('hari', $hari)->count();
+            $ringkasan[$hari] = JadwalPelajaran::where('id_kelas', $selectedKelas)
+                ->where('hari', $hari)
+                ->whereBetween('tanggal', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')])
+                ->count();
         }
 
         // 🔥 DATA UNTUK MODAL
         $guruList = Guru::pluck('nama_guru', 'id_guru');
         $mapelList = MataPelajaran::pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
 
-        return view('Admin.jadwalPelajaran.index', compact('kelasList', 'hariList', 'jadwal', 'ringkasan', 'selectedKelas', 'selectedHari', 'formattedDate', 'selectedDate', 'guruList', 'mapelList'));
+        return view('Admin.jadwalPelajaran.index', compact('kelasList', 'hariList', 'jadwal', 'ringkasan', 'selectedKelas', 'selectedHari', 'selectedTanggal', 'formattedDate', 'selectedDate', 'guruList', 'mapelList', 'startOfWeek', 'endOfWeek'));
     }
 
     public function store(Request $request)

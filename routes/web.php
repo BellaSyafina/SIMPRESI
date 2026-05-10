@@ -86,4 +86,6 @@ Route::middleware('auth')->group(function () {
 
     // Laporan
     Route::get('/laporan-kehadiran', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan-kehadiran/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
+    Route::get('/laporan-kehadiran/export/pdf', [LaporanController::class, 'exportPDF'])->name('laporan.export.pdf');
 });

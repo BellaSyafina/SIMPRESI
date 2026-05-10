@@ -57,12 +57,12 @@
                         <div class="col-md-3">
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-primary w-100"
-                                    onclick="alert('Export Excel (demo)'); return false;">
+                                    onclick="window.location.href='{{ route('laporan.export.excel', request()->query()) }}'">
                                     <i data-feather="file-text" class="me-1" width="16" height="16"></i> Export
                                     Excel
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary w-100"
-                                    onclick="alert('Export PDF (demo)'); return false;">
+                                    onclick="window.location.href='{{ route('laporan.export.pdf', request()->query()) }}'">
                                     <i data-feather="printer" class="me-1" width="16" height="16"></i> PDF
                                 </button>
                             </div>
@@ -229,9 +229,8 @@
                                 <option value="">Semua Mapel</option>
 
                                 @foreach ($mapelList as $mapel)
-                                    <option value="{{ $mapel->id }}"
-                                        {{ request('mapel') == $mapel->id ? 'selected' : '' }}>
-                                        {{ $mapel->nama_mapel }}
+                                    <option value="{{ $mapel->id_mata_pelajaran }}">
+                                        {{ $mapel->nama_mata_pelajaran }}
                                     </option>
                                 @endforeach
                             </select>
@@ -273,11 +272,13 @@
                         {{-- EXPORT --}}
                         <div class="col-md-2">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary w-100">
+                                <button type="button" class="btn btn-primary w-100"
+                                    onclick="window.location.href='{{ route('laporan.export.excel', request()->query()) }}'">
                                     Excel
                                 </button>
 
-                                <button type="button" class="btn btn-outline-secondary w-100">
+                                <button type="button" class="btn btn-outline-secondary w-100"
+                                    onclick="window.location.href='{{ route('laporan.export.pdf', request()->query()) }}'">
                                     PDF
                                 </button>
                             </div>
@@ -459,12 +460,12 @@
                         <div class="col-md-3">
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-primary w-100"
-                                    onclick="alert('Export Excel (demo)'); return false;">
+                                    onclick="window.location.href='{{ route('laporan.export.excel', request()->query()) }}'">
                                     <i data-feather="file-text" class="me-1" width="16" height="16"></i> Export
                                     Excel
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary w-100"
-                                    onclick="alert('Export PDF (demo)'); return false;">
+                                    onclick="window.location.href='{{ route('laporan.export.pdf', request()->query()) }}'">
                                     <i data-feather="printer" class="me-1" width="16" height="16"></i> PDF
                                 </button>
                             </div>
