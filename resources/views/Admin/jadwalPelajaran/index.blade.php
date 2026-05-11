@@ -108,7 +108,7 @@
                                                 <div class="ms-2">
                                                     <button class="btn btn-sm btn-outline-primary btn-edit"
                                                         data-id="{{ $j->id_jadwal_pelajaran }}"
-                                                        data-kelas="{{ $j->id_kelas }}" data-hari="{{ $j->hari }}"
+                                                        data-kelas="{{ $j->id_kelas }}"
                                                         data-mapel="{{ $j->id_mata_pelajaran }}"
                                                         data-guru="{{ $j->id_guru }}"
                                                         data-jam_mulai="{{ $j->jam_mulai }}"
@@ -228,16 +228,6 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Hari</label>
-                            <select class="form-select" name="hari">
-                                @foreach ($hariList as $hari)
-                                    <option value="{{ $hari }}" {{ old('hari') == $hari ? 'selected' : '' }}>
-                                        {{ $hari }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label fw-semibold">Mata Pelajaran</label>
                             <select class="form-select" name="id_mata_pelajaran" id="mapelSelect">
                                 <option value="" disabled selected>Pilih Mata Pelajaran</option>
@@ -304,15 +294,6 @@
                     <div class="modal-body">
 
                         <input type="hidden" name="id_kelas" id="edit_kelas">
-
-                        <div class="mb-3">
-                            <label>Hari</label>
-                            <select name="hari" id="edit_hari" class="form-select">
-                                @foreach ($hariList as $hari)
-                                    <option value="{{ $hari }}">{{ $hari }}</option>
-                                @endforeach
-                            </select>
-                        </div>
 
                         <div class="mb-3">
                             <label>Mata Pelajaran</label>
@@ -435,7 +416,6 @@
                     document.getElementById('formEditJadwal').action = `/jadwal/${id}`;
 
                     document.getElementById('edit_kelas').value = this.dataset.kelas;
-                    document.getElementById('edit_hari').value = this.dataset.hari;
                     document.getElementById('edit_mapel').value = this.dataset.mapel;
 
                     function formatJam(jam) {

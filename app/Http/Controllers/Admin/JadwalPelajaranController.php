@@ -73,7 +73,6 @@ class JadwalPelajaranController extends Controller
             $request->validate(
                 [
                     'id_kelas' => 'required|exists:kelas,id_kelas',
-                    'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu',
                     'jam_mulai' => 'required|date_format:H:i',
                     'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
                     'id_guru' => 'required|exists:guru,id_guru',
@@ -83,8 +82,6 @@ class JadwalPelajaranController extends Controller
                 [
                     'id_kelas.required' => 'Kelas harus dipilih.',
                     'id_kelas.exists' => 'Kelas yang dipilih tidak valid.',
-                    'hari.required' => 'Hari harus dipilih.',
-                    'hari.in' => 'Hari yang dipilih tidak valid.',
                     'jam_mulai.required' => 'Jam mulai harus diisi.',
                     'jam_mulai.date_format' => 'Format jam mulai harus HH:mm.',
                     'jam_selesai.required' => 'Jam selesai harus diisi.',
@@ -99,7 +96,15 @@ class JadwalPelajaranController extends Controller
                 ],
             );
 
-            JadwalPelajaran::create($request->all());
+            JadwalPelajaran::create([
+                'id_kelas' => $request->id_kelas,
+                'hari' => Carbon::parse($request->tanggal)->translatedFormat('l'),
+                'jam_mulai' => $request->jam_mulai,
+                'jam_selesai' => $request->jam_selesai,
+                'id_guru' => $request->id_guru,
+                'id_mata_pelajaran' => $request->id_mata_pelajaran,
+                'tanggal' => $request->tanggal,
+            ]);
 
             return redirect()->route('jadwal.index')->with('success', 'Jadwal pelajaran berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -117,7 +122,6 @@ class JadwalPelajaranController extends Controller
             $request->validate(
                 [
                     'id_kelas' => 'required|exists:kelas,id_kelas',
-                    'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu',
                     'jam_mulai' => 'required|date_format:H:i',
                     'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
                     'id_guru' => 'required|exists:guru,id_guru',
@@ -127,8 +131,6 @@ class JadwalPelajaranController extends Controller
                 [
                     'id_kelas.required' => 'Kelas harus dipilih.',
                     'id_kelas.exists' => 'Kelas yang dipilih tidak valid.',
-                    'hari.required' => 'Hari harus dipilih.',
-                    'hari.in' => 'Hari yang dipilih tidak valid.',
                     'jam_mulai.required' => 'Jam mulai harus diisi.',
                     'jam_mulai.date_format' => 'Format jam mulai harus HH:mm.',
                     'jam_selesai.required' => 'Jam selesai harus diisi.',
@@ -143,7 +145,15 @@ class JadwalPelajaranController extends Controller
                 ],
             );
 
-            $jadwal->update($request->all());
+            $jadwal->update([
+                'id_kelas' => $request->id_kelas,
+                'hari' => Carbon::parse($request->tanggal)->translatedFormat('l'),
+                'jam_mulai' => $request->jam_mulai,
+                'jam_selesai' => $request->jam_selesai,
+                'id_guru' => $request->id_guru,
+                'id_mata_pelajaran' => $request->id_mata_pelajaran,
+                'tanggal' => $request->tanggal,
+            ]);
 
             return redirect()->route('jadwal.index')->with('success', 'Jadwal pelajaran berhasil diperbarui.');
         } catch (\Exception $e) {
