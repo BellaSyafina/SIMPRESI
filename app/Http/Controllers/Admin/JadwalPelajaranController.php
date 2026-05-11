@@ -54,10 +54,32 @@ class JadwalPelajaranController extends Controller
         $ringkasan = [];
 
         foreach ($hariList as $hari) {
-            $ringkasan[$hari] = JadwalPelajaran::where('id_kelas', $selectedKelas)
-                ->where('hari', $hari)
-                ->whereBetween('tanggal', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')])
-                ->count();
+            $ringkasan[$hari] = 0;
+        }
+
+        // 🔥 Ambil semua jadwal minggu ini
+        $dataMingguan = JadwalPelajaran::where('id_kelas', $selectedKelas)
+            ->whereBetween('tanggal', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')])
+            ->get();
+
+        $mapHari = [
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+            'Sunday' => 'Minggu',
+        ];
+
+        foreach ($dataMingguan as $item) {
+            $hariEnglish = Carbon::parse($item->tanggal)->format('l');
+
+            $namaHari = $mapHari[$hariEnglish] ?? null;
+
+            if ($namaHari && isset($ringkasan[$namaHari])) {
+                $ringkasan[$namaHari]++;
+            }
         }
 
         // 🔥 DATA UNTUK MODAL
@@ -95,6 +117,22 @@ class JadwalPelajaranController extends Controller
                     'tanggal.date' => 'Format tanggal tidak valid.',
                 ],
             );
+
+            $jadwalBentrok = JadwalPelajaran::where('id_kelas', $request->id_kelas)
+                ->whereDate('tanggal', $request->tanggal)
+                ->where(function ($query) use ($request) {
+                    $query
+                        ->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+                        ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai])
+                        ->orWhere(function ($q) use ($request) {
+                            $q->where('jam_mulai', '<', $request->jam_selesai)->where('jam_selesai', '>', $request->jam_mulai);
+                        });
+                })
+                ->exists();
+
+            if ($jadwalBentrok) {
+                return back()->withInput()->with('error', 'Jadwal bentrok dengan jadwal lain pada kelas dan tanggal yang sama.');
+            }
 
             JadwalPelajaran::create([
                 'id_kelas' => $request->id_kelas,
@@ -144,6 +182,23 @@ class JadwalPelajaranController extends Controller
                     'tanggal.date' => 'Format tanggal tidak valid.',
                 ],
             );
+
+            $jadwalBentrok = JadwalPelajaran::where('id_kelas', $request->id_kelas)
+                ->whereDate('tanggal', $request->tanggal)
+                ->where('id_jadwal_pelajaran', '!=', $id)
+                ->where(function ($query) use ($request) {
+                    $query
+                        ->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+                        ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai])
+                        ->orWhere(function ($q) use ($request) {
+                            $q->where('jam_mulai', '<', $request->jam_selesai)->where('jam_selesai', '>', $request->jam_mulai);
+                        });
+                })
+                ->exists();
+
+            if ($jadwalBentrok) {
+                return back()->withInput()->with('error', 'Jadwal bentrok dengan jadwal lain pada kelas dan tanggal yang sama.');
+            }
 
             $jadwal->update([
                 'id_kelas' => $request->id_kelas,

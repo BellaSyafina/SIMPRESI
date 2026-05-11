@@ -21,7 +21,8 @@
                 <form action="{{ route('absensi.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control" value="{{ $selectedTanggal }}"
+                        <input type="date" name="tanggal" class="form-control"
+                            value="{{ \Carbon\Carbon::parse($selectedTanggal)->format('Y-m-d') }}"
                             onchange="this.form.submit()">
                     </div>
                     <div class="col-md-3">
@@ -35,13 +36,28 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold">Mata Pelajaran</label>
-                        <select name="mapel" class="form-select" onchange="this.form.submit()">
-                            @foreach ($mapelList as $id => $mapel)
-                                <option value="{{ $id }}" {{ $selectedMapel == $id ? 'selected' : '' }}>
-                                    {{ $mapel }}
+                        <label class="form-label fw-semibold">
+                            Jadwal Pelajaran
+                        </label>
+
+                        <select name="jadwal" class="form-select" onchange="this.form.submit()">
+
+                            @forelse ($jadwalList as $jadwal)
+                                <option value="{{ $jadwal->id_jadwal_pelajaran }}"
+                                    {{ $selectedJadwal == $jadwal->id_jadwal_pelajaran ? 'selected' : '' }}>
+
+                                    {{ substr($jadwal->jam_mulai, 0, 5) }}
+                                    -
+                                    {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
+
                                 </option>
-                            @endforeach
+
+                            @empty
+
+                                <option disabled>
+                                    Tidak ada jadwal
+                                </option>
+                            @endforelse
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -56,7 +72,8 @@
         <div class="alert alert-primary border-0 shadow-sm">
             <div class="d-flex flex-wrap gap-4 align-items-center">
                 <div>
-                    <strong>Hari:</strong> {{ now()->translatedFormat('l') }}
+                    <strong>Hari:</strong>
+                    {{ \Carbon\Carbon::parse($selectedTanggal)->translatedFormat('l') }}
                 </div>
 
                 <div>
@@ -68,7 +85,7 @@
                 </div>
 
                 <div>
-                    <strong>Mata Pelajaran:</strong> {{ $mapelList[$selectedMapel] ?? '-' }}
+                    <strong>Mata Pelajaran:</strong> {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}
                 </div>
             </div>
         </div>
@@ -131,7 +148,7 @@
                     <div class="card-body text-center py-4">
                         <h5 class="card-title fw-semibold mb-3">Persentase Kehadiran</h5>
                         <p class="text-muted mb-2" id="persenKelasMapel">Kelas {{ $kelasList[$selectedKelas] ?? '-' }} -
-                            {{ $mapelList[$selectedMapel] ?? '-' }}</p>
+                            {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}</p>
                         <h2 class="fw-bold text-primary display-4" id="persenValue">{{ $persenHadir }}%</h2>
                         <div class="progress mt-3 mx-auto" style="height: 10px; max-width: 80%;">
                             <div class="progress-bar bg-primary" id="persenProgress" role="progressbar"
@@ -144,13 +161,20 @@
         </div>
 
         @include('Components.alert')
+        @if (!$jadwalAktif)
+            <div class="alert alert-warning shadow-sm border-0">
+                <i data-feather="alert-triangle" class="me-2"></i>
+                Tidak ada jadwal pelajaran pada tanggal ini.
+            </div>
+        @endif
 
         <!-- Tabel Daftar Siswa -->
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 fw-semibold">
                     <i data-feather="list" class="me-2" width="18" height="18"></i>
-                    Daftar Siswa Kelas {{ $kelasList[$selectedKelas] ?? '-' }} - {{ $mapelList[$selectedMapel] ?? '-' }}
+                    Daftar Siswa Kelas {{ $kelasList[$selectedKelas] ?? '-' }} -
+                    {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}
                 </h5>
             </div>
             <div class="card-body p-0">
@@ -159,7 +183,7 @@
                         @csrf
                         <input type="hidden" name="tanggal" value="{{ $selectedTanggal }}">
                         <input type="hidden" name="id_jadwal_pelajaran"
-                            value="{{ $jadwalAktif->id_jadwal_pelajaran }}">
+                            value="{{ $jadwalAktif?->id_jadwal_pelajaran }}">
                         <table class="table table-hover align-middle mb-0" id="siswaTable">
                             <thead class="table">
                                 <tr>
@@ -186,22 +210,26 @@
                                                 <label class="btn btn-outline-success">
                                                     <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="hadir" class="status-radio"
-                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'hadir' ? 'checked' : '' }}> Hadir
+                                                        data-nis="{{ $s->id_siswa }}"
+                                                        {{ $status == 'hadir' ? 'checked' : '' }}> Hadir
                                                 </label>
                                                 <label class="btn btn-outline-warning">
                                                     <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="izin" class="status-radio"
-                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'izin' ? 'checked' : '' }}> Izin
+                                                        data-nis="{{ $s->id_siswa }}"
+                                                        {{ $status == 'izin' ? 'checked' : '' }}> Izin
                                                 </label>
                                                 <label class="btn btn-outline-info">
                                                     <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="sakit" class="status-radio"
-                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'sakit' ? 'checked' : '' }}> Sakit
+                                                        data-nis="{{ $s->id_siswa }}"
+                                                        {{ $status == 'sakit' ? 'checked' : '' }}> Sakit
                                                 </label>
                                                 <label class="btn btn-outline-danger">
                                                     <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="alpa" class="status-radio"
-                                                        data-nis="{{ $s->id_siswa }}" {{ $status == 'alpa' ? 'checked' : '' }}> Alpa
+                                                        data-nis="{{ $s->id_siswa }}"
+                                                        {{ $status == 'alpa' ? 'checked' : '' }}> Alpa
                                                 </label>
                                             </div>
                                         </td>
@@ -239,7 +267,8 @@
                     tua siswa yang statusnya <strong>Izin, Sakit, atau Alpa</strong>. Orang tua siswa yang hadir
                     <strong>tidak akan menerima notifikasi</strong>.
                 </p>
-                <button type="submit" form="formAbsensi" class="btn btn-primary w-100 py-2">
+                <button type="submit" form="formAbsensi" class="btn btn-primary w-100 py-2"
+                    {{ !$jadwalAktif ? 'disabled' : '' }}>
 
                     <i data-feather="save" class="me-1"></i>
                     Simpan Absensi

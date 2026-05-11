@@ -16,25 +16,15 @@ class AbsensiSiswaController extends Controller
     {
         $today = now()->format('Y-m-d');
 
-        $hariList = [
-            'Sunday' => 'Minggu',
-            'Monday' => 'Senin',
-            'Tuesday' => 'Selasa',
-            'Wednesday' => 'Rabu',
-            'Thursday' => 'Kamis',
-            'Friday' => 'Jumat',
-            'Saturday' => 'Sabtu',
-        ];
-
-        $hariIni = $hariList[now()->format('l')];
-
         // 🔥 Guru login
         $guru = Auth::user()->guru;
+
+        $selectedTanggal = $request->tanggal ?? $today;
 
         // 🔥 Jadwal guru hari ini
         $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
             ->where('id_guru', $guru->id_guru)
-            ->where('hari', $hariIni)
+            ->whereDate('tanggal', $selectedTanggal)
             ->orderBy('jam_mulai')
             ->get();
 
@@ -42,10 +32,10 @@ class AbsensiSiswaController extends Controller
         if ($jadwalHariIni->isEmpty()) {
             return view('Admin.absensiSiswa.index', [
                 'kelasList' => collect(),
-                'mapelList' => collect(),
+                'jadwalList' => collect(),
                 'selectedKelas' => null,
-                'selectedMapel' => null,
-                'selectedTanggal' => $today,
+                'selectedJadwal' => null,
+                'selectedTanggal' => $selectedTanggal,
                 'siswa' => collect(),
                 'absensi' => collect(),
                 'jadwalAktif' => null,
@@ -61,23 +51,23 @@ class AbsensiSiswaController extends Controller
         // 🔥 Dropdown kelas & mapel
         $kelasList = $jadwalHariIni->pluck('kelas.nama_kelas', 'id_kelas');
 
-        $mapelList = $jadwalHariIni->pluck('mataPelajaran.nama_mata_pelajaran', 'id_mata_pelajaran');
-
         // 🔥 Jadwal default pertama
         $jadwalPertama = $jadwalHariIni->first();
 
         $selectedKelas = $request->kelas ?? $jadwalPertama->id_kelas;
 
-        $selectedMapel = $request->mapel ?? $jadwalPertama->id_mata_pelajaran;
+        $jadwalList = $jadwalHariIni->where('id_kelas', $selectedKelas)->values();
 
-        $selectedTanggal = $request->tanggal ?? $today;
+        $selectedJadwal = $request->jadwal;
+
+        if (!$selectedJadwal || !$jadwalList->contains('id_jadwal_pelajaran', $selectedJadwal)) {
+            $selectedJadwal = optional($jadwalList->first())->id_jadwal_pelajaran;
+        }
 
         // 🔥 Jadwal aktif
         $jadwalAktif = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
+            ->where('id_jadwal_pelajaran', $selectedJadwal)
             ->where('id_guru', $guru->id_guru)
-            ->where('id_kelas', $selectedKelas)
-            ->where('id_mata_pelajaran', $selectedMapel)
-            ->where('hari', $hariIni)
             ->first();
 
         // 🔥 Siswa
@@ -103,7 +93,7 @@ class AbsensiSiswaController extends Controller
 
         $persenHadir = $totalSiswa > 0 ? round(($totalHadir / $totalSiswa) * 100, 1) : 0;
 
-        return view('Admin.absensiSiswa.index', compact('kelasList', 'mapelList', 'selectedKelas', 'selectedMapel', 'selectedTanggal', 'siswa', 'absensi', 'jadwalAktif', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir'));
+        return view('Admin.absensiSiswa.index', compact('kelasList', 'jadwalList', 'selectedKelas', 'selectedJadwal', 'selectedTanggal', 'siswa', 'absensi', 'jadwalAktif', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir'));
     }
 
     public function store(Request $request)
