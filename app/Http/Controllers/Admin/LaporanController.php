@@ -122,19 +122,38 @@ class LaporanController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $rekap = $this->getLaporanData($request);
+        $data = $this->getLaporanData($request);
 
-        return Excel::download(new LaporanExport($rekap), 'laporan-kehadiran.xlsx');
+        // ambil kelas + relasi guru
+        $kelas = Kelas::with('guru')->find($data['selectedKelas']);
+
+        $bulan = $data['namaBulan'][$data['selectedBulan']] ?? '-';
+
+        $tahun = $data['selectedTahun'];
+
+        return Excel::download(new LaporanExport($data['rekap'], $kelas, $bulan, $tahun), 'laporan-kehadiran.xlsx');
     }
 
     public function exportPdf(Request $request)
     {
-        $rekap = $this->getLaporanData($request);
+        $data = $this->getLaporanData($request);
+
+        // AMBIL DATA KELAS + WALI KELAS
+        $kelas = Kelas::with('guru')->find($data['selectedKelas']);
 
         $pdf = Pdf::loadView('Admin.Laporan.pdf', [
-            'rekap' => $rekap,
-            'bulan' => $request->bulan,
-            'tahun' => $request->tahun,
+            // DATA TABEL
+            'rekap' => $data['rekap'],
+
+            // DATA KELAS
+            'kelas' => $kelas,
+
+            // FILTER
+            'selectedBulan' => $data['selectedBulan'],
+            'selectedTahun' => $data['selectedTahun'],
+
+            // NAMA BULAN
+            'namaBulan' => $data['namaBulan'],
         ]);
 
         return $pdf->download('laporan-kehadiran.pdf');
@@ -142,50 +161,61 @@ class LaporanController extends Controller
 
     private function getLaporanData($request)
     {
-        $kelasList = \App\Models\Kelas::pluck('nama_kelas', 'id_kelas');
+        $kelasList = Kelas::pluck('nama_kelas', 'id_kelas');
 
         // ROLE
-        if (auth()->user()->role == 'guru') {
-            $selectedKelas = auth()->user()->guru?->kelas?->id_kelas;
-        } elseif (auth()->user()->role == 'orang_tua') {
-            $anak = optional(auth()->user()->orangTua->siswa);
+        if (Auth::user()->role == 'guru') {
+            $selectedKelas = Auth::user()->guru?->kelas?->id_kelas;
+        } elseif (Auth::user()->role == 'orang_tua') {
+            $anak = optional(Auth::user()->orangTua->siswa);
 
             $selectedKelas = $anak->id_kelas ?? null;
         } else {
             $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
         }
 
+        // FILTER
         $selectedBulan = $request->bulan ?? date('m');
 
         $selectedTahun = $request->tahun ?? date('Y');
 
-        $jumlahHari = \Carbon\Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
+        $namaBulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
 
         // SISWA
-        if (auth()->user()->role == 'orang_tua') {
-            $anak = optional(auth()->user()->orangTua->siswa);
+        if (Auth::user()->role == 'orang_tua') {
+            $anak = optional(Auth::user()->orangTua->siswa);
 
             $siswaList = $anak ? collect([$anak]) : collect();
         } else {
-            $siswaList = \App\Models\Siswa::where('id_kelas', $selectedKelas)->get();
+            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
         // ABSENSI
-        $absensiAll = \App\Models\Absensi::whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->get()->groupBy('id_siswa');
+        $absensiAll = Absensi::whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->get()->groupBy('id_siswa');
 
         $rekap = [];
 
         foreach ($siswaList as $siswa) {
             $absensi = $absensiAll[$siswa->id_siswa] ?? collect();
-
             $hadir = $absensi->where('status', 'hadir')->count();
-
             $izin = $absensi->where('status', 'izin')->count();
-
             $sakit = $absensi->where('status', 'sakit')->count();
-
             $alpa = $absensi->where('status', 'alpa')->count();
-
             $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
 
             $rekap[] = [
@@ -199,6 +229,12 @@ class LaporanController extends Controller
             ];
         }
 
-        return $rekap;
+        return [
+            'rekap' => $rekap,
+            'selectedKelas' => $selectedKelas,
+            'selectedBulan' => $selectedBulan,
+            'selectedTahun' => $selectedTahun,
+            'namaBulan' => $namaBulan,
+        ];
     }
 }
