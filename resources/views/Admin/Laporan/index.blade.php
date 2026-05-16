@@ -217,8 +217,16 @@
                         {{-- KELAS --}}
                         <div class="col-md-3">
                             <label class="form-label fw-semibold">Pilih Kelas</label>
-                            <input type="text" value="{{ $kelasList[$selectedKelas] ?? '-' }}" class="form-control"
-                                disabled>
+
+                            <select name="kelas" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($kelasList as $id => $kelas)
+                                    <option value="{{ $id }}" {{ $selectedKelas == $id ? 'selected' : '' }}>
+                                        {{ $kelas }}
+                                    </option>
+                                @endforeach
+
+                            </select>
                         </div>
 
                         {{-- MATA PELAJARAN --}}

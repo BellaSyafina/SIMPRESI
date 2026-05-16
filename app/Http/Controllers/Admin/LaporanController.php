@@ -22,32 +22,45 @@ class LaporanController extends Controller
     {
         $kelasList = Kelas::pluck('nama_kelas', 'id_kelas');
 
-        // 🔥 ROLE HANDLING
-        if (Auth::user()->role == 'guru') {
+        // DEFAULT
+        $mapelList = collect();
+
+        // ROLE HANDLING
+        if (Auth::user()->role == 'guru' && Auth::user()->guru) {
             $guru = Auth::user()->guru;
 
-            // 🔥 ambil jadwal guru
+            // AMBIL SEMUA JADWAL GURU
             $jadwalGuru = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
                 ->where('id_guru', $guru->id_guru)
                 ->get();
 
-            // 🔥 kelas yang diajar guru
-            $kelasList = $jadwalGuru->pluck('kelas.nama_kelas', 'id_kelas')->unique();
+            // AMBIL ID KELAS DARI JADWAL
+            $idKelasJadwal = $jadwalGuru->pluck('id_kelas')->toArray();
 
-            // 🔥 otomatis pilih kelas pertama
+            // AMBIL ID KELAS WALI KELAS
+            $idKelasWali = Kelas::where('id_guru', $guru->id_guru)->pluck('id_kelas')->toArray();
+
+            // GABUNG SEMUA ID KELAS
+            $semuaIdKelas = array_unique(array_merge($idKelasJadwal, $idKelasWali));
+
+            // AMBIL DATA KELAS
+            $kelasList = Kelas::whereIn('id_kelas', $semuaIdKelas)->pluck('nama_kelas', 'id_kelas');
+
+            // PILIH KELAS
             $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
 
-            // 🔥 mapel guru
-            $mapelList = $jadwalGuru->pluck('mataPelajaran')->unique('id_mata_pelajaran')->values();
+            // MAPEL GURU
+            $mapelList = $jadwalGuru->pluck('mataPelajaran')->filter()->unique('id_mata_pelajaran')->values();
         } elseif (Auth::user()->role == 'orang_tua') {
-            $anak = optional(Auth::user()->orangTua->siswa);
+            $anak = Auth::user()->orangTua->siswa->first();
 
-            $selectedKelas = $anak->id_kelas ?? null;
+            $selectedKelas = $anak?->id_kelas;
         } else {
+            // ADMIN
             $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
         }
 
-        // 🔥 FILTER BULAN & TAHUN
+        // FILTER
         $selectedBulan = $request->bulan ?? date('m');
         $selectedTahun = $request->tahun ?? date('Y');
         $selectedMapel = $request->mapel;
@@ -69,18 +82,21 @@ class LaporanController extends Controller
 
         $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
 
-        // 🔥 AMBIL SISWA SESUAI ROLE
+
+        // SISWA
         if (Auth::user()->role == 'orang_tua') {
-            $anak = optional(Auth::user()->orangTua->siswa);
+            $anak = Auth::user()->orangTua->siswa->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
         } else {
             $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
-        // 🔥 AMBIL ABSENSI
+
+        // QUERY ABSENSI
         $absensiQuery = Absensi::with('jadwalPelajaran')->whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun);
 
+        // FILTER MAPEL KHUSUS GURU
         if (Auth::user()->role == 'guru' && $selectedMapel) {
             $absensiQuery->whereHas('jadwalPelajaran', function ($q) use ($selectedMapel) {
                 $q->where('id_mata_pelajaran', $selectedMapel);
@@ -89,6 +105,8 @@ class LaporanController extends Controller
 
         $absensiAll = $absensiQuery->get()->groupBy('id_siswa');
 
+
+        // REKAP
         $rekap = [];
 
         $totalHadir = 0;
@@ -98,12 +116,10 @@ class LaporanController extends Controller
 
         foreach ($siswaList as $siswa) {
             $absensi = $absensiAll[$siswa->id_siswa] ?? collect();
-
             $hadir = $absensi->where('status', 'hadir')->count();
             $izin = $absensi->where('status', 'izin')->count();
             $sakit = $absensi->where('status', 'sakit')->count();
             $alpa = $absensi->where('status', 'alpa')->count();
-
             $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
 
             $rekap[] = [
@@ -122,6 +138,8 @@ class LaporanController extends Controller
             $totalAlpa += $alpa;
         }
 
+
+        // PAGINATION
         $page = request()->get('page', 1);
 
         $perPage = 10;
@@ -131,11 +149,11 @@ class LaporanController extends Controller
             'query' => request()->query(),
         ]);
 
+
+        // TOTAL
         $totalSiswa = $siswaList->count();
-
         $rataPersen = $totalSiswa > 0 && $jumlahHari > 0 ? round(($totalHadir / ($totalSiswa * $jumlahHari)) * 100, 1) : 0;
-
-        return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedBulan', 'selectedTahun', 'namaBulan', 'jumlahHari', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen', 'selectedMapel'));
+        return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedBulan', 'selectedTahun', 'selectedMapel', 'namaBulan', 'jumlahHari', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen'));
     }
 
     public function exportExcel(Request $request)
@@ -144,11 +162,8 @@ class LaporanController extends Controller
 
         // ambil kelas + relasi guru
         $kelas = Kelas::with('guru')->find($data['selectedKelas']);
-
         $bulan = $data['namaBulan'][$data['selectedBulan']] ?? '-';
-
         $tahun = $data['selectedTahun'];
-
         return Excel::download(new LaporanExport($data['rekap'], $kelas, $bulan, $tahun), 'laporan-kehadiran.xlsx');
     }
 
@@ -173,7 +188,6 @@ class LaporanController extends Controller
             // NAMA BULAN
             'namaBulan' => $data['namaBulan'],
         ]);
-
         return $pdf->download('laporan-kehadiran.pdf');
     }
 
@@ -182,20 +196,26 @@ class LaporanController extends Controller
         $kelasList = Kelas::pluck('nama_kelas', 'id_kelas');
 
         // ROLE
-        if (Auth::user()->role == 'guru') {
-            $selectedKelas = Auth::user()->guru?->kelas?->id_kelas;
+        if (Auth::user()->role == 'guru' && Auth::user()->guru) {
+            $guru = Auth::user()->guru;
+            $jadwalGuru = JadwalPelajaran::where('id_guru', $guru->id_guru)->get();
+            $idKelasJadwal = $jadwalGuru->pluck('id_kelas')->toArray();
+            $idKelasWali = Kelas::where('id_guru', $guru->id_guru)->pluck('id_kelas')->toArray();
+            $semuaIdKelas = array_unique(array_merge($idKelasJadwal, $idKelasWali));
+            $selectedKelas = $request->kelas ?? ($semuaIdKelas[0] ?? null);
         } elseif (Auth::user()->role == 'orang_tua') {
-            $anak = optional(Auth::user()->orangTua->siswa);
+            $anak = Auth::user()->orangTua->siswa->first();
 
-            $selectedKelas = $anak->id_kelas ?? null;
+            $selectedKelas = $anak?->id_kelas;
         } else {
             $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
         }
 
+
         // FILTER
         $selectedBulan = $request->bulan ?? date('m');
-
         $selectedTahun = $request->tahun ?? date('Y');
+        $selectedMapel = $request->mapel;
 
         $namaBulan = [
             '01' => 'Januari',
@@ -214,18 +234,31 @@ class LaporanController extends Controller
 
         $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
 
+
         // SISWA
         if (Auth::user()->role == 'orang_tua') {
-            $anak = optional(Auth::user()->orangTua->siswa);
+            $anak = Auth::user()->orangTua->siswa->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
         } else {
             $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
-        // ABSENSI
-        $absensiAll = Absensi::whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->get()->groupBy('id_siswa');
 
+        // QUERY ABSENSI
+        $absensiQuery = Absensi::with('jadwalPelajaran')->whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun);
+
+        // FILTER MAPEL KHUSUS GURU
+        if (Auth::user()->role == 'guru' && $selectedMapel) {
+            $absensiQuery->whereHas('jadwalPelajaran', function ($q) use ($selectedMapel) {
+                $q->where('id_mata_pelajaran', $selectedMapel);
+            });
+        }
+
+        $absensiAll = $absensiQuery->get()->groupBy('id_siswa');
+
+
+        // REKAP
         $rekap = [];
 
         foreach ($siswaList as $siswa) {
