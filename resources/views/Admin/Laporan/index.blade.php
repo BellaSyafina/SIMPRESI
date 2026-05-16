@@ -229,7 +229,8 @@
                                 <option value="">Semua Mapel</option>
 
                                 @foreach ($mapelList as $mapel)
-                                    <option value="{{ $mapel->id_mata_pelajaran }}">
+                                    <option value="{{ $mapel->id_mata_pelajaran }}"
+                                        {{ $selectedMapel == $mapel->id_mata_pelajaran ? 'selected' : '' }}>
                                         {{ $mapel->nama_mata_pelajaran }}
                                     </option>
                                 @endforeach

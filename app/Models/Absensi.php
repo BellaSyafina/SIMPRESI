@@ -11,4 +11,9 @@ class Absensi extends Model
     public $incrementing = true;
     protected $keyType = 'int';
     protected $guarded = ['id_absensi'];
+
+    public function jadwalPelajaran()
+    {
+        return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal_pelajaran');
+    }
 }
