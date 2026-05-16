@@ -23,9 +23,8 @@
 
         <!-- COPYRIGHT -->
        <div class="row">
-            <div class="col-md-12 footer-copyright d-flex flex-wrap align-items-center justify-content-between">
-                <p class="mb-0 f-w-600">Copyright <span class="year-update"> </span> © SIMPRESI - Bella Syafina </p>
-                <p class="mb-0 f-w-600">Hand crafted & made with
+            <div class="text-center mt-2">
+                <p class="mb-0 f-w-600">Copyright <span class="year-update"> </span> © SIMPRESI - Bella Syafina
                     <svg class="footer-icon">
                         <use href="{{ asset('') }}assets/svg/icon-sprite.svg#footer-heart"> </use>
                     </svg>
