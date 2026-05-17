@@ -5,7 +5,7 @@
 
             <!-- KIRI: LOGO & IDENTITAS -->
             <div class="d-flex align-items-center mb-2">
-                <img src="{{ asset('assets/images/smpn.png') }}" alt="Logo Sekolah" class="me-3"
+                <img src="{{ asset('assets/images/Logo/smpn.png') }}" alt="Logo Sekolah" class="me-3"
                     style="width:80px; height:80px; object-fit:contain;">
 
                 <div>

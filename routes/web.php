@@ -96,17 +96,4 @@ Route::middleware('auth')->group(function () {
 
     // Pengaturan
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::prefix('settings')->group(function () {
-        Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
-
-        Route::get('/password', [SettingsController::class, 'password'])->name('settings.password');
-
-        Route::get('/security', [SettingsController::class, 'security'])->name('settings.security');
-
-        Route::get('/session', [SettingsController::class, 'session'])->name('settings.session');
-
-        Route::get('/notification', [SettingsController::class, 'notification'])->name('settings.notification');
-
-        Route::get('/appearance', [SettingsController::class, 'appearance'])->name('settings.appearance');
-    });
 });
