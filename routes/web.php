@@ -93,7 +93,12 @@ Route::middleware('auth')->group(function () {
 
     // Akun
     Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+    Route::post('/account/upload-foto', [AccountController::class, 'uploadFoto'])->name('account.uploadFoto');
 
     // Pengaturan
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::put('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::put('/settings/security', [SettingsController::class, 'updateSecurity'])->name('settings.security');
+    Route::put('/settings/logout-all', [SettingsController::class, 'logoutAll'])->name('settings.logoutAll');
 });

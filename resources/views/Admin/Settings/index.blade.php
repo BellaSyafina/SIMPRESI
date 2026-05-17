@@ -78,115 +78,123 @@
                                 </div>
 
                                 {{-- FORM --}}
-                                <div class="row g-4">
+                                <form action="{{ route('settings.profile') }}" method="POST">
 
-                                    {{-- NAMA --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Nama Lengkap
-                                        </label>
+                                    @csrf
+                                    @method('PUT')
 
-                                        <div class="input-group">
-                                            <span class="input-group-text border-0">
-                                                <i data-feather="user" width="16"></i>
-                                            </span>
+                                    <div class="row g-4">
 
-                                            <input type="text" class="form-control border-0"
-                                                value="{{ Auth::user()->name }}">
+                                        {{-- NAMA --}}
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                Nama Lengkap
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0">
+                                                    <i data-feather="user" width="16"></i>
+                                                </span>
+
+                                                <input type="text" name="name" class="form-control border-0"
+                                                    value="{{ Auth::user()->name }}">
+                                            </div>
+                                        </div>
+
+                                        {{-- EMAIL --}}
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                Email
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0">
+                                                    <i data-feather="mail" width="16"></i>
+                                                </span>
+
+                                                <input type="email" name="email" class="form-control border-0"
+                                                    value="{{ Auth::user()->email }}">
+                                            </div>
+                                        </div>
+
+                                        {{-- ROLE --}}
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                Role
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0">
+                                                    <i data-feather="shield" width="16"></i>
+                                                </span>
+
+                                                <input type="text" class="form-control border-0 text-capitalize"
+                                                    value="{{ Auth::user()->role }}" disabled>
+                                            </div>
+                                        </div>
+
+                                        {{-- STATUS --}}
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                Status Akun
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0">
+                                                    <i data-feather="check-circle" width="16"></i>
+                                                </span>
+
+                                                <input type="text" class="form-control border-0 text-success fw-semibold"
+                                                    value="Active" disabled>
+                                            </div>
+                                        </div>
+
+                                        {{-- LAST UPDATE --}}
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                Terakhir Diperbarui
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0">
+                                                    <i data-feather="clock" width="16"></i>
+                                                </span>
+
+                                                <input type="text" class="form-control border-0"
+                                                    value="{{ Auth::user()->updated_at->translatedFormat('d F Y') }}"
+                                                    disabled>
+                                            </div>
+                                        </div>
+
+                                        {{-- CREATED --}}
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                Bergabung Sejak
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0">
+                                                    <i data-feather="calendar" width="16"></i>
+                                                </span>
+
+                                                <input type="text" class="form-control border-0"
+                                                    value="{{ Auth::user()->created_at->translatedFormat('d F Y') }}"
+                                                    disabled>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {{-- EMAIL --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Email
-                                        </label>
-
-                                        <div class="input-group">
-                                            <span class="input-group-text border-0">
-                                                <i data-feather="mail" width="16"></i>
-                                            </span>
-
-                                            <input type="email" class="form-control border-0"
-                                                value="{{ Auth::user()->email }}">
+                                    {{-- BUTTON --}}
+                                    <div class="border-top pt-4 mt-5">
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit"
+                                                class="btn btn-primary px-4 py-2 rounded-pill shadow-sm d-flex align-items-center">
+                                                <i data-feather="save" width="16" height="16" class="me-2"></i>
+                                                Save Changes
+                                            </button>
                                         </div>
                                     </div>
-
-                                    {{-- ROLE --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Role
-                                        </label>
-
-                                        <div class="input-group">
-                                            <span class="input-group-text border-0">
-                                                <i data-feather="shield" width="16"></i>
-                                            </span>
-
-                                            <input type="text" class="form-control border-0 text-capitalize"
-                                                value="{{ Auth::user()->role }}" disabled>
-                                        </div>
-                                    </div>
-
-                                    {{-- STATUS --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Status Akun
-                                        </label>
-
-                                        <div class="input-group">
-                                            <span class="input-group-text border-0">
-                                                <i data-feather="check-circle" width="16"></i>
-                                            </span>
-
-                                            <input type="text" class="form-control border-0 text-success fw-semibold"
-                                                value="Active" disabled>
-                                        </div>
-                                    </div>
-
-                                    {{-- LAST UPDATE --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Terakhir Diperbarui
-                                        </label>
-
-                                        <div class="input-group">
-                                            <span class="input-group-text border-0">
-                                                <i data-feather="clock" width="16"></i>
-                                            </span>
-
-                                            <input type="text" class="form-control border-0"
-                                                value="{{ Auth::user()->updated_at->translatedFormat('d F Y') }}" disabled>
-                                        </div>
-                                    </div>
-
-                                    {{-- CREATED --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Bergabung Sejak
-                                        </label>
-
-                                        <div class="input-group">
-                                            <span class="input-group-text border-0">
-                                                <i data-feather="calendar" width="16"></i>
-                                            </span>
-
-                                            <input type="text" class="form-control border-0"
-                                                value="{{ Auth::user()->created_at->translatedFormat('d F Y') }}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- BUTTON --}}
-                                <div class="border-top pt-4 mt-5">
-                                    <div class="d-flex justify-content-end">
-                                        <button type="submit"
-                                            class="btn btn-primary px-4 py-2 rounded-pill shadow-sm d-flex align-items-center">
-                                            <i data-feather="save" width="16" height="16" class="me-2"></i>
-                                            Save Changes
-                                        </button>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -195,37 +203,42 @@
                     <div class="tab-pane fade" id="password">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
-                                <h4 class="fw-bold mb-4">
-                                    Change Password
-                                </h4>
+                                <form action="{{ route('settings.password') }}" method="POST">
 
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Password Lama
-                                    </label>
+                                    @csrf
+                                    @method('PUT')
+                                    <h4 class="fw-bold mb-4">
+                                        Change Password
+                                    </h4>
 
-                                    <input type="password" class="form-control">
-                                </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Password Lama
+                                        </label>
 
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Password Baru
-                                    </label>
+                                        <input type="password" name="current_password" class="form-control">
+                                    </div>
 
-                                    <input type="password" class="form-control">
-                                </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Password Baru
+                                        </label>
 
-                                <div class="mb-4">
-                                    <label class="form-label">
-                                        Konfirmasi Password
-                                    </label>
+                                        <input type="password" name="new_password" class="form-control">
+                                    </div>
 
-                                    <input type="password" class="form-control">
-                                </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">
+                                            Konfirmasi Password
+                                        </label>
 
-                                <button class="btn btn-primary px-4">
-                                    Update Password
-                                </button>
+                                        <input type="password" name="new_password_confirmation" class="form-control">
+                                    </div>
+
+                                    <button class="btn btn-primary px-4" type="submit">
+                                        Update Password
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -234,23 +247,38 @@
                     <div class="tab-pane fade" id="security">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
-                                <h4 class="fw-bold mb-4">
-                                    Security Settings
-                                </h4>
+                                <form action="{{ route('settings.security') }}" method="POST">
 
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" checked>
-                                    <label class="form-check-label">
-                                        Verifikasi Login
-                                    </label>
-                                </div>
+                                    @csrf
+                                    @method('PUT')
+                                    <h4 class="fw-bold mb-4">
+                                        Security Settings
+                                    </h4>
 
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox">
-                                    <label class="form-check-label">
-                                        Email Login Notification
-                                    </label>
-                                </div>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" name="login_verification"
+                                            {{ old('login_verification', $user->login_verification) ? 'checked' : '' }}>
+                                        <label class="form-check-label">
+                                            Verifikasi Login
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="email_login_notification"
+                                            {{ old('email_login_notification', $user->email_login_notification) ? 'checked' : '' }}>
+                                        <label class="form-check-label">
+                                            Email Login Notification
+                                        </label>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary px-4">
+
+                                            Save Security
+
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -270,9 +298,17 @@
                                         </p>
                                     </div>
 
-                                    <button class="btn btn-danger">
-                                        Logout All Device
-                                    </button>
+                                    <form action="{{ route('settings.logoutAll') }}" method="POST">
+
+                                        @csrf
+
+                                        <button class="btn btn-danger">
+
+                                            Logout All Device
+
+                                        </button>
+
+                                    </form>
                                 </div>
 
                                 {{-- DEVICE --}}
@@ -280,11 +316,11 @@
                                     <div class="d-flex justify-content-between">
                                         <div>
                                             <h6 class="fw-semibold mb-1">
-                                                Windows • Chrome
+                                                {{ request()->userAgent() }}
                                             </h6>
 
                                             <small class="text-muted">
-                                                127.0.0.1 • Active Now
+                                                {{ request()->ip() }}
                                             </small>
                                         </div>
 

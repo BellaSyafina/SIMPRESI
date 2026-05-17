@@ -16,6 +16,8 @@
 @section('content')
     <div class="container-fluid px-0">
 
+        @include('Components.alert')
+
         {{-- PROFILE HEADER --}}
         <div class="card border-0 shadow-sm overflow-hidden mb-4">
 
@@ -36,7 +38,7 @@
                             <div class="d-flex flex-column align-items-center" style="margin-top: -90px;">
 
                                 {{-- FOTO --}}
-                                <img src="{{ asset('assets/images/dashboard/user/1.jpg') }}"
+                                <img src="{{ $user->foto ? asset('uploads/foto/' . $user->foto) : asset('assets/images/dashboard/user/1.jpg') }}"
                                     class="rounded-circle border border-5 border-white shadow" width="140" height="140"
                                     style="object-fit: cover;">
 
@@ -47,7 +49,14 @@
 
                                     Edit Profile
 
-                                    <input type="file" hidden>
+                                    <form action="{{ route('account.uploadFoto') }}" method="POST"
+                                        enctype="multipart/form-data">
+
+                                        @csrf
+
+                                        <input type="file" name="foto" onchange="this.form.submit()" hidden>
+
+                                    </form>
                                 </label>
 
                             </div>
@@ -91,7 +100,7 @@
                             </small>
 
                             <h6 class="fw-bold mb-0">
-                                17 Mei 2026 • 21:10
+                                {{ $user->last_login_at ? $user->last_login_at->translatedFormat('d F Y • H:i') : 'Belum pernah login' }}
                             </h6>
 
                         </div>
@@ -225,175 +234,57 @@
 
                     <div class="card-body">
 
-                        {{-- ITEM --}}
-                        <div class="d-flex mb-4">
+                        @forelse ($activities as $activity)
+                            @php
 
-                            <div class="me-3">
-                                <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                                    <i data-feather="log-in" width="18" height="18"></i>
+                                $icon = 'shield';
+                                $bg = 'primary';
+
+                                if (str_contains(strtolower($activity->activity), 'login')) {
+                                    $icon = 'log-in';
+                                    $bg = 'success';
+                                }
+
+                                if (str_contains(strtolower($activity->activity), 'logout')) {
+                                    $icon = 'log-out';
+                                    $bg = 'danger';
+                                }
+
+                            @endphp
+
+                            <div class="d-flex mb-4">
+
+                                <div class="me-3">
+                                    <div class="bg-{{ $bg }} bg-opacity-10 rounded-circle p-3">
+
+                                        <i data-feather="{{ $icon }}" width="18" height="18"></i>
+
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="flex-grow-1">
-
-                                <div class="d-flex justify-content-between flex-wrap">
-
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">
-                                            Login Berhasil
-                                        </h6>
-
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between flex-wrap">
+                                        <div>
+                                            <h6 class="fw-semibold mb-1">
+                                                {{ $activity->activity }}
+                                            </h6>
+                                            <small class="text-muted">
+                                                {{ $activity->description }}
+                                            </small>
+                                        </div>
                                         <small class="text-muted">
-                                            Login ke sistem SIMPRESI
+                                            {{ $activity->created_at->translatedFormat('d F Y • H:i') }}
                                         </small>
                                     </div>
-
-                                    <small class="text-muted">
-                                        17 Mei 2026 • 21:10
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {{-- ITEM --}}
-                        <div class="d-flex mb-4">
-
-                            <div class="me-3">
-                                <div class="bg-danger bg-opacity-10 rounded-circle p-3">
-                                    <i data-feather="log-out" width="18" height="18"></i>
                                 </div>
                             </div>
-
-                            <div class="flex-grow-1">
-
-                                <div class="d-flex justify-content-between flex-wrap">
-
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">
-                                            Logout
-                                        </h6>
-
-                                        <small class="text-muted">
-                                            Keluar dari sistem
-                                        </small>
-                                    </div>
-
-                                    <small class="text-muted">
-                                        17 Mei 2026 • 20:45
-                                    </small>
-
-                                </div>
-
+                        @empty
+                            <div class="text-center text-muted py-5">
+                                Belum ada aktivitas login
                             </div>
-
-                        </div>
-
-                        {{-- ITEM --}}
-                        <div class="d-flex mb-4">
-
-                            <div class="me-3">
-                                <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                                    <i data-feather="shield" width="18" height="18"></i>
-                                </div>
-                            </div>
-
-                            <div class="flex-grow-1">
-
-                                <div class="d-flex justify-content-between flex-wrap">
-
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">
-                                            Session Verified
-                                        </h6>
-
-                                        <small class="text-muted">
-                                            Sistem memverifikasi keamanan akun
-                                        </small>
-                                    </div>
-
-                                    <small class="text-muted">
-                                        16 Mei 2026 • 18:20
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {{-- ITEM --}}
-                        <div class="d-flex mb-4">
-
-                            <div class="me-3">
-                                <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                                    <i data-feather="log-in" width="18" height="18"></i>
-                                </div>
-                            </div>
-
-                            <div class="flex-grow-1">
-
-                                <div class="d-flex justify-content-between flex-wrap">
-
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">
-                                            Login Berhasil
-                                        </h6>
-
-                                        <small class="text-muted">
-                                            Login menggunakan browser Chrome
-                                        </small>
-                                    </div>
-
-                                    <small class="text-muted">
-                                        16 Mei 2026 • 18:15
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {{-- ITEM --}}
-                        <div class="d-flex">
-
-                            <div class="me-3">
-                                <div class="bg-danger bg-opacity-10 rounded-circle p-3">
-                                    <i data-feather="log-out" width="18" height="18"></i>
-                                </div>
-                            </div>
-
-                            <div class="flex-grow-1">
-
-                                <div class="d-flex justify-content-between flex-wrap">
-
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">
-                                            Logout
-                                        </h6>
-
-                                        <small class="text-muted">
-                                            Keluar dari akun admin
-                                        </small>
-                                    </div>
-
-                                    <small class="text-muted">
-                                        15 Mei 2026 • 22:11
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                        @endforelse
                     </div>
-
                 </div>
-
             </div>
 
         </div>

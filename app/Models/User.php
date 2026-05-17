@@ -39,6 +39,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -50,5 +51,10 @@ class User extends Authenticatable
     public function guru()
     {
         return $this->hasOne(Guru::class, 'id_user');
+    }
+
+    public function loginActivities()
+    {
+        return $this->hasMany(LoginActivity::class);
     }
 }
