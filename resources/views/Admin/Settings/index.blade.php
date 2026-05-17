@@ -55,6 +55,8 @@
             <div class="col-lg-9">
                 <div class="tab-content">
 
+                    @include('Components.alert')
+
                     {{-- GENERAL --}}
                     <div class="tab-pane fade show active" id="general">
                         <div class="card border-0 shadow-sm">
