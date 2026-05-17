@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AbsensiSiswaController;
+use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\JadwalPelajaranController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\OrangTuaController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -88,4 +90,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan-kehadiran', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan-kehadiran/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
     Route::get('/laporan-kehadiran/export/pdf', [LaporanController::class, 'exportPDF'])->name('laporan.export.pdf');
+
+    // Akun
+    Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+
+    // Pengaturan
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 });

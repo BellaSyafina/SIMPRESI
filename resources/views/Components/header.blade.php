@@ -78,10 +78,21 @@
                         </div>
                     </div>
                     <ul class="profile-dropdown onhover-show-div">
-                        <li><a href="private-chat.html"><i data-feather="user"></i><span>Account
-                                </span></a></li>
-                        <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Settings</span></a></li>
-                        <li><a href="{{ route('logout') }}" onclick="return confirm('Apakah Anda Yakin Ingin Logout?')"><i data-feather="log-out"></i><span>Log out</span></a></li>
+                        <li>
+                            <a href="{{ route('account.index') }}">
+                                <i data-feather="user"></i>
+                                <span>Account</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('settings.index') }}">
+                                <i data-feather="settings"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li><a href="{{ route('logout') }}"
+                                onclick="return confirm('Apakah Anda Yakin Ingin Logout?')"><i
+                                    data-feather="log-out"></i><span>Log out</span></a></li>
                     </ul>
                 </li>
             </ul>

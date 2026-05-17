@@ -56,7 +56,7 @@
                                         </p>
 
                                         <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
-                                            309
+                                            {{ $totalSiswa }}
                                         </h1>
                                     </div>
 
@@ -89,7 +89,7 @@
                                         </p>
 
                                         <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
-                                            28
+                                            {{ $totalGuru }}
                                         </h1>
                                     </div>
 
@@ -122,7 +122,7 @@
                                         </p>
 
                                         <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
-                                            11
+                                            {{ $totalKelas }}
                                         </h1>
                                     </div>
 
@@ -155,7 +155,7 @@
                                         </p>
 
                                         <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
-                                            309
+                                            {{ $totalOrangTua }}
                                         </h1>
                                     </div>
 
@@ -203,12 +203,12 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // ========== BAR CHART: 11 KELAS ==========
-                const kelas = ['7A', '7B', '7C', '7D', '8A', '8B', '8C', '9A', '9B', '9C', '9D'];
+                const kelas = @json($chartKelas);
                 // Data dummy (jumlah kehadiran per status)
-                const hadir = [42, 38, 40, 36, 44, 41, 37, 39, 42, 38, 40];
-                const izin = [2, 1, 3, 2, 1, 2, 1, 3, 1, 2, 1];
-                const sakit = [1, 2, 1, 1, 2, 1, 0, 1, 2, 1, 1];
-                const alpha = [0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0];
+                const hadir = @json($hadirData);
+                const izin = @json($izinData);
+                const sakit = @json($sakitData);
+                const alpha = @json($alpaData);
 
                 const ctxBar = document.getElementById('barChartKelas').getContext('2d');
                 new Chart(ctxBar, {
@@ -289,8 +289,8 @@
                 });
 
                 // ========== LINE CHART: Tren Kehadiran Minggu Ini ==========
-                const hari = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum'];
-                const persen = [100, 96, 93, 90, 94];
+                const hari = @json($hariChart);
+                const persen = @json($persenChart);
 
                 const ctxLine = document.getElementById('lineChartMinggu').getContext('2d');
                 new Chart(ctxLine, {
@@ -379,7 +379,9 @@
                                 <div
                                     class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                     <i data-feather="book-open" class="mb-2" width="40" height="150"></i>
-                                    <h2 class="fw-bold display-6 mb-0">4</h2>
+                                    <h2 class="fw-bold display-6 mb-0">
+                                        {{ $kelasHariIni }}
+                                    </h2>
                                     <h6 class="fw-semibold mt-1">Kelas Hari Ini</h6>
                                 </div>
                             </div>
@@ -390,7 +392,9 @@
                                 <div
                                     class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                     <i data-feather="check-circle" class="mb-2" width="40" height="150"></i>
-                                    <h2 class="fw-bold display-6 mb-0">2</h2>
+                                    <h2 class="fw-bold display-6 mb-0">
+                                        {{ $absensiSelesai }}
+                                    </h2>
                                     <h6 class="fw-semibold mt-1">Absensi Selesai</h6>
                                 </div>
                             </div>
@@ -401,7 +405,9 @@
                                 <div
                                     class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                     <i data-feather="clock" class="mb-2" width="40" height="150"></i>
-                                    <h2 class="fw-bold display-6 mb-0">2</h2>
+                                    <h2 class="fw-bold display-6 mb-0">
+                                        {{ $menungguAbsensi }}
+                                    </h2>
                                     <h6 class="fw-semibold mt-1">Menunggu Absensi</h6>
                                 </div>
                             </div>
@@ -434,50 +440,65 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="list-group list-group-flush">
-                                <!-- item jadwal 1 -->
-                                <div class="list-group-item py-3">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                        <div class="mb-2 mb-sm-0">
-                                            <span class="badge bg-secondary fs-7 me-3">07:30 - 08:30</span>
-                                            <span class="fw-bold fs-6">Matematika</span>
-                                            <span class="text-muted fs-6 ms-2">Kelas 7A</span>
+                                @forelse ($jadwalHariIni as $jadwal)
+                                    @php
+
+                                        $sudahAbsen = \App\Models\Absensi::where(
+                                            'id_jadwal_pelajaran',
+                                            $jadwal->id_jadwal_pelajaran,
+                                        )
+                                            ->whereDate('tanggal', now())
+                                            ->exists();
+
+                                        $now = now()->format('H:i:s');
+
+                                        if ($sudahAbsen) {
+                                            $status = 'Selesai';
+                                            $badge = 'success';
+                                        } elseif ($now >= $jadwal->jam_mulai && $now <= $jadwal->jam_selesai) {
+                                            $status = 'Berlangsung';
+                                            $badge = 'warning text-dark';
+                                        } else {
+                                            $status = 'Menunggu';
+                                            $badge = 'info';
+                                        }
+
+                                    @endphp
+
+                                    <div class="list-group-item py-3">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+
+                                            <div class="mb-2 mb-sm-0">
+
+                                                <span class="badge bg-secondary fs-7 me-3">
+                                                    {{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }}
+                                                    -
+                                                    {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}
+                                                </span>
+
+                                                <span class="fw-bold fs-6">
+                                                    {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
+                                                </span>
+
+                                                <span class="text-muted fs-6 ms-2">
+                                                    Kelas {{ $jadwal->kelas->nama_kelas }}
+                                                </span>
+
+                                            </div>
+
+                                            <span class="badge bg-{{ $badge }} fs-6">
+                                                {{ $status }}
+                                            </span>
+
                                         </div>
-                                        <span class="badge bg-success fs-6">Selesai</span>
                                     </div>
-                                </div>
-                                <!-- item jadwal 2 -->
-                                <div class="list-group-item py-3">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                        <div class="mb-2 mb-sm-0">
-                                            <span class="badge bg-secondary fs-7 me-3">08:30 - 09:30</span>
-                                            <span class="fw-bold fs-6">Matematika</span>
-                                            <span class="text-muted fs-6 ms-2">Kelas 8B</span>
-                                        </div>
-                                        <span class="badge bg-success fs-6">Selesai</span>
+
+                                @empty
+
+                                    <div class="list-group-item py-4 text-center text-muted">
+                                        Tidak ada jadwal hari ini
                                     </div>
-                                </div>
-                                <!-- item jadwal 3 -->
-                                <div class="list-group-item py-3">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                        <div class="mb-2 mb-sm-0">
-                                            <span class="badge bg-secondary fs-7 me-3">09:45 - 10:45</span>
-                                            <span class="fw-bold fs-6">Matematika</span>
-                                            <span class="text-muted fs-6 ms-2">Kelas 9A</span>
-                                        </div>
-                                        <span class="badge bg-warning text-dark fs-6">Berlangsung</span>
-                                    </div>
-                                </div>
-                                <!-- item jadwal 4 -->
-                                <div class="list-group-item py-3">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                        <div class="mb-2 mb-sm-0">
-                                            <span class="badge bg-secondary fs-7 me-3">10:45 - 11:45</span>
-                                            <span class="fw-bold fs-6">Matematika</span>
-                                            <span class="text-muted fs-6 ms-2">Kelas 7B</span>
-                                        </div>
-                                        <span class="badge bg-info fs-6">Menunggu</span>
-                                    </div>
-                                </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -496,32 +517,45 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="list-group list-group-flush">
-                                <!-- Absensi Kelas 7A -->
-                                <div class="list-group-item py-3">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                        <div class="mb-2 mb-sm-0">
-                                            <h6 class="mb-1 fw-bold fs-6">Kelas 7A</h6>
-                                            <small class="text-muted fs-6">Waktu: 08:25</small>
+                                @forelse ($absensiTerbaru as $item)
+                                    <div class="list-group-item py-3">
+
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+
+                                            <div class="mb-2 mb-sm-0">
+
+                                                <h6 class="mb-1 fw-bold fs-6">
+                                                    Kelas {{ $item['kelas'] }}
+                                                </h6>
+
+                                                <small class="text-muted fs-6">
+                                                    Waktu: {{ $item['waktu'] }}
+                                                </small>
+
+                                            </div>
+
+                                            <div class="text-end">
+
+                                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                                    {{ $item['persen'] }}%
+                                                </span>
+
+                                                <div class="small text-muted fs-6 mt-1">
+                                                    {{ $item['hadir'] }}/{{ $item['total'] }} siswa
+                                                </div>
+
+                                            </div>
+
                                         </div>
-                                        <div class="text-end">
-                                            <span class="badge bg-primary fs-6 px-3 py-2">93.8%</span>
-                                            <div class="small text-muted fs-6 mt-1">30/32 siswa</div>
-                                        </div>
+
                                     </div>
-                                </div>
-                                <!-- Absensi Kelas 8B -->
-                                <div class="list-group-item py-3">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                        <div class="mb-2 mb-sm-0">
-                                            <h6 class="mb-1 fw-bold fs-6">Kelas 8B</h6>
-                                            <small class="text-muted fs-6">Waktu: 09:20</small>
-                                        </div>
-                                        <div class="text-end">
-                                            <span class="badge bg-primary fs-6 px-3 py-2">96.9%</span>
-                                            <div class="small text-muted fs-6 mt-1">31/32 siswa</div>
-                                        </div>
+
+                                @empty
+
+                                    <div class="list-group-item py-4 text-center text-muted">
+                                        Belum ada absensi hari ini
                                     </div>
-                                </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -532,6 +566,36 @@
 
     @if (Auth::user()->role == 'orang_tua')
         <div class="container-fluid default-dashboard">
+            <form method="GET" class="mb-4">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+                            Pilih Anak
+                        </label>
+
+                        <select name="anak" class="form-select" onchange="this.form.submit()">
+
+                            @foreach ($anakList as $item)
+                                <option value="{{ $item->id_siswa }}"
+                                    {{ optional($anak)->id_siswa == $item->id_siswa ? 'selected' : '' }}>
+
+                                    {{ $item->nama_siswa }}
+                                    -
+                                    {{ optional($item->kelas)->nama_kelas }}
+
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </form>
             <div class="row align-items-stretch">
                 <!-- Card Greeting (kiri) -->
                 <div class="col-xl-5 col-md-6 mb-4 d-flex">
@@ -557,23 +621,36 @@
                             </h4>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">Nama Lengkap :</div>
-                                <div class="col-7 fw-bold text-dark">Ahmad Zaki</div>
+                                <div class="col-7 fw-bold text-dark">
+                                    {{ $anak?->nama_siswa ?? '-' }}
+                                </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">NIS :</div>
-                                <div class="col-7 fw-bold text-dark">2024080001</div>
+                                <div class="col-7 fw-bold text-dark">
+                                    {{ $anak?->nis ?? '-' }}
+                                </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">Kelas :</div>
-                                <div class="col-7 fw-bold text-dark">8A</div>
+                                <div class="col-7 fw-bold text-dark">
+                                    {{ $anak?->kelas?->nama_kelas ?? '-' }}
+                                </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">Wali Kelas :</div>
-                                <div class="col-7 fw-bold text-dark">Budi Santoso, S.Pd</div>
+                                <div class="col-7 fw-bold text-dark">
+                                    {{ $anak?->kelas?->waliKelas?->nama_guru ?? '-' }}
+                                </div>
                             </div>
                             <div class="row mb-4">
                                 <div class="col-5 fw-semibold text-dark">Total Kehadiran (Bulan Ini) :</div>
-                                <div class="col-7 fw-bold text-dark">19 Hadir, 1 Izin, 1 Sakit, 0 Alpha</div>
+                                <div class="col-7 fw-bold text-dark">
+                                    {{ $totalHadir }} Hadir,
+                                    {{ $totalIzin }} Izin,
+                                    {{ $totalSakit }} Sakit,
+                                    {{ $totalAlpa }} Alpha
+                                </div>
                             </div>
                             <div class="mt-3">
                                 <a href="{{ route('laporan.index') }}"
@@ -593,7 +670,9 @@
                     <div class="card shadow-sm border-0 text-center h-100 bg-success bg-opacity-10">
                         <div class="card-body">
                             <i data-feather="check-circle" class="text-white mb-2" width="36" height="36"></i>
-                            <h3 class="fw-bold mb-0 text-white">19 hari</h3>
+                            <h3 class="fw-bold mb-0 text-white">
+                                {{ $totalHadir }} hari
+                            </h3>
                             <p class="text-white fs-6">Hadir</p>
                         </div>
                     </div>
@@ -602,7 +681,9 @@
                     <div class="card shadow-sm border-0 text-center h-100 bg-warning bg-opacity-10">
                         <div class="card-body">
                             <i data-feather="file-text" class="text-white mb-2" width="36" height="36"></i>
-                            <h3 class="fw-bold mb-0 text-white">1 hari</h3>
+                            <h3 class="fw-bold mb-0 text-white">
+                                {{ $totalIzin }} hari
+                            </h3>
                             <p class="text-white fs-6">Izin</p>
                         </div>
                     </div>
@@ -611,7 +692,9 @@
                     <div class="card shadow-sm border-0 text-center h-100 bg-info bg-opacity-10">
                         <div class="card-body">
                             <i data-feather="thermometer" class="text-white mb-2" width="36" height="36"></i>
-                            <h3 class="fw-bold mb-0 text-white">1 hari</h3>
+                            <h3 class="fw-bold mb-0 text-white">
+                                {{ $totalSakit }} hari
+                            </h3>
                             <p class="text-white fs-6">Sakit</p>
                         </div>
                     </div>
@@ -620,7 +703,9 @@
                     <div class="card shadow-sm border-0 text-center h-100 bg-danger bg-opacity-10">
                         <div class="card-body">
                             <i data-feather="x-circle" class="text-white mb-2" width="36" height="36"></i>
-                            <h3 class="fw-bold mb-0 text-white">0 hari</h3>
+                            <h3 class="fw-bold mb-0 text-white">
+                                {{ $totalAlpa }} hari
+                            </h3>
                             <p class="text-white fs-6">Alpha</p>
                         </div>
                     </div>
@@ -639,7 +724,51 @@
                         </div>
                         <div class="card-body p-0">
                             <div id="kehadiranHariIniContainer" class="list-group list-group-flush">
-                                <div class="list-group-item py-3 text-center text-muted">Memuat data...</div>
+                                @forelse ($kehadiranHariIni as $item)
+                                    @php
+
+                                        $statusClass = match ($item['status']) {
+                                            'hadir' => 'text-success fw-bold',
+                                            'izin' => 'text-warning fw-bold',
+                                            'sakit' => 'text-info fw-bold',
+                                            'alpa' => 'text-danger fw-bold',
+                                            default => 'text-secondary fw-bold',
+                                        };
+
+                                    @endphp
+
+                                    <div class="list-group-item py-3">
+
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                                            <div>
+
+                                                <div class="fw-bold fs-5">
+                                                    {{ $item['mapel'] }}
+                                                </div>
+
+                                                <div class="text-muted small">
+                                                    {{ $item['waktu'] }}
+                                                    •
+                                                    {{ $item['guru'] }}
+                                                </div>
+
+                                            </div>
+
+                                            <div class="{{ $statusClass }}">
+                                                {{ ucfirst($item['status']) }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                @empty
+
+                                    <div class="list-group-item py-3 text-center text-muted">
+                                        Tidak ada jadwal hari ini.
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -647,103 +776,7 @@
             </div>
 
             <script>
-                (function() {
-                    // Data jadwal berdasarkan hari (0 Minggu, 1 Senin ... 6 Sabtu)
-                    const jadwal = {
-                        0: [], // Minggu libur
-                        1: [ // Senin
-                            {
-                                mapel: "Matematika",
-                                waktu: "07:30 - 08:30",
-                                guru: "Budi Santoso, S.Pd",
-                                status: "Hadir"
-                            },
-                            {
-                                mapel: "Bahasa Indonesia",
-                                waktu: "08:30 - 09:30",
-                                guru: "Siti Aminah, S.Pd",
-                                status: "Hadir"
-                            },
-                            {
-                                mapel: "IPA",
-                                waktu: "09:45 - 10:45",
-                                guru: "Dedi Kurniawan, S.Si",
-                                status: "Sakit"
-                            },
-                            {
-                                mapel: "IPS",
-                                waktu: "10:45 - 11:45",
-                                guru: "Rina Safitri, S.Pd",
-                                status: "Izin"
-                            }
-                        ],
-                        2: [ // Selasa
-                            {
-                                mapel: "PJOK",
-                                waktu: "07:30 - 08:30",
-                                guru: "Ucup Sport",
-                                status: "Alpha"
-                            },
-                            {
-                                mapel: "Bahasa Inggris",
-                                waktu: "08:30 - 09:30",
-                                guru: "Lestari Handayani, S.Pd",
-                                status: "Hadir"
-                            }
-                        ],
-                        3: [ // Rabu
-                            {
-                                mapel: "Matematika",
-                                waktu: "07:30 - 08:30",
-                                guru: "Budi Santoso, S.Pd",
-                                status: "Hadir"
-                            },
-                            {
-                                mapel: "IPA",
-                                waktu: "08:30 - 09:30",
-                                guru: "Dedi Kurniawan, S.Si",
-                                status: "Hadir"
-                            }
-                        ],
-                        4: [ // Kamis
-                            {
-                                mapel: "Bahasa Indonesia",
-                                waktu: "07:30 - 08:30",
-                                guru: "Siti Aminah, S.Pd",
-                                status: "Izin"
-                            },
-                            {
-                                mapel: "IPS",
-                                waktu: "08:30 - 09:30",
-                                guru: "Rina Safitri, S.Pd",
-                                status: "Hadir"
-                            }
-                        ],
-                        5: [ // Jumat
-                            {
-                                mapel: "Agama",
-                                waktu: "07:30 - 08:30",
-                                guru: "Ahmad Fauzi, S.Ag",
-                                status: "Hadir"
-                            },
-                            {
-                                mapel: "IPS",
-                                waktu: "08:30 - 09:30",
-                                guru: "Rina Safitri, S.Pd",
-                                status: "Alpha"
-                            }
-                        ],
-                        6: [ // Sabtu
-                            {
-                                mapel: "Seni Budaya",
-                                waktu: "07:30 - 08:30",
-                                guru: "Sri Mulyani",
-                                status: "Sakit"
-                            }
-                        ]
-                    };
-
-                    function loadKehadiranHariIni() {
+                (function loadKehadiranHariIni() {
                         const today = new Date().getDay(); // 0 Minggu, 1 Senin ... 6 Sabtu
                         const jadwalHariIni = jadwal[today] || [];
                         const container = document.getElementById('kehadiranHariIniContainer');
@@ -819,10 +852,10 @@
                                     <canvas id="pieChartPersentase"
                                         style="max-width: 200px; max-height: 200px; margin: 0 auto;"></canvas>
                                     <div class="mt-3">
-                                        <span class="badge bg-success me-2">Hadir 93%</span>
-                                        <span class="badge bg-warning me-2">Izin 4%</span>
-                                        <span class="badge bg-info me-2">Sakit 3%</span>
-                                        <span class="badge bg-danger">Alpha 0%</span>
+                                        <span class="badge bg-success me-2">Hadir {{ $persenHadir }}%</span>
+                                        <span class="badge bg-warning me-2">Izin {{ $persenIzin }}%</span>
+                                        <span class="badge bg-info me-2">Sakit {{ $persenSakit }}%</span>
+                                        <span class="badge bg-danger">Alpa {{ $persenAlpa }}%</span>
                                     </div>
                                 </div>
                             </div>
@@ -840,28 +873,28 @@
                 new Chart(ctxBar, {
                     type: 'bar',
                     data: {
-                        labels: ['08 Apr', '09 Apr', '10 Apr', '11 Apr', '14 Apr'],
+                        labels: @json($chartTanggal),
                         datasets: [{
                                 label: 'Hadir',
-                                data: [61, 60, 30, 32, 45],
+                                data: @json($chartHadir),
                                 backgroundColor: '#28a745',
                                 borderRadius: 4
                             },
                             {
                                 label: 'Izin',
-                                data: [1, 1, 1, 1, 2],
+                                data: @json($chartIzin),
                                 backgroundColor: '#ffc107',
                                 borderRadius: 4
                             },
                             {
                                 label: 'Sakit',
-                                data: [2, 2, 2, 2, 1],
+                                data: @json($chartSakit),
                                 backgroundColor: '#17a2b8',
                                 borderRadius: 4
                             },
                             {
-                                label: 'Alpha',
-                                data: [0, 0, 0, 0, 1],
+                                label: 'Alpa',
+                                data: @json($chartAlpa),
                                 backgroundColor: '#dc3545',
                                 borderRadius: 4
                             }
@@ -913,9 +946,19 @@
                 new Chart(ctxPie, {
                     type: 'pie',
                     data: {
-                        labels: ['Hadir (93%)', 'Izin (4%)', 'Sakit (3%)', 'Alpha (0%)'],
+                        labels: [
+                            'Hadir ({{ $persenHadir }}%)',
+                            'Izin ({{ $persenIzin }}%)',
+                            'Sakit ({{ $persenSakit }}%)',
+                            'Alpha ({{ $persenAlpa }}%)'
+                        ],
                         datasets: [{
-                            data: [93, 4, 3, 0],
+                            data: [
+                                {{ $persenHadir }},
+                                {{ $persenIzin }},
+                                {{ $persenSakit }},
+                                {{ $persenAlpa }}
+                            ],
                             backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545'],
                             borderWidth: 0
                         }]
