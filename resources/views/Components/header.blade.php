@@ -33,35 +33,10 @@
                         <svg>
                             <use href="{{ asset('') }}assets/svg/icon-sprite.svg#search"></use>
                         </svg></span></li>
-                <li>
-                    <div class="form-group w-100">
-                        <div class="Typeahead Typeahead--twitterUsers">
-                            <div class="u-posRelative d-flex align-items-center">
-                                <svg class="search-bg svg-color">
-                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#search"></use>
-                                </svg>
-                                <input class="demo-input py-0 Typeahead-input form-control-plaintext w-100"
-                                    type="text" placeholder="Search Mofi .." name="q" title="">
-                            </div>
-                        </div>
-                    </div>
-                </li>
                 <li class="fullscreen-body"> <span>
                         <svg id="maximize-screen">
                             <use href="{{ asset('') }}assets/svg/icon-sprite.svg#full-screen"></use>
                         </svg></span></li>
-                <li class="onhover-dropdown">
-                    <div class="notification-box">
-                        <svg>
-                            <use href="{{ asset('') }}assets/svg/icon-sprite.svg#notification"></use>
-                        </svg><span class="badge rounded-pill badge-primary">0 </span>
-                    </div>
-                    <div class="onhover-show-div notification-dropdown">
-                        <h5 class="f-18 f-w-600 mb-0 dropdown-title">Notifications </h5>
-
-                    </div>
-                </li>
-
                 <li>
                     <div class="mode">
                         <svg>
@@ -72,7 +47,7 @@
 
                 <li class="profile-nav onhover-dropdown px-0 py-0">
                     <div class="d-flex profile-media align-items-center"><img class="img-30"
-                            src="{{ asset('') }}assets/images/dashboard/profile.png" alt="">
+                            src="{{ Auth::user()->foto ? asset('uploads/foto/' . Auth::user()->foto) : asset('assets/images/dashboard/user/1.jpg') }}" alt="">
                         <div class="flex-grow-1"><span>{{ Auth::user()->name }}</span>
                             <p class="mb-0 font-outfit">{{ Auth::user()->role }}<i class="fa fa-angle-down"></i></p>
                         </div>
