@@ -1,12 +1,22 @@
 <div class="sidebar-wrapper" data-layout="stroke-svg">
     <div>
         <div class="logo-wrapper">
-            <a href="/dashboard">
-                <img class="img-fluid" src="{{ asset('') }}assets/images/logo/logo_light.png" alt="">
+            <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
+
+                <!-- Logo -->
+                <img src="{{ asset('assets/images/logo/smpn.png') }}" alt="logo"
+                    style="width: 55px; height: 55px;">
+
+                <!-- Tulisan -->
+                <span style="color: white; font-size: 22px; font-weight: 700; letter-spacing: 1px;">
+                    SIMPRESI
+                </span>
             </a>
+
             <div class="back-btn">
                 <i class="fa fa-angle-left"></i>
             </div>
+
             <div class="toggle-sidebar">
                 <svg class="stroke-icon sidebar-toggle status_toggle middle">
                     <use href="{{ asset('') }}assets/svg/icon-sprite.svg#toggle-icon"></use>
@@ -16,11 +26,20 @@
                 </svg>
             </div>
         </div>
+
         <div class="logo-icon-wrapper">
             <a href="/dashboard">
-                <img class="img-fluid" src="{{ asset('') }}assets/images/logo/logo-icon.png" alt="">
+
+                <img src="{{ asset('assets/images/logo/smpn.png') }}" alt="logo"
+                    style="
+                width: 40px;
+                height: 40px;
+                object-fit: contain;
+            ">
+
             </a>
         </div>
+
         <nav class="sidebar-main">
             <div class="left-arrow" id="left-arrow">
                 <i data-feather="arrow-left"></i>

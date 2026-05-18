@@ -44,18 +44,32 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-7">
-                <img class="bg-img-cover bg-center" src="{{ asset('') }}assets/images/login/2.jpg"
+                <img class="bg-img-cover bg-center" src="{{ asset('') }}assets/images/login/smpn2saronggi.png"
                     alt="looginpage">
             </div>
             <div class="col-xl-5 p-0">
                 <div class="login-card login-dark">
                     <div>
-                        <div>
-                            <a class="logo text-start" href="index.html">
-                                <img class="img-fluid for-light" src="{{ asset('') }}assets/images/logo/logo.png"
-                                    alt="looginpage">
-                                <img class="img-fluid for-dark"
-                                    src="{{ asset('') }}assets/images/logo/logo_dark.png" alt="looginpage">
+                        <div class="text-center mb-4">
+                            <a class="logo text-decoration-none d-flex flex-column align-items-center" href="#">
+
+                                <!-- Logo -->
+                                <img class="for-light" src="{{ asset('assets/images/logo/smpn.png') }}" alt="logo"
+                                    style="width: 90px; height: auto;">
+
+                                <img class="for-dark d-none" src="{{ asset('assets/images/logo/smpn.png') }}"
+                                    alt="logo" style="width: 90px; height: auto;">
+
+                                <!-- Judul -->
+                                <h2 class="fw-bold"> SMPN 2 Saronggi </h2>
+
+                                <!-- Quote -->
+                                <small class="mt-2">
+                                    <i>
+                                        "<b>Sekolah boleh di desa, tapi mimpi kami mendunia!</b>"
+                                    </i>
+                                </small>
+
                             </a>
                         </div>
                         <div class="login-main">
