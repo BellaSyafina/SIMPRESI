@@ -7,9 +7,7 @@ use App\Models\Kelas;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Imports\SiswaImport;
-use App\Models\OrangTua;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
@@ -20,7 +18,13 @@ class SiswaController extends Controller
 
         // 🔍 Search
         if ($request->filled('search')) {
-            $query->where('nama_siswa', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_siswa', 'like', '%' . $search . '%')
+                    ->orWhere('nis', 'like', '%' . $search . '%')
+                    ->orWhere('nisn', 'like', '%' . $search . '%');
+            });
         }
 
         // 🔍 Filter kelas
@@ -28,25 +32,34 @@ class SiswaController extends Controller
             $query->where('id_kelas', $request->kelas);
         }
 
+        // 🔍 Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // 🔥 sorting
+        $query->orderBy('nama_siswa');
+
         $siswas = $query->paginate(10)->appends($request->all());
 
         // 📊 Statistik
         $totalSiswa = Siswa::count();
+
         $siswaLaki = Siswa::where('jenis_kelamin', 'L')->count();
+
         $siswaPerempuan = Siswa::where('jenis_kelamin', 'P')->count();
 
         // 🔥 dropdown kelas
-        $kelas = Kelas::pluck('nama_kelas', 'id_kelas');
+        $kelas = Kelas::orderBy('nama_kelas')->pluck('nama_kelas', 'id_kelas');
 
         return view('Admin.Siswa.index', compact('siswas', 'kelas', 'totalSiswa', 'siswaLaki', 'siswaPerempuan'));
     }
 
     public function create()
     {
-        $kelas = Kelas::pluck('nama_kelas', 'id_kelas'); // Ambil nama kelas untuk dropdown
-        $orangTua = OrangTua::all(); // Ambil nama orang tua untuk dropdown
+        $kelas = Kelas::orderBy('nama_kelas')->pluck('nama_kelas', 'id_kelas');
 
-        return view('Admin.Siswa.create', compact('kelas', 'orangTua'));
+        return view('Admin.Siswa.create', compact('kelas'));
     }
 
     public function store(Request $request)
@@ -56,45 +69,36 @@ class SiswaController extends Controller
                 [
                     'nisn' => 'required|unique:siswa,nisn',
                     'nis' => 'required|unique:siswa,nis',
-                    'nama_siswa' => 'required',
+                    'nama_siswa' => 'required|string|max:255',
                     'jenis_kelamin' => 'required|in:L,P',
-                    'id_kelas' => 'required',
+                    'id_kelas' => 'required|exists:kelas,id_kelas',
+                    'agama' => 'nullable|string|max:50',
+                    'tempat_lahir' => 'nullable|string|max:255',
+                    'tanggal_lahir' => 'nullable|date',
+                    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                    'email_wali' => 'nullable|email',
+                    'status' => 'required|in:aktif,lulus,pindah,keluar',
                 ],
                 [
                     'nisn.required' => 'NISN wajib diisi.',
-                    'nisn.unique' => 'NISN sudah digunakan oleh siswa lain.',
+                    'nisn.unique' => 'NISN sudah digunakan.',
                     'nis.required' => 'NIS wajib diisi.',
-                    'nis.unique' => 'NIS sudah digunakan oleh siswa lain.',
+                    'nis.unique' => 'NIS sudah digunakan.',
                     'nama_siswa.required' => 'Nama siswa wajib diisi.',
                     'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
-                    'jenis_kelamin.in' => 'Jenis kelamin harus L (Laki-laki) atau P (Perempuan).',
                     'id_kelas.required' => 'Kelas wajib dipilih.',
+                    'foto.image' => 'File harus berupa gambar.',
+                    'foto.mimes' => 'Foto harus jpg, jpeg, atau png.',
+                    'foto.max' => 'Ukuran foto maksimal 2MB.',
+                    'email_wali.email' => 'Format email wali tidak valid.',
                 ],
             );
 
-            $idOrtu = null;
+            // 🔥 upload foto
+            $foto = null;
 
-            if ($request->nama_orang_tua) {
-                // 🔍 cek apakah sudah ada
-                $ortu = OrangTua::where('nama_orang_tua', $request->nama_orang_tua)->first();
-
-                if (!$ortu) {
-                    // 🔥 buat akun user
-                    $user = User::create([
-                        'name' => $request->nama_orang_tua,
-                        'email' => strtolower(str_replace(' ', '', $request->nama_orang_tua)) . rand(100, 999) . '@ortu.com',
-                        'password' => Hash::make('12345678'),
-                        'role' => 'orang_tua',
-                    ]);
-
-                    // 🔥 buat data orang tua
-                    $ortu = OrangTua::create([
-                        'nama_orang_tua' => $request->nama_orang_tua,
-                        'id_user' => $user->id,
-                    ]);
-                }
-
-                $idOrtu = $ortu->id_orang_tua;
+            if ($request->hasFile('foto')) {
+                $foto = $request->file('foto')->store('siswa', 'public');
             }
 
             // 🔥 simpan siswa
@@ -103,27 +107,48 @@ class SiswaController extends Controller
                 'nis' => $request->nis,
                 'nama_siswa' => $request->nama_siswa,
                 'jenis_kelamin' => $request->jenis_kelamin,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'agama' => $request->agama,
                 'alamat' => $request->alamat,
+                'foto' => $foto,
                 'status' => $request->status ?? 'aktif',
                 'id_kelas' => $request->id_kelas,
-                'id_orang_tua' => $idOrtu,
+
+                // 🔥 data ayah
+                'nama_ayah' => $request->nama_ayah,
+                'no_hp_ayah' => $request->no_hp_ayah,
+                'pekerjaan_ayah' => $request->pekerjaan_ayah,
+
+                // 🔥 data ibu
+                'nama_ibu' => $request->nama_ibu,
+                'no_hp_ibu' => $request->no_hp_ibu,
+                'pekerjaan_ibu' => $request->pekerjaan_ibu,
+
+                // 🔥 data wali
+                'nama_wali' => $request->nama_wali,
+                'no_hp_wali' => $request->no_hp_wali,
+                'email_wali' => $request->email_wali,
+                'pekerjaan_wali' => $request->pekerjaan_wali,
+
+                'alamat_orang_tua' => $request->alamat_orang_tua,
             ]);
 
-            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan');
+            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
         } catch (\Exception $e) {
             return redirect()
-                ->route('siswa.index')
-                ->with('error', 'Terjadi kesalahan saat menambahkan siswa: ' . $e->getMessage());
+                ->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
     public function show($id)
     {
         $siswa = Siswa::findOrFail($id);
-        $kelas = Kelas::pluck('nama_kelas', 'id_kelas'); // Ambil nama kelas untuk dropdown
-        $orangTua = OrangTua::all(); // Ambil nama orang tua untuk dropdown
+        $kelas = Kelas::orderBy('nama_kelas')->pluck('nama_kelas', 'id_kelas');
 
-        return view('Admin.Siswa.edit', compact('siswa', 'kelas', 'orangTua'));
+        return view('Admin.Siswa.edit', compact('siswa', 'kelas'));
     }
 
     public function update(Request $request, $id)
@@ -135,65 +160,82 @@ class SiswaController extends Controller
                 [
                     'nisn' => 'required|unique:siswa,nisn,' . $siswa->id_siswa . ',id_siswa',
                     'nis' => 'required|unique:siswa,nis,' . $siswa->id_siswa . ',id_siswa',
-                    'nama_siswa' => 'required',
+                    'nama_siswa' => 'required|string|max:255',
                     'jenis_kelamin' => 'required|in:L,P',
                     'id_kelas' => 'required|exists:kelas,id_kelas',
+                    'agama' => 'nullable|string|max:50',
+                    'tempat_lahir' => 'nullable|string|max:255',
+                    'tanggal_lahir' => 'nullable|date',
+                    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                    'email_wali' => 'nullable|email',
+                    'status' => 'required|in:aktif,lulus,pindah,keluar',
                 ],
                 [
                     'nisn.required' => 'NISN wajib diisi.',
-                    'nisn.unique' => 'NISN sudah digunakan oleh siswa lain.',
+                    'nisn.unique' => 'NISN sudah digunakan.',
                     'nis.required' => 'NIS wajib diisi.',
-                    'nis.unique' => 'NIS sudah digunakan oleh siswa lain.',
+                    'nis.unique' => 'NIS sudah digunakan.',
                     'nama_siswa.required' => 'Nama siswa wajib diisi.',
                     'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
-                    'jenis_kelamin.in' => 'Jenis kelamin harus L atau P.',
                     'id_kelas.required' => 'Kelas wajib dipilih.',
-                    'id_kelas.exists' => 'Kelas tidak valid.',
+                    'foto.image' => 'File harus berupa gambar.',
+                    'foto.mimes' => 'Foto harus jpg, jpeg, atau png.',
+                    'foto.max' => 'Ukuran foto maksimal 2MB.',
+                    'email_wali.email' => 'Format email wali tidak valid.',
                 ],
             );
 
-            // 🔥 HANDLE ORANG TUA
-            $idOrtu = $siswa->id_orang_tua;
-
-            if ($request->nama_orang_tua) {
-                $ortu = OrangTua::where('nama_orang_tua', $request->nama_orang_tua)->first();
-
-                if (!$ortu) {
-                    // buat akun
-                    $user = User::create([
-                        'name' => $request->nama_orang_tua,
-                        'email' => strtolower(str_replace(' ', '', $request->nama_orang_tua)) . rand(100, 999) . '@ortu.com',
-                        'password' => Hash::make('12345678'),
-                        'role' => 'orang_tua',
-                    ]);
-
-                    // buat data orang tua
-                    $ortu = OrangTua::create([
-                        'nama_orang_tua' => $request->nama_orang_tua,
-                        'id_user' => $user->id,
-                    ]);
+            // 🔥 upload foto baru
+            if ($request->hasFile('foto')) {
+                // hapus foto lama
+                if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
+                    Storage::disk('public')->delete($siswa->foto);
                 }
 
-                $idOrtu = $ortu->id_orang_tua;
+                $foto = $request->file('foto')->store('siswa', 'public');
+            } else {
+                $foto = $siswa->foto;
             }
 
-            // 🔥 UPDATE SISWA
+            // 🔥 update siswa
             $siswa->update([
                 'nisn' => $request->nisn,
                 'nis' => $request->nis,
                 'nama_siswa' => $request->nama_siswa,
                 'jenis_kelamin' => $request->jenis_kelamin,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'agama' => $request->agama,
                 'alamat' => $request->alamat,
-                'status' => $request->status ?? 'aktif',
+                'foto' => $foto,
+                'status' => $request->status,
                 'id_kelas' => $request->id_kelas,
-                'id_orang_tua' => $idOrtu, // 🔥 ini tambahan penting
+
+                // 🔥 data ayah
+                'nama_ayah' => $request->nama_ayah,
+                'no_hp_ayah' => $request->no_hp_ayah,
+                'pekerjaan_ayah' => $request->pekerjaan_ayah,
+
+                // 🔥 data ibu
+                'nama_ibu' => $request->nama_ibu,
+                'no_hp_ibu' => $request->no_hp_ibu,
+                'pekerjaan_ibu' => $request->pekerjaan_ibu,
+
+                // 🔥 data wali
+                'nama_wali' => $request->nama_wali,
+                'no_hp_wali' => $request->no_hp_wali,
+                'email_wali' => $request->email_wali,
+                'pekerjaan_wali' => $request->pekerjaan_wali,
+
+                'alamat_orang_tua' => $request->alamat_orang_tua,
             ]);
 
-            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui');
+            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()
-                ->route('siswa.index')
-                ->with('error', 'Terjadi kesalahan saat memperbarui siswa: ' . $e->getMessage());
+                ->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
         }
     }
 

@@ -149,7 +149,7 @@
                         </li>
                     @endif
 
-                    @if (Auth::user()->role == 'admin')
+                    {{--  @if (Auth::user()->role == 'admin')
                         <li class="sidebar-list">
                             <i class="fa fa-thumb-tack"></i>
                             <a class="sidebar-link sidebar-title link-nav" href="/orangtua">
@@ -162,7 +162,7 @@
                                 <span>Data Orang Tua</span>
                             </a>
                         </li>
-                    @endif
+                    @endif  --}}
 
                     @if (Auth::user()->role == 'admin')
                         <li class="sidebar-main-title">

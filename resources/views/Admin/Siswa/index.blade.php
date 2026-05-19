@@ -15,6 +15,10 @@
 @endsection
 
 @section('content')
+    @php
+        use Illuminate\Support\Str;
+    @endphp
+
     <div class="container-fluid px-0">
         <!-- Statistik -->
         <div class="row g-3 mb-4">
@@ -63,7 +67,7 @@
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
                 <form action="{{ route('siswa.index') }}" method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-semibold">Search:</label>
                         <input type="text" name="search" class="form-control" placeholder="Search..."
                             value="{{ request('search') }}">
@@ -77,6 +81,28 @@
                                     {{ $nama }}
                                 </option>
                             @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold">
+                            Status
+                        </label>
+                        <select name="status" class="form-select">
+                            <option value="">
+                                Semua
+                            </option>
+                            <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>
+                                Aktif
+                            </option>
+                            <option value="lulus" {{ request('status') == 'lulus' ? 'selected' : '' }}>
+                                Lulus
+                            </option>
+                            <option value="pindah" {{ request('status') == 'pindah' ? 'selected' : '' }}>
+                                Pindah
+                            </option>
+                            <option value="keluar" {{ request('status') == 'keluar' ? 'selected' : '' }}>
+                                Keluar
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex gap-2">
@@ -112,17 +138,20 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle mb-0">
+                    <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1400px">
                         <thead class="table">
                             <tr>
                                 <th style="width: 5%">ID</th>
-                                <th style="width: 15%">NISN / NIS</th>
-                                <th style="width: 15%">Nama Siswa</th>
+                                <th style="width: 6%">Foto</th>
+                                <th style="width: 12%">NISN / NIS</th>
+                                <th style="width: 14%">Nama Siswa</th>
+                                <th style="width: 12%">TTL</th>
+                                <th style="width: 8%">Agama</th>
                                 <th style="width: 8%">Kelas</th>
-                                <th style="width: 15%">Jenis Kelamin</th>
-                                <th style="width: 15%">Orang Tua</th>
-                                <th style="width: 20%">Alamat</th>
-                                <th style="width: 8%">Status</th>
+                                <th style="width: 10%">JK</th>
+                                <th style="width: 18%">Orang Tua / Wali</th>
+                                <th style="width: 15%">Alamat</th>
+                                <th style="width: 7%">Status</th>
                                 <th style="width: 10%">Aksi</th>
                             </tr>
                         </thead>
@@ -130,6 +159,13 @@
                             @forelse($siswas as $siswa)
                                 <tr>
                                     <td>{{ $siswa->id_siswa }}</td>
+                                    <td>
+
+                                        <img src="{{ $siswa->foto ? asset('storage/' . $siswa->foto) : asset('assets/images/user/default.jpg') }}"
+                                            class="rounded-circle border" width="45" height="45"
+                                            style="object-fit: cover;">
+
+                                    </td>
                                     <td>
                                         @if ($siswa->nisn)
                                             <div><span class="text-primary fw-semibold">NISN:</span> <span
@@ -144,12 +180,86 @@
                                         @endif
                                     </td>
                                     <td>{{ $siswa->nama_siswa }}</td>
+
+                                    <td>
+
+                                        @if ($siswa->tempat_lahir || $siswa->tanggal_lahir)
+                                            {{ $siswa->tempat_lahir ?? '-' }}
+
+                                            @if ($siswa->tanggal_lahir)
+                                                ,
+
+                                                {{ \Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d M Y') }}
+                                            @endif
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+
+                                    </td>
+
+                                    <td>
+                                        {{ $siswa->agama ?? '-' }}
+                                    </td>
+
                                     <td>{{ $siswa->kelas->nama_kelas ?? '-' }}</td>
                                     <td>{{ $siswa->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
-                                    <td>{{ $siswa->orangTua->nama_orang_tua ?? '-' }}</td>
-                                    <td>{{ $siswa->alamat ?? '-' }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $siswa->status == 'aktif' ? 'success' : 'secondary' }}">
+
+                                        @if ($siswa->nama_ayah)
+                                            <div>
+                                                <span class="fw-semibold text-primary">
+                                                    Ayah:
+                                                </span>
+                                                {{ $siswa->nama_ayah }}
+                                            </div>
+                                        @endif
+
+                                        @if ($siswa->nama_ibu)
+                                            <div>
+                                                <span class="fw-semibold text-danger">
+                                                    Ibu:
+                                                </span>
+                                                {{ $siswa->nama_ibu }}
+                                            </div>
+                                        @endif
+
+                                        @if ($siswa->nama_wali)
+                                            <div>
+                                                <span class="fw-semibold text-success">
+                                                    Wali:
+                                                </span>
+                                                {{ $siswa->nama_wali }}
+
+                                                @if ($siswa->no_hp_wali)
+                                                    <div class="small text-muted">
+                                                        {{ $siswa->no_hp_wali }}
+                                                    </div>
+                                                @endif
+
+                                            </div>
+                                        @endif
+
+                                        @if (!$siswa->nama_ayah && !$siswa->nama_ibu && !$siswa->nama_wali)
+                                            <span class="text-muted">-</span>
+                                        @endif
+
+                                    </td>
+                                    <td>
+                                        {{ Str::limit($siswa->alamat, 40) ?? '-' }}
+                                    </td>
+
+                                    @php
+                                        $statusColor = match ($siswa->status) {
+                                            'aktif' => 'success',
+                                            'lulus' => 'primary',
+                                            'pindah' => 'warning',
+                                            'keluar' => 'danger',
+                                            default => 'secondary',
+                                        };
+                                    @endphp
+
+                                    <td>
+                                        <span class="badge bg-{{ $statusColor }}">
                                             {{ ucfirst($siswa->status) }}
                                         </span>
                                     </td>
@@ -168,7 +278,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-5 text-muted">
+                                    <td colspan="12" class="text-center py-5 text-muted">
                                         <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
                                         Belum ada data siswa.
                                     </td>
