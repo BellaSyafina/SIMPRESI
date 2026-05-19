@@ -10,8 +10,8 @@
     <meta name="keywords"
         content="admin template, Mofi admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="{{ asset('') }}assets/images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ asset('') }}assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset('') }}assets/images/logo/smpn.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('') }}assets/images/logo/smpn.png" type="image/x-icon">
     <title>Login | SIMPRESI</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
