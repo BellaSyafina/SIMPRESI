@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
     Route::get('/siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
     Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
+    Route::get('/siswa/{siswa}', [SiswaController::class, 'detail'])->name('siswa.detail');
     Route::get('/siswa/{siswa}/edit', [SiswaController::class, 'show'])->name('siswa.show');
     Route::put('/siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
     Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');

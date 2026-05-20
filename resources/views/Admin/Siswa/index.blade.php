@@ -10,7 +10,6 @@
             </a>
         </li>
         <li class="breadcrumb-item f-w-400 active">@yield('title')</li>
-        {{--  <li class="breadcrumb-item f-w-400 active">Default</li>  --}}
     </ol>
 @endsection
 
@@ -142,13 +141,12 @@
                         <thead class="table">
                             <tr>
                                 <th style="width: 5%">ID</th>
-                                <th style="width: 6%">Foto</th>
                                 <th style="width: 12%">NISN / NIS</th>
                                 <th style="width: 14%">Nama Siswa</th>
                                 <th style="width: 12%">TTL</th>
                                 <th style="width: 8%">Agama</th>
                                 <th style="width: 8%">Kelas</th>
-                                <th style="width: 10%">JK</th>
+                                <th style="width: 10%">Jenis Kelamin</th>
                                 <th style="width: 18%">Orang Tua / Wali</th>
                                 <th style="width: 15%">Alamat</th>
                                 <th style="width: 7%">Status</th>
@@ -195,7 +193,15 @@
                                     </td>
 
                                     <td>{{ $siswa->kelas->nama_kelas ?? '-' }}</td>
-                                    <td>{{ $siswa->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                                    <td>
+                                        @if ($siswa->jenis_kelamin == 'L')
+                                            Laki-Laki
+                                        @elseif($siswa->jenis_kelamin == 'P')
+                                            Perempuan
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>
 
                                         @if ($siswa->nama_ayah)
@@ -258,6 +264,10 @@
                                     </td>
                                     <td>
                                         <div class="d-flex gap-2">
+                                            <a href="{{ route('siswa.detail', $siswa->id_siswa) }}"
+                                                class="btn btn-sm btn-outline-info">
+                                                <i data-feather="eye"></i> Detail
+                                            </a>
                                             <a href="{{ route('siswa.show', $siswa->id_siswa) }}"
                                                 class="btn btn-sm btn-outline-primary">
                                                 <i data-feather="edit-2"></i> Edit
@@ -269,7 +279,7 @@
                                                 @method('PUT')
                                                 <button type="submit" class="btn btn-sm btn-outline-warning">
                                                     <i data-feather="key"></i>
-                                                    Reset Password
+                                                    Reset
                                                 </button>
                                             </form>
                                             <button class="btn btn-sm btn-outline-danger btn-hapus"

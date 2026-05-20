@@ -64,6 +64,13 @@ class SiswaController extends Controller
         return view('Admin.Siswa.create', compact('kelas'));
     }
 
+    public function detail($id)
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($id);
+
+        return view('Admin.Siswa.detail', compact('siswa'));
+    }
+
     public function store(Request $request)
     {
         try {
@@ -102,7 +109,7 @@ class SiswaController extends Controller
                 'name' => $request->nama_siswa,
                 'email' => $emailLogin,
                 'password' => Hash::make($passwordDefault),
-                'role' => 'siswa',
+                'role' => 'orang_tua',
             ]);
 
             // 🔥 simpan siswa
@@ -117,19 +124,16 @@ class SiswaController extends Controller
                 'alamat' => $request->alamat,
                 'status' => $request->status ?? 'aktif',
                 'id_kelas' => $request->id_kelas,
-                'id_user' => $user->id,
+                'id_user' => $user->id_user,
 
-                // 🔥 data ayah
                 'nama_ayah' => $request->nama_ayah,
                 'no_hp_ayah' => $request->no_hp_ayah,
                 'pekerjaan_ayah' => $request->pekerjaan_ayah,
 
-                // 🔥 data ibu
                 'nama_ibu' => $request->nama_ibu,
                 'no_hp_ibu' => $request->no_hp_ibu,
                 'pekerjaan_ibu' => $request->pekerjaan_ibu,
 
-                // 🔥 data wali
                 'nama_wali' => $request->nama_wali,
                 'no_hp_wali' => $request->no_hp_wali,
                 'email_wali' => $request->email_wali,
@@ -140,10 +144,7 @@ class SiswaController extends Controller
 
             return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
+            dd($e->getMessage());
         }
     }
 

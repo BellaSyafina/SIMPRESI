@@ -28,6 +28,17 @@
             </div>
 
             <div class="card-body">
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <form action="{{ route('siswa.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -40,14 +51,14 @@
 
                         {{-- NISN --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">NISN</label>
+                            <label class="form-label fw-semibold"> NISN <span class="text-danger">*</span> </label>
                             <input type="text" name="nisn" class="form-control" value="{{ old('nisn') }}"
                                 placeholder="Masukkan NISN" required>
                         </div>
 
                         {{-- NIS --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">NIS</label>
+                            <label class="form-label fw-semibold"> NIS <span class="text-danger">*</span> </label>
                             <input type="text" name="nis" class="form-control" value="{{ old('nis') }}"
                                 placeholder="Masukkan NIS" required>
                         </div>
@@ -64,18 +75,17 @@
 
                         {{-- Jenis Kelamin --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">
-                                Jenis Kelamin
-                                <span class="text-danger">*</span>
-                            </label>
+                            <label class="form-label fw-semibold"> Jenis Kelamin <span class="text-danger">*</span> </label>
                             <select name="jenis_kelamin" class="form-select" required>
-                                <option value="">
-                                    Pilih
-                                </option>
-                                <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>
+                                <option value="">Pilih</option>
+
+                                <option value="L"
+                                    {{ old('jenis_kelamin', $siswa->jenis_kelamin) == 'L' ? 'selected' : '' }}>
                                     Laki-laki
                                 </option>
-                                <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>
+
+                                <option value="P"
+                                    {{ old('jenis_kelamin', $siswa->jenis_kelamin) == 'P' ? 'selected' : '' }}>
                                     Perempuan
                                 </option>
                             </select>
@@ -266,7 +276,8 @@
                                         <label class="form-label fw-semibold">
                                             Alamat Orang Tua / Wali
                                         </label>
-                                        <textarea name="alamat_orang_tua" class="form-control" rows="1" placeholder="Masukkan alamat orang tua / wali">{{ old('alamat_orang_tua') }}</textarea>
+                                        <textarea name="alamat_orang_tua" class="form-control" rows="1"
+                                            placeholder="Masukkan alamat orang tua / wali">{{ old('alamat_orang_tua') }}</textarea>
                                     </div>
                                 </div>
                             </div>
