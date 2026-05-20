@@ -7,8 +7,8 @@ use App\Models\Absensi;
 use App\Models\Guru;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
-use App\Models\OrangTua;
 use App\Models\Siswa;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +25,7 @@ class DashboardController extends Controller
             $totalSiswa = Siswa::count();
             $totalGuru = Guru::count();
             $totalKelas = Kelas::count();
-            $totalOrangTua = OrangTua::count();
+            $totalAkunSiswa = User::where('role', 'siswa')->count();
 
             // 🔥 Data chart per kelas
             $kelasData = Kelas::all();
@@ -67,7 +67,7 @@ class DashboardController extends Controller
                 $persenChart[] = $persen;
             }
 
-            return view('Admin.Dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalOrangTua', 'chartKelas', 'hadirData', 'izinData', 'sakitData', 'alpaData', 'hariChart', 'persenChart'));
+            return view('Admin.Dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalAkunSiswa', 'chartKelas', 'hadirData', 'izinData', 'sakitData', 'alpaData', 'hariChart', 'persenChart'));
         }
 
         // Guru
@@ -116,19 +116,9 @@ class DashboardController extends Controller
             return view('Admin.Dashboard.index', compact('jadwalHariIni', 'kelasHariIni', 'absensiSelesai', 'menungguAbsensi', 'absensiTerbaru'));
         }
 
-        // Orang Tua
-        if (Auth::user()->role == 'orang_tua') {
-            $anakList = Auth::user()->orangTua?->siswa()->with('kelas')->get() ?? collect();
-
-            // 🔥 pilih anak aktif
-            $selectedAnak = request('anak');
-
-            $anak = $anakList->where('id_siswa', $selectedAnak)->first();
-
-            // 🔥 default anak pertama
-            if (!$anak) {
-                $anak = $anakList->first();
-            }
+        // Siswa
+        if (Auth::user()->role == 'siswa') {
+            $siswa = Auth::user()->siswa;
 
             $totalHadir = 0;
             $totalIzin = 0;
@@ -148,9 +138,9 @@ class DashboardController extends Controller
             $persenSakit = 0;
             $persenAlpa = 0;
 
-            if ($anak) {
+            if ($siswa) {
                 // 🔥 absensi bulan ini
-                $absensi = Absensi::where('id_siswa', $anak->id_siswa)->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->get();
+                $absensi = Absensi::where('id_siswa', $siswa->id_siswa)->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->get();
 
                 $totalHadir = $absensi->where('status', 'hadir')->count();
 
@@ -160,7 +150,7 @@ class DashboardController extends Controller
 
                 $totalAlpa = $absensi->where('status', 'alpa')->count();
 
-                // 🔥 persentase pie chart
+                // 🔥 persentase
                 $totalAbsensi = $totalHadir + $totalIzin + $totalSakit + $totalAlpa;
 
                 if ($totalAbsensi > 0) {
@@ -173,13 +163,13 @@ class DashboardController extends Controller
                     $persenAlpa = round(($totalAlpa / $totalAbsensi) * 100);
                 }
 
-                // 🔥 chart 7 hari terakhir
+                // 🔥 chart 7 hari
                 for ($i = 6; $i >= 0; $i--) {
                     $tanggal = now()->subDays($i);
 
                     $chartTanggal[] = $tanggal->format('d M');
 
-                    $data = Absensi::where('id_siswa', $anak->id_siswa)->whereDate('tanggal', $tanggal)->get();
+                    $data = Absensi::where('id_siswa', $siswa->id_siswa)->whereDate('tanggal', $tanggal)->get();
 
                     $chartHadir[] = $data->where('status', 'hadir')->count();
 
@@ -192,13 +182,13 @@ class DashboardController extends Controller
 
                 // 🔥 jadwal hari ini
                 $jadwalHariIni = JadwalPelajaran::with(['mataPelajaran', 'guru'])
-                    ->where('id_kelas', $anak->id_kelas)
+                    ->where('id_kelas', $siswa->id_kelas)
                     ->whereDate('tanggal', now())
                     ->orderBy('jam_mulai')
                     ->get();
 
                 foreach ($jadwalHariIni as $jadwal) {
-                    $absen = Absensi::where('id_jadwal_pelajaran', $jadwal->id_jadwal_pelajaran)->where('id_siswa', $anak->id_siswa)->whereDate('tanggal', now())->first();
+                    $absen = Absensi::where('id_jadwal_pelajaran', $jadwal->id_jadwal_pelajaran)->where('id_siswa', $siswa->id_siswa)->whereDate('tanggal', now())->first();
 
                     $kehadiranHariIni[] = [
                         'mapel' => $jadwal->mataPelajaran->nama_mata_pelajaran,
@@ -212,7 +202,7 @@ class DashboardController extends Controller
                 }
             }
 
-            return view('Admin.Dashboard.index', compact('anakList', 'anak', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'kehadiranHariIni', 'chartTanggal', 'chartHadir', 'chartIzin', 'chartSakit', 'chartAlpa', 'persenHadir', 'persenIzin', 'persenSakit', 'persenAlpa'));
+            return view('Admin.Dashboard.index', compact('siswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'kehadiranHariIni', 'chartTanggal', 'chartHadir', 'chartIzin', 'chartSakit', 'chartAlpa', 'persenHadir', 'persenIzin', 'persenSakit', 'persenAlpa'));
         }
     }
 }

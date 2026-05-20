@@ -564,38 +564,8 @@
         </div>
     @endif
 
-    @if (Auth::user()->role == 'orang_tua')
+    @if (Auth::user()->role == 'siswa')
         <div class="container-fluid default-dashboard">
-            <form method="GET" class="mb-4">
-
-                <div class="row">
-
-                    <div class="col-md-4">
-
-                        <label class="form-label fw-semibold">
-                            Pilih Anak
-                        </label>
-
-                        <select name="anak" class="form-select" onchange="this.form.submit()">
-
-                            @foreach ($anakList as $item)
-                                <option value="{{ $item->id_siswa }}"
-                                    {{ optional($anak)->id_siswa == $item->id_siswa ? 'selected' : '' }}>
-
-                                    {{ $item->nama_siswa }}
-                                    -
-                                    {{ optional($item->kelas)->nama_kelas }}
-
-                                </option>
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-            </form>
             <div class="row align-items-stretch">
                 <!-- Card Greeting (kiri) -->
                 <div class="col-xl-5 col-md-6 mb-4 d-flex">
@@ -605,7 +575,7 @@
                                 <h1 class="fw-bold display-8">Hallo, {{ Auth::user()->name }}!</h1>
                                 <p class="fs-6 mt-3 text-secondary">Selamat datang di Sistem <br> Absensi SMPN 2
                                     Saronggi.<br>
-                                    Pantau kehadiran putra/putri <br> Anda dengan mudah.</p>
+                                    Pantau kehadiran dan jadwal pelajaran <br> Anda dengan mudah.</p>
                                 <a class="btn btn-outline-primary b-r-8" href="#">View Profile</a>
                             </div>
                         </div>
@@ -617,30 +587,30 @@
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-body">
                             <h4 class="fw-bold mb-4" style="color: #2c3e50;">
-                                <i data-feather="user" class="me-2" width="24" height="24"></i> Profil Anak
+                                <i data-feather="user" class="me-2" width="24" height="24"></i> Profil Siswa
                             </h4>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">Nama Lengkap :</div>
                                 <div class="col-7 fw-bold text-dark">
-                                    {{ $anak?->nama_siswa ?? '-' }}
+                                    {{ $siswa?->nama_siswa ?? '-' }}
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">NIS :</div>
                                 <div class="col-7 fw-bold text-dark">
-                                    {{ $anak?->nis ?? '-' }}
+                                    {{ $siswa?->nis ?? '-' }}
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">Kelas :</div>
                                 <div class="col-7 fw-bold text-dark">
-                                    {{ $anak?->kelas?->nama_kelas ?? '-' }}
+                                    {{ $siswa?->kelas?->nama_kelas ?? '-' }}
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 fw-semibold text-dark">Wali Kelas :</div>
                                 <div class="col-7 fw-bold text-dark">
-                                    {{ $anak?->kelas?->waliKelas?->nama_guru ?? '-' }}
+                                    {{ $siswa?->kelas?->waliKelas?->nama_guru ?? '-' }}
                                 </div>
                             </div>
                             <div class="row mb-4">
@@ -776,59 +746,7 @@
             </div>
 
             <script>
-                (function loadKehadiranHariIni() {
-                        const today = new Date().getDay(); // 0 Minggu, 1 Senin ... 6 Sabtu
-                        const jadwalHariIni = jadwal[today] || [];
-                        const container = document.getElementById('kehadiranHariIniContainer');
-                        if (!container) return;
-
-                        if (jadwalHariIni.length === 0) {
-                            container.innerHTML =
-                                '<div class="list-group-item py-3 text-center text-muted">Tidak ada jadwal untuk hari ini.</div>';
-                            return;
-                        }
-
-                        let html = '';
-                        jadwalHariIni.forEach(item => {
-                            let statusClass = '';
-                            switch (item.status) {
-                                case 'Hadir':
-                                    statusClass = 'text-success fw-bold';
-                                    break;
-                                case 'Izin':
-                                    statusClass = 'text-warning fw-bold';
-                                    break;
-                                case 'Sakit':
-                                    statusClass = 'text-info fw-bold';
-                                    break;
-                                case 'Alpha':
-                                    statusClass = 'text-danger fw-bold';
-                                    break;
-                                default:
-                                    statusClass = 'text-secondary fw-bold';
-                            }
-                            html += `
-                    <div class="list-group-item py-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap">
-                            <div>
-                                <div class="fw-bold fs-5">${item.mapel}</div>
-                                <div class="text-muted small">${item.waktu} • ${item.guru}</div>
-                            </div>
-                            <div class="${statusClass}">${item.status}</div>
-                        </div>
-                    </div>
-                `;
-                        });
-                        container.innerHTML = html;
-                    }
-
-                    // Panggil fungsi setelah DOM siap
-                    if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', loadKehadiranHariIni);
-                    } else {
-                        loadKehadiranHariIni();
-                    }
-                })();
+                
             </script>
 
             <!-- Tren Kehadiran Harian (Bar Chart) + Diagram Lingkaran -->

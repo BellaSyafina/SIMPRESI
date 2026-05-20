@@ -7,6 +7,8 @@ use App\Models\Kelas;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Imports\SiswaImport;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -75,7 +77,6 @@ class SiswaController extends Controller
                     'agama' => 'nullable|string|max:50',
                     'tempat_lahir' => 'nullable|string|max:255',
                     'tanggal_lahir' => 'nullable|date',
-                    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                     'email_wali' => 'nullable|email',
                     'status' => 'required|in:aktif,lulus,pindah,keluar',
                 ],
@@ -87,19 +88,22 @@ class SiswaController extends Controller
                     'nama_siswa.required' => 'Nama siswa wajib diisi.',
                     'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
                     'id_kelas.required' => 'Kelas wajib dipilih.',
-                    'foto.image' => 'File harus berupa gambar.',
-                    'foto.mimes' => 'Foto harus jpg, jpeg, atau png.',
-                    'foto.max' => 'Ukuran foto maksimal 2MB.',
                     'email_wali.email' => 'Format email wali tidak valid.',
                 ],
             );
 
-            // 🔥 upload foto
-            $foto = null;
+            // 🔥 generate email dari NIS/NISN
+            $emailLogin = $request->nisn . '@siswa.com';
+            // 🔥 password default = tanggal lahir
+            $passwordDefault = $request->tanggal_lahir ? \Carbon\Carbon::parse($request->tanggal_lahir)->format('dmY') : '12345678';
 
-            if ($request->hasFile('foto')) {
-                $foto = $request->file('foto')->store('siswa', 'public');
-            }
+            // 🔥 buat akun user siswa
+            $user = User::create([
+                'name' => $request->nama_siswa,
+                'email' => $emailLogin,
+                'password' => Hash::make($passwordDefault),
+                'role' => 'siswa',
+            ]);
 
             // 🔥 simpan siswa
             Siswa::create([
@@ -111,9 +115,9 @@ class SiswaController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'agama' => $request->agama,
                 'alamat' => $request->alamat,
-                'foto' => $foto,
                 'status' => $request->status ?? 'aktif',
                 'id_kelas' => $request->id_kelas,
+                'id_user' => $user->id,
 
                 // 🔥 data ayah
                 'nama_ayah' => $request->nama_ayah,
@@ -166,7 +170,6 @@ class SiswaController extends Controller
                     'agama' => 'nullable|string|max:50',
                     'tempat_lahir' => 'nullable|string|max:255',
                     'tanggal_lahir' => 'nullable|date',
-                    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                     'email_wali' => 'nullable|email',
                     'status' => 'required|in:aktif,lulus,pindah,keluar',
                 ],
@@ -178,23 +181,16 @@ class SiswaController extends Controller
                     'nama_siswa.required' => 'Nama siswa wajib diisi.',
                     'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
                     'id_kelas.required' => 'Kelas wajib dipilih.',
-                    'foto.image' => 'File harus berupa gambar.',
-                    'foto.mimes' => 'Foto harus jpg, jpeg, atau png.',
-                    'foto.max' => 'Ukuran foto maksimal 2MB.',
                     'email_wali.email' => 'Format email wali tidak valid.',
                 ],
             );
 
-            // 🔥 upload foto baru
-            if ($request->hasFile('foto')) {
-                // hapus foto lama
-                if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
-                    Storage::disk('public')->delete($siswa->foto);
-                }
-
-                $foto = $request->file('foto')->store('siswa', 'public');
-            } else {
-                $foto = $siswa->foto;
+            // 🔥 update akun login siswa
+            if ($siswa->user) {
+                $siswa->user->update([
+                    'name' => $request->nama_siswa,
+                    'email' => $request->nisn . '@siswa.com',
+                ]);
             }
 
             // 🔥 update siswa
@@ -207,7 +203,6 @@ class SiswaController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'agama' => $request->agama,
                 'alamat' => $request->alamat,
-                'foto' => $foto,
                 'status' => $request->status,
                 'id_kelas' => $request->id_kelas,
 
@@ -265,6 +260,28 @@ class SiswaController extends Controller
             return redirect()->route('siswa.index')->with('success', 'Import berhasil');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
+    }
+
+    public function resetPassword($id)
+    {
+        try {
+            $siswa = Siswa::with('user')->findOrFail($id);
+
+            if (!$siswa->user) {
+                return back()->with('error', 'Akun siswa tidak ditemukan.');
+            }
+
+            // 🔥 password default
+            $passwordDefault = $siswa->tanggal_lahir ? \Carbon\Carbon::parse($siswa->tanggal_lahir)->format('dmY') : '12345678';
+
+            $siswa->user->update([
+                'password' => Hash::make($passwordDefault),
+            ]);
+
+            return back()->with('success', 'Password berhasil direset.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
     }
 }

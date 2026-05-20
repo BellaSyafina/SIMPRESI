@@ -52,19 +52,6 @@
                                 placeholder="Masukkan NIS" required>
                         </div>
 
-                        {{-- Foto --}}
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">
-                                Foto Siswa
-                            </label>
-                            <input type="file" name="foto" class="form-control">
-                            <div class="mt-2 text-center">
-                                <img id="previewFoto"
-                                    src="{{ $siswa->foto ? asset('storage/' . $siswa->foto) : asset('assets/images/default-user.png') }}"
-                                    class="rounded border" width="100" height="100" style="object-fit: cover;">
-                            </div>
-                        </div>
-
                         {{-- Nama --}}
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">
@@ -77,7 +64,7 @@
                         </div>
 
                         {{-- Jenis Kelamin --}}
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">
                                 Jenis Kelamin
                                 <span class="text-danger">*</span>
@@ -314,18 +301,3 @@
 
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.querySelector('input[name="foto"]')
-            .addEventListener('change', function(e) {
-                const file = e.target.files[0];
-
-                if (file) {
-                    document.getElementById('previewFoto')
-                        .src = URL.createObjectURL(file);
-                }
-
-            });
-    </script>
-@endpush

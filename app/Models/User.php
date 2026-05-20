@@ -24,10 +24,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * Get the attributes that should be cast.
@@ -43,11 +40,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function orangTua()
-    {
-        return $this->hasOne(OrangTua::class, 'id_user');
-    }
-
     public function guru()
     {
         return $this->hasOne(Guru::class, 'id_user');
@@ -56,5 +48,10 @@ class User extends Authenticatable
     public function loginActivities()
     {
         return $this->hasMany(LoginActivity::class);
+    }
+
+    public function siswa()
+    {
+        return $this->hasOne(Siswa::class, 'id_user');
     }
 }

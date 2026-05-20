@@ -138,18 +138,17 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1400px">
+                    <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1200px">
                         <thead class="table">
                             <tr>
                                 <th style="width: 5%">ID</th>
-                                <th style="width: 6%">Foto</th>
-                                <th style="width: 12%">NISN / NIS</th>
-                                <th style="width: 14%">Nama Siswa</th>
+                                <th style="width: 14%">NISN / NIS</th>
+                                <th style="width: 15%">Nama Siswa</th>
                                 <th style="width: 12%">TTL</th>
                                 <th style="width: 8%">Agama</th>
                                 <th style="width: 8%">Kelas</th>
                                 <th style="width: 10%">JK</th>
-                                <th style="width: 18%">Orang Tua / Wali</th>
+                                <th style="width: 20%">Orang Tua / Wali</th>
                                 <th style="width: 15%">Alamat</th>
                                 <th style="width: 7%">Status</th>
                                 <th style="width: 10%">Aksi</th>
@@ -159,13 +158,6 @@
                             @forelse($siswas as $siswa)
                                 <tr>
                                     <td>{{ $siswa->id_siswa }}</td>
-                                    <td>
-
-                                        <img src="{{ $siswa->foto ? asset('storage/' . $siswa->foto) : asset('assets/images/user/default.jpg') }}"
-                                            class="rounded-circle border" width="45" height="45"
-                                            style="object-fit: cover;">
-
-                                    </td>
                                     <td>
                                         @if ($siswa->nisn)
                                             <div><span class="text-primary fw-semibold">NISN:</span> <span
@@ -269,6 +261,16 @@
                                                 class="btn btn-sm btn-outline-primary">
                                                 <i data-feather="edit-2"></i> Edit
                                             </a>
+                                            <form action="{{ route('siswa.reset-password', $siswa->id_siswa) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Reset password siswa ke tanggal lahir?')">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                    <i data-feather="key"></i>
+                                                    Reset Password
+                                                </button>
+                                            </form>
                                             <button class="btn btn-sm btn-outline-danger btn-hapus"
                                                 data-id="{{ $siswa->id_siswa }}" data-nama="{{ $siswa->nama_siswa }}">
                                                 <i data-feather="trash-2"></i> Hapus
