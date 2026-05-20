@@ -155,7 +155,7 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="bg-light rounded p-3">
+                            <div class="rounded p-3">
                                 <h6 class="fw-semibold mb-3">
                                     Data Ayah
                                 </h6>
@@ -167,28 +167,28 @@
                                             Nama Ayah
                                         </label>
                                         <input type="text" name="nama_ayah" class="form-control"
-                                            value="{{ old('nama_ayah') }}">
+                                            value="{{ old('nama_ayah') }}" placeholder="Masukkan nama ayah">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">
                                             No HP Ayah
                                         </label>
                                         <input type="tel" name="no_hp_ayah" class="form-control"
-                                            value="{{ old('no_hp_ayah') }}">
+                                            value="{{ old('no_hp_ayah') }}" placeholder="Masukkan no HP ayah">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">
                                             Pekerjaan Ayah
                                         </label>
                                         <input type="text" name="pekerjaan_ayah" class="form-control"
-                                            value="{{ old('pekerjaan_ayah') }}">
+                                            value="{{ old('pekerjaan_ayah') }}" placeholder="Masukkan pekerjaan ayah">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-12">
-                            <div class="bg-light rounded p-3">
+                            <div class="rounded p-3">
                                 <h6 class="fw-semibold mb-3">
                                     Data Ibu
                                 </h6>
@@ -199,28 +199,28 @@
                                             Nama Ibu
                                         </label>
                                         <input type="text" name="nama_ibu" class="form-control"
-                                            value="{{ old('nama_ibu') }}">
+                                            value="{{ old('nama_ibu') }}" placeholder="Masukkan nama ibu">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">
                                             No HP Ibu
                                         </label>
                                         <input type="tel" name="no_hp_ibu" class="form-control"
-                                            value="{{ old('no_hp_ibu') }}">
+                                            value="{{ old('no_hp_ibu') }}" placeholder="Masukkan no HP ibu">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">
                                             Pekerjaan Ibu
                                         </label>
                                         <input type="text" name="pekerjaan_ibu" class="form-control"
-                                            value="{{ old('pekerjaan_ibu') }}">
+                                            value="{{ old('pekerjaan_ibu') }}" placeholder="Masukkan pekerjaan ibu">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-12">
-                            <div class="bg-light rounded p-3">
+                            <div class="rounded p-3">
                                 <h6 class="fw-semibold mb-3">
                                     Data Wali
                                 </h6>
@@ -231,14 +231,14 @@
                                             Nama Wali
                                         </label>
                                         <input type="text" name="nama_wali" class="form-control"
-                                            value="{{ old('nama_wali') }}">
+                                            value="{{ old('nama_wali') }}" placeholder="Masukkan nama wali">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">
                                             No HP Wali
                                         </label>
                                         <input type="tel" name="no_hp_wali" class="form-control"
-                                            value="{{ old('no_hp_wali') }}">
+                                            value="{{ old('no_hp_wali') }}" placeholder="Masukkan no HP wali">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">
@@ -246,7 +246,7 @@
                                         </label>
                                         <input type="email" name="email_wali"
                                             class="form-control @error('email_wali') is-invalid @enderror"
-                                            value="{{ old('email_wali') }}">
+                                            value="{{ old('email_wali') }}" placeholder="Masukkan email wali">
                                         @error('email_wali')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -258,7 +258,7 @@
                                             Pekerjaan Wali
                                         </label>
                                         <input type="text" name="pekerjaan_wali" class="form-control"
-                                            value="{{ old('pekerjaan_wali') }}">
+                                            value="{{ old('pekerjaan_wali') }}" placeholder="Masukkan pekerjaan wali">
                                     </div>
 
 
@@ -266,7 +266,7 @@
                                         <label class="form-label fw-semibold">
                                             Alamat Orang Tua / Wali
                                         </label>
-                                        <textarea name="alamat_orang_tua" class="form-control" rows="2">{{ old('alamat_orang_tua') }}</textarea>
+                                        <textarea name="alamat_orang_tua" class="form-control" rows="1" placeholder="Masukkan alamat orang tua / wali">{{ old('alamat_orang_tua') }}</textarea>
                                     </div>
                                 </div>
                             </div>

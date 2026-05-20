@@ -155,7 +155,7 @@
                                         </p>
 
                                         <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
-                                            {{ $totalOrangTua }}
+                                           {{-- {{ $totalOrangTua }} --}}
                                         </h1>
                                     </div>
 
@@ -746,7 +746,7 @@
             </div>
 
             <script>
-                
+
             </script>
 
             <!-- Tren Kehadiran Harian (Bar Chart) + Diagram Lingkaran -->
