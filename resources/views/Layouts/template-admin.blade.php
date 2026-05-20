@@ -66,6 +66,37 @@
             width: 14px !important;
             height: 14px !important;
         }
+
+        /* FULL WIDTH PAGE BODY */
+        .page-wrapper.compact-wrapper .page-body-wrapper .page-body {
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+            padding: 30px;
+            width: calc(100% - 250px) !important;
+            max-width: 100% !important;
+        }
+
+        /* BIKIN CONTENT MELEBAR */
+        .page-body {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* TABLE BIAR LEGA */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            min-width: 1500px;
+        }
+
+        /* SPACING KOLOM */
+        .table td,
+        .table th {
+            padding: 16px 18px !important;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
