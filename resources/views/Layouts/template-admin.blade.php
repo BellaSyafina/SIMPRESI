@@ -60,12 +60,6 @@
         .custom-pagination .disabled .page-link {
             opacity: .5;
         }
-
-        /* 🔥 HAPUS ICON ANEH TEMPLATE */
-        .custom-pagination svg {
-            width: 14px !important;
-            height: 14px !important;
-        }
     </style>
 </head>
 

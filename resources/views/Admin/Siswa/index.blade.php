@@ -19,7 +19,7 @@
         use Illuminate\Support\Str;
     @endphp
 
-    <div class="container-fluid px-0">
+    <div class="container-fluid">
         <!-- Statistik -->
         <div class="row g-3 mb-4">
             <div class="col-md-4">
@@ -138,20 +138,21 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1200px">
+                    <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1400px">
                         <thead class="table">
                             <tr>
                                 <th style="width: 5%">ID</th>
-                                <th style="width: 14%">NISN / NIS</th>
-                                <th style="width: 15%">Nama Siswa</th>
+                                <th style="width: 6%">Foto</th>
+                                <th style="width: 12%">NISN / NIS</th>
+                                <th style="width: 14%">Nama Siswa</th>
                                 <th style="width: 12%">TTL</th>
                                 <th style="width: 8%">Agama</th>
                                 <th style="width: 8%">Kelas</th>
                                 <th style="width: 10%">JK</th>
-                                <th style="width: 20%">Orang Tua / Wali</th>
+                                <th style="width: 18%">Orang Tua / Wali</th>
                                 <th style="width: 15%">Alamat</th>
                                 <th style="width: 7%">Status</th>
-                                <th style="width: 10%">Aksi</th>
+                                <th style="width: 14%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
