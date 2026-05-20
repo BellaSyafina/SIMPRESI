@@ -76,10 +76,12 @@
                         <select name="id_mata_pelajaran[]" multiple
                             class="form-select @error('id_mata_pelajaran') is-invalid @enderror">
 
-                            @foreach ($mapelList as $id => $nama)
-                                <option value="{{ $id }}"
-                                    {{ in_array($id, old('id_mata_pelajaran', $guru->mataPelajaran->pluck('id_mata_pelajaran')->toArray())) ? 'selected' : '' }}>
-                                    {{ $nama }}
+                            @foreach ($mapelList as $mapel)
+                                <option value="{{ $mapel->id_mata_pelajaran }}"
+                                    {{ in_array($mapel->id_mata_pelajaran, old('id_mata_pelajaran', $guru->mataPelajaran->pluck('id_mata_pelajaran')->toArray())) ? 'selected' : '' }}>
+
+                                    {{ $mapel->kode_mapel }} - {{ $mapel->nama_mata_pelajaran }}
+
                                 </option>
                             @endforeach
 

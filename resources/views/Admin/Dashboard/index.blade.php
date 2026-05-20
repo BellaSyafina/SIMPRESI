@@ -564,7 +564,7 @@
         </div>
     @endif
 
-    @if (Auth::user()->role == 'siswa')
+    @if (Auth::user()->role == 'orang_tua')
         <div class="container-fluid default-dashboard">
             <div class="row align-items-stretch">
                 <!-- Card Greeting (kiri) -->

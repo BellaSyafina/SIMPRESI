@@ -52,6 +52,7 @@
                     <thead class="table">
                         <tr>
                             <th width="10%">ID</th>
+                            <th width="20%">Kode</th>
                             <th>Nama Mata Pelajaran</th>
                             <th width="20%" class="text-center">Aksi</th>
                         </tr>
@@ -60,12 +61,17 @@
                         @forelse ($mapel as $index => $item)
                             <tr>
                                 <td class="text-center">{{ $item->id_mata_pelajaran }}</td>
-                                <td>{{ $item->nama_mata_pelajaran }}</td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        {{ $item->kode_mapel }}
+                                    </span>
+                                </td>
+                                <td> {{ $item->nama_mata_pelajaran }} </td>
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center">
                                         <!-- Tombol Edit (buka modal) -->
                                         <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
-                                            data-id="{{ $item->id_mata_pelajaran }}"
+                                            data-id="{{ $item->id_mata_pelajaran }}" data-kode="{{ $item->kode_mapel }}"
                                             data-nama="{{ $item->nama_mata_pelajaran }}">
                                             <i data-feather="edit-2"></i> Edit
                                         </button>
@@ -103,16 +109,37 @@
             <div class="modal-content">
                 <form action="{{ route('mata-pelajaran.store') }}" method="POST">
                     @csrf
+
                     <div class="modal-header">
-                        <h5 class="modal-title">Tambah Mata Pelajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <h5 class="modal-title">
+                            Tambah Mata Pelajaran
+                        </h5>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
                     </div>
+
                     <div class="modal-body">
-                        <label class="form-label">Nama Mata Pelajaran</label>
-                        <input type="text" name="nama_mata_pelajaran" class="form-control" required>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Kode Mata Pelajaran
+                            </label>
+                            <input type="text" name="kode_mapel" class="form-control" placeholder="Contoh: MTK7"
+                                value="{{ old('kode_mapel') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Nama Mata Pelajaran
+                            </label>
+                            <input type="text" name="nama_mata_pelajaran" class="form-control" required>
+                        </div>
                     </div>
+
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-primary">
+                            Simpan
+                        </button>
                     </div>
                 </form>
             </div>
@@ -138,14 +165,25 @@
                             <input type="text" id="edit_id" class="form-control" readonly>
                         </div>
 
-                        <label class="form-label">Nama Mata Pelajaran</label>
-                        <input type="text" name="nama_mata_pelajaran" id="edit_nama" class="form-control" required>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Kode Mata Pelajaran
+                            </label>
+                            <input type="text" name="kode_mapel" id="edit_kode" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Nama Mata Pelajaran
+                            </label>
+                            <input type="text" name="nama_mata_pelajaran" id="edit_nama" class="form-control"
+                                required>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -166,7 +204,8 @@
                     <form method="POST" id="formHapus">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Hapus</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-hapus"
+                            data-id="{{ $item->id_mata_pelajaran }}">>Hapus</button>
                     </form>
                 </div>
             </div>
@@ -177,34 +216,51 @@
 @push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            // EDIT
             document.querySelectorAll('.btn-edit').forEach(btn => {
+
                 btn.addEventListener('click', function() {
 
-                    let id = this.dataset.id; // 🔥 ambil id
+                    let id = this.dataset.id;
                     let nama = this.dataset.nama;
+                    let kode = this.dataset.kode;
 
                     document.getElementById('edit_id').value = id;
+                    document.getElementById('edit_kode').value = kode;
                     document.getElementById('edit_nama').value = nama;
 
-                    // 🔥 FIX ROUTE (SESUAI ROUTE KAMU)
-                    document.getElementById('formEdit').action = `/mata-pelajaran/${id}/update`;
+                    // action form update
+                    document.getElementById('formEdit').action =
+                        `/mata-pelajaran/${id}`;
 
-                    new bootstrap.Modal(document.getElementById('modalEdit')).show();
+                    // tampil modal
+                    new bootstrap.Modal(
+                        document.getElementById('modalEdit')
+                    ).show();
+
                 });
+
             });
 
             // HAPUS
             document.querySelectorAll('.btn-hapus').forEach(btn => {
+
                 btn.addEventListener('click', function() {
 
                     let id = this.dataset.id;
 
-                    // 🔥 FIX ROUTE
-                    document.getElementById('formHapus').action = `/mata-pelajaran/${id}/delete`;
+                    document.getElementById('formHapus').action =
+                        `/mata-pelajaran/${id}`;
 
-                    new bootstrap.Modal(document.getElementById('modalHapus')).show();
+                    new bootstrap.Modal(
+                        document.getElementById('modalHapus')
+                    ).show();
+
                 });
+
             });
+
         });
     </script>
 @endpush

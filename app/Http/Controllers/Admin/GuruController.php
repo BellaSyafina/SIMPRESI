@@ -38,7 +38,7 @@ class GuruController extends Controller
 
         $gurus = $query->paginate(10)->withQueryString();
 
-        $mapelList = MataPelajaran::pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
+        $mapelList = MataPelajaran::all();
 
         // Statistik
         $totalGuru = Guru::count();
@@ -50,7 +50,7 @@ class GuruController extends Controller
 
     public function create()
     {
-        $mapelList = MataPelajaran::pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
+        $mapelList = MataPelajaran::all();
 
         return view('Admin.Guru.create', compact('mapelList'));
     }
@@ -59,7 +59,7 @@ class GuruController extends Controller
     {
         $guru = Guru::findOrFail($id);
 
-        $mapelList = MataPelajaran::pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
+        $mapelList = MataPelajaran::all();
 
         return view('Admin.Guru.update', compact('guru', 'mapelList'));
     }

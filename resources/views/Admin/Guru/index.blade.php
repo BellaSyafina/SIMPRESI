@@ -163,7 +163,7 @@
                                         @if ($guru->mataPelajaran->count())
                                             @foreach ($guru->mataPelajaran as $mapel)
                                                 <span class="badge bg-primary mb-1">
-                                                    {{ $mapel->nama_mata_pelajaran }}
+                                                    {{ $mapel->nama_mata_pelajaran }} - {{ $mapel->kode_mapel }}
                                                 </span>
                                             @endforeach
                                         @else

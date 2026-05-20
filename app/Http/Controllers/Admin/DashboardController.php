@@ -116,9 +116,9 @@ class DashboardController extends Controller
             return view('Admin.Dashboard.index', compact('jadwalHariIni', 'kelasHariIni', 'absensiSelesai', 'menungguAbsensi', 'absensiTerbaru'));
         }
 
-        // Siswa
-        if (Auth::user()->role == 'siswa') {
-            $siswa = Auth::user()->siswa;
+        // Orang Tua
+        if (Auth::user()->role == 'orang_tua') {
+            $siswa = Auth::user()->id_siswa ? Siswa::find(Auth::user()->id_siswa) : null;
 
             $totalHadir = 0;
             $totalIzin = 0;
