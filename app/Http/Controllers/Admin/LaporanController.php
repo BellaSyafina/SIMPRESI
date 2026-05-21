@@ -87,6 +87,8 @@ class LaporanController extends Controller
             $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
+        } else {
+            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
         // QUERY ABSENSI
@@ -231,6 +233,8 @@ class LaporanController extends Controller
             $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
+        } else {
+            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
         // QUERY ABSENSI
