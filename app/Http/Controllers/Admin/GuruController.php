@@ -29,7 +29,7 @@ class GuruController extends Controller
             $query->where('jenis_kelamin', $request->jenis_kelamin);
         }
 
-        // Filter jabatan
+        // Filter mapel
         if ($request->filled('mapel')) {
             $query->whereHas('mataPelajaran', function ($q) use ($request) {
                 $q->where('mata_pelajaran.id_mata_pelajaran', $request->mapel);
@@ -38,7 +38,10 @@ class GuruController extends Controller
 
         $gurus = $query->paginate(10)->withQueryString();
 
-        $mapelList = MataPelajaran::all();
+        // MapelList dengan format "nama - kode"
+        $mapelList = MataPelajaran::get()->mapWithKeys(function ($item) {
+            return [$item->id_mata_pelajaran => $item->nama_mata_pelajaran . ' - ' . ($item->kode_mapel ?? '')];
+        });
 
         // Statistik
         $totalGuru = Guru::count();
