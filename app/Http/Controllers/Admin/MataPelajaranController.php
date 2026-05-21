@@ -13,7 +13,9 @@ class MataPelajaranController extends Controller
         $query = MataPelajaran::query();
 
         if ($request->search) {
-            $query->where('nama_mata_pelajaran', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('kode_mapel', 'like', '%' . $request->search . '%')->orWhere('nama_mata_pelajaran', 'like', '%' . $request->search . '%');
+            });
         }
 
         $mapel = $query->paginate(10)->appends($request->all());
@@ -26,14 +28,17 @@ class MataPelajaranController extends Controller
     {
         try {
             $request->validate([
-                'nama_mata_pelajaran' => 'required|unique:mata_pelajaran,nama_mata_pelajaran',
+                'kode_mapel' => 'required|unique:mata_pelajaran,kode_mapel',
+                'nama_mata_pelajaran' => 'required',
             ]);
 
             MataPelajaran::create($request->all());
 
             return redirect()->route('mata-pelajaran.index')->with('success', 'Mata pelajaran berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->route('mata-pelajaran.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()
+                ->route('mata-pelajaran.index')
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -43,14 +48,17 @@ class MataPelajaranController extends Controller
 
         try {
             $request->validate([
-                'nama_mata_pelajaran' => 'required|unique:mata_pelajaran,nama_mata_pelajaran,' . $mataPelajaran->id_mata_pelajaran . ',id_mata_pelajaran',
+                'kode_mapel' => 'required|unique:mata_pelajaran,kode_mapel,' . $mataPelajaran->id_mata_pelajaran . ',id_mata_pelajaran',
+                'nama_mata_pelajaran' => 'required',
             ]);
 
             $mataPelajaran->update($request->all());
 
             return redirect()->route('mata-pelajaran.index')->with('success', 'Mata pelajaran berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->route('mata-pelajaran.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()
+                ->route('mata-pelajaran.index')
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -62,7 +70,9 @@ class MataPelajaranController extends Controller
 
             return redirect()->route('mata-pelajaran.index')->with('success', 'Mata pelajaran berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->route('mata-pelajaran.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()
+                ->route('mata-pelajaran.index')
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }

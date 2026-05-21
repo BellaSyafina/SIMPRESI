@@ -124,7 +124,7 @@
                             <label class="form-label">
                                 Kode Mata Pelajaran
                             </label>
-                            <input type="text" name="kode_mapel" class="form-control" placeholder="Contoh: MTK7"
+                            <input type="text" name="kode_mapel" class="form-control" placeholder="Contoh: MTK-7"
                                 value="{{ old('kode_mapel') }}">
                         </div>
 
@@ -132,7 +132,7 @@
                             <label class="form-label">
                                 Nama Mata Pelajaran
                             </label>
-                            <input type="text" name="nama_mata_pelajaran" class="form-control" required>
+                            <input type="text" name="nama_mata_pelajaran" class="form-control" placeholder="Masukkan Nama Mata Pelajaran" required>
                         </div>
                     </div>
 
