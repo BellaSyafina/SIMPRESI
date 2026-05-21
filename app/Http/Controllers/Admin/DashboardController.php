@@ -7,6 +7,7 @@ use App\Models\Absensi;
 use App\Models\Guru;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
+use App\Models\MataPelajaran;
 use App\Models\Siswa;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,7 +26,8 @@ class DashboardController extends Controller
             $totalSiswa = Siswa::count();
             $totalGuru = Guru::count();
             $totalKelas = Kelas::count();
-            $totalAkunSiswa = User::where('role', 'siswa')->count();
+            $totalMataPelajaran = MataPelajaran::count();
+            //$totalAkunSiswa = User::where('role', 'siswa')->count();
 
             // 🔥 Data chart per kelas
             $kelasData = Kelas::all();
@@ -67,7 +69,7 @@ class DashboardController extends Controller
                 $persenChart[] = $persen;
             }
 
-            return view('Admin.Dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalAkunSiswa', 'chartKelas', 'hadirData', 'izinData', 'sakitData', 'alpaData', 'hariChart', 'persenChart'));
+            return view('Admin.Dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalMataPelajaran', 'chartKelas', 'hadirData', 'izinData', 'sakitData', 'alpaData', 'hariChart', 'persenChart'));
         }
 
         // Guru

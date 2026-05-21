@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('breadcrumb')
-    {{--  <ol class="breadcrumb justify-content-sm-start align-items-center mb-0">
+    <ol class="breadcrumb justify-content-sm-start align-items-center mb-0">
         <li class="breadcrumb-item">
             <a href="/">
                 <i data-feather="home"> </i>
@@ -11,7 +11,7 @@
         </li>
         <li class="breadcrumb-item f-w-400">Dashboard</li>
         <li class="breadcrumb-item f-w-400 active">Default</li>
-    </ol>  --}}
+    </ol>
 @endsection
 
 @section('content')
@@ -30,7 +30,7 @@
                                     Selamat datang di Sistem Absensi SMPN 2 Saronggi.<br>
                                     Kelola kehadiran siswa dengan mudah.
                                 </p>
-                                <a class="btn" href="#">View Profile</a>
+                                <a class="btn" href="{{ route('account.index') }}">View Profile</a>
                             </div>
                         </div>
                     </div>
@@ -43,11 +43,7 @@
                         {{-- Total Siswa --}}
                         <div class="col-6">
                             <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
-                                style="
-                    border-radius: 24px;
-                    height: 145px;
-                    background: linear-gradient(135deg,#2b96ef,#9cccf6);
-                 ">
+                                style="border-radius: 24px; height: 145px; background: linear-gradient(135deg,#2b96ef,#9cccf6); ">
 
                                 <div class="card-body d-flex flex-column justify-content-between h-100">
                                     <div>
@@ -61,12 +57,7 @@
                                     </div>
 
                                     <div class="position-absolute"
-                                        style="
-                            right:-10px;
-                            bottom:-20px;
-                            font-size:90px;
-                            opacity:.15;
-                         ">
+                                        style="right:-10px; bottom:-20px; font-size:90px; opacity:.15; ">
                                         👨‍🎓
                                     </div>
                                 </div>
@@ -76,11 +67,7 @@
                         {{-- Total Guru --}}
                         <div class="col-6">
                             <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
-                                style="
-                    border-radius: 24px;
-                    height: 145px;
-                    background: linear-gradient(135deg,#f78812,#fdc389);
-                 ">
+                                style="border-radius: 24px; height: 145px; background: linear-gradient(135deg,#f43591,#fdc389); ">
 
                                 <div class="card-body d-flex flex-column justify-content-between h-100">
                                     <div>
@@ -94,12 +81,7 @@
                                     </div>
 
                                     <div class="position-absolute"
-                                        style="
-                            right:-10px;
-                            bottom:-20px;
-                            font-size:90px;
-                            opacity:.15;
-                         ">
+                                        style="right:-10px; bottom:-20px; font-size:90px; opacity:.15; ">
                                         👨‍🏫
                                     </div>
                                 </div>
@@ -109,11 +91,7 @@
                         {{-- Total Kelas --}}
                         <div class="col-6">
                             <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
-                                style="
-                    border-radius: 24px;
-                    height: 145px;
-                    background: linear-gradient(135deg,#f6c80e,#f6e09d);
-                 ">
+                                style="border-radius: 24px; height: 145px; background: linear-gradient(135deg,#f6c80e,#f6e09d);">
 
                                 <div class="card-body d-flex flex-column justify-content-between h-100">
                                     <div>
@@ -127,51 +105,36 @@
                                     </div>
 
                                     <div class="position-absolute"
-                                        style="
-                            right:-10px;
-                            bottom:-20px;
-                            font-size:90px;
-                            opacity:.15;
-                         ">
+                                        style="right:-10px; bottom:-20px; font-size:90px; opacity:.15; ">
                                         🏫
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Total Orang Tua --}}
+                        {{-- Total Mata Pelajaran --}}
                         <div class="col-6">
                             <div class="card border-0 shadow-sm text-white position-relative overflow-hidden"
-                                style="
-                    border-radius: 24px;
-                    height: 145px;
-                    background: linear-gradient(135deg,#e8237f,#ffc2d5);
-                 ">
+                                style="border-radius: 24px; height: 145px; background: linear-gradient(135deg,#1e9600,#dfff00); ">
 
                                 <div class="card-body d-flex flex-column justify-content-between h-100">
                                     <div>
                                         <p class="mb-1 fw-medium text-white" style="font-size:15px;">
-                                            Total Orang Tua
+                                            Total Mata Pelajaran
                                         </p>
 
                                         <h1 class="fw-bold mb-0 text-white" style="font-size:40px;">
-                                           {{-- {{ $totalOrangTua }} --}}
+                                            {{ $totalMataPelajaran }}
                                         </h1>
                                     </div>
 
                                     <div class="position-absolute"
-                                        style="
-                            right:-10px;
-                            bottom:-20px;
-                            font-size:90px;
-                            opacity:.15;
-                         ">
-                                        👨‍👩‍👧
+                                        style=" right:-10px; bottom:-20px; font-size:90px; opacity:.15; ">
+                                        🕒
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -364,7 +327,7 @@
                             <div class="img-overlay">
                                 <h1>Hallo, {{ Auth::user()->name }}!</h1>
                                 <p>Selamat datang di Sistem Absensi SMPN 2 Saronggi. Kelola kehadiran siswa dengan mudah.
-                                </p><a class="btn" href="#">View Profile</a>
+                                </p><a class="btn" href="{{ route('account.index') }}">View Profile</a>
                             </div>
                         </div>
                     </div>
@@ -576,7 +539,8 @@
                                 <p class="fs-6 mt-3 text-secondary">Selamat datang di Sistem <br> Absensi SMPN 2
                                     Saronggi.<br>
                                     Pantau kehadiran dan jadwal pelajaran <br> Anda dengan mudah.</p>
-                                <a class="btn btn-outline-primary b-r-8" href="#">View Profile</a>
+                                <a class="btn btn-outline-primary b-r-8" href="{{ route('account.index') }}">View
+                                    Profile</a>
                             </div>
                         </div>
                     </div>
@@ -745,9 +709,7 @@
                 </div>
             </div>
 
-            <script>
-
-            </script>
+            <script></script>
 
             <!-- Tren Kehadiran Harian (Bar Chart) + Diagram Lingkaran -->
             <div class="row mt-4">
