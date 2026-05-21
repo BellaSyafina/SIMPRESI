@@ -186,7 +186,7 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
         $drawing->setName('Logo');
         $drawing->setDescription('Logo SMPN');
 
-        $drawing->setPath(public_path('assets/images/smpn.png'));
+        $drawing->setPath(public_path('assets/images/logo/smpn.png'));
 
         $drawing->setHeight(60);
 

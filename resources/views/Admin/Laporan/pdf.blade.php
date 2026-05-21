@@ -128,7 +128,7 @@
         <table class="header-table">
             <tr>
                 <td width="15%">
-                    <img src="{{ public_path('assets/images/smpn.png') }}" class="logo">
+                    <img src="{{ public_path('assets/images/logo/smpn.png') }}" class="logo">
                 </td>
 
                 <td class="judul">

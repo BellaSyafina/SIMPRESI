@@ -52,7 +52,7 @@ class LaporanController extends Controller
             // MAPEL GURU
             $mapelList = $jadwalGuru->pluck('mataPelajaran')->filter()->unique('id_mata_pelajaran')->values();
         } elseif (Auth::user()->role == 'orang_tua') {
-            $anak = Auth::user()->orangTua->siswa->first();
+            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
 
             $selectedKelas = $anak?->id_kelas;
         } else {
@@ -82,16 +82,12 @@ class LaporanController extends Controller
 
         $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
 
-
-        // SISWA
+        // SISWA / ORANG TUA
         if (Auth::user()->role == 'orang_tua') {
-            $anak = Auth::user()->orangTua->siswa->first();
+            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
-        } else {
-            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
-
 
         // QUERY ABSENSI
         $absensiQuery = Absensi::with('jadwalPelajaran')->whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun);
@@ -104,7 +100,6 @@ class LaporanController extends Controller
         }
 
         $absensiAll = $absensiQuery->get()->groupBy('id_siswa');
-
 
         // REKAP
         $rekap = [];
@@ -138,7 +133,6 @@ class LaporanController extends Controller
             $totalAlpa += $alpa;
         }
 
-
         // PAGINATION
         $page = request()->get('page', 1);
 
@@ -148,7 +142,6 @@ class LaporanController extends Controller
             'path' => request()->url(),
             'query' => request()->query(),
         ]);
-
 
         // TOTAL
         $totalSiswa = $siswaList->count();
@@ -204,13 +197,12 @@ class LaporanController extends Controller
             $semuaIdKelas = array_unique(array_merge($idKelasJadwal, $idKelasWali));
             $selectedKelas = $request->kelas ?? ($semuaIdKelas[0] ?? null);
         } elseif (Auth::user()->role == 'orang_tua') {
-            $anak = Auth::user()->orangTua->siswa->first();
+            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
 
             $selectedKelas = $anak?->id_kelas;
         } else {
             $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
         }
-
 
         // FILTER
         $selectedBulan = $request->bulan ?? date('m');
@@ -234,16 +226,12 @@ class LaporanController extends Controller
 
         $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
 
-
-        // SISWA
+        // SISWA / ORANG TUA
         if (Auth::user()->role == 'orang_tua') {
-            $anak = Auth::user()->orangTua->siswa->first();
+            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
-        } else {
-            $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
-
 
         // QUERY ABSENSI
         $absensiQuery = Absensi::with('jadwalPelajaran')->whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun);
@@ -256,7 +244,6 @@ class LaporanController extends Controller
         }
 
         $absensiAll = $absensiQuery->get()->groupBy('id_siswa');
-
 
         // REKAP
         $rekap = [];
