@@ -7,6 +7,7 @@ use App\Models\Absensi;
 use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\MataPelajaran;
+use App\Models\PertemuanPelajaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -92,11 +93,15 @@ class LaporanController extends Controller
         }
 
         // QUERY ABSENSI
-        $absensiQuery = Absensi::with('jadwalPelajaran')->whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun);
+        $pertemuanIds = PertemuanPelajaran::whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->pluck('id_pertemuan');
+
+        $absensiQuery = Absensi::with(['pertemuan.jadwalPelajaran'])
+            ->whereIn('id_siswa', $siswaList->pluck('id_siswa'))
+            ->whereIn('id_pertemuan', $pertemuanIds);
 
         // FILTER MAPEL KHUSUS GURU
         if (Auth::user()->role == 'guru' && $selectedMapel) {
-            $absensiQuery->whereHas('jadwalPelajaran', function ($q) use ($selectedMapel) {
+            $absensiQuery->whereHas('pertemuan.jadwalPelajaran', function ($q) use ($selectedMapel) {
                 $q->where('id_mata_pelajaran', $selectedMapel);
             });
         }
@@ -238,11 +243,15 @@ class LaporanController extends Controller
         }
 
         // QUERY ABSENSI
-        $absensiQuery = Absensi::with('jadwalPelajaran')->whereIn('id_siswa', $siswaList->pluck('id_siswa'))->whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun);
+        $pertemuanIds = PertemuanPelajaran::whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->pluck('id_pertemuan');
+
+        $absensiQuery = Absensi::with(['pertemuan.jadwalPelajaran'])
+            ->whereIn('id_siswa', $siswaList->pluck('id_siswa'))
+            ->whereIn('id_pertemuan', $pertemuanIds);
 
         // FILTER MAPEL KHUSUS GURU
         if (Auth::user()->role == 'guru' && $selectedMapel) {
-            $absensiQuery->whereHas('jadwalPelajaran', function ($q) use ($selectedMapel) {
+            $absensiQuery->whereHas('pertemuan.jadwalPelajaran', function ($q) use ($selectedMapel) {
                 $q->where('id_mata_pelajaran', $selectedMapel);
             });
         }

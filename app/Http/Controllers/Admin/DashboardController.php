@@ -10,6 +10,7 @@ use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use App\Models\Siswa;
 use App\Models\User;
+use App\Models\PertemuanPelajaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,11 +41,9 @@ class DashboardController extends Controller
 
             foreach ($kelasData as $kelas) {
                 $chartKelas[] = $kelas->nama_kelas;
-
                 $siswaIds = Siswa::where('id_kelas', $kelas->id_kelas)->pluck('id_siswa');
-
-                $absensi = Absensi::whereIn('id_siswa', $siswaIds)->whereDate('tanggal', $today)->get();
-
+                $pertemuanHariIni = PertemuanPelajaran::whereDate('tanggal', $today)->pluck('id_pertemuan');
+                $absensi = Absensi::whereIn('id_siswa', $siswaIds)->whereIn('id_pertemuan', $pertemuanHariIni)->get();
                 $hadirData[] = $absensi->where('status', 'hadir')->count();
                 $izinData[] = $absensi->where('status', 'izin')->count();
                 $sakitData[] = $absensi->where('status', 'sakit')->count();
@@ -57,15 +56,11 @@ class DashboardController extends Controller
 
             for ($i = 0; $i < 6; $i++) {
                 $date = Carbon::now()->startOfWeek()->addDays($i);
-
                 $hariChart[] = $date->translatedFormat('D');
-
-                $totalAbsensi = Absensi::whereDate('tanggal', $date)->count();
-
-                $hadir = Absensi::whereDate('tanggal', $date)->where('status', 'hadir')->count();
-
+                $pertemuanTanggal = PertemuanPelajaran::whereDate('tanggal', $date)->pluck('id_pertemuan');
+                $totalAbsensi = Absensi::whereIn('id_pertemuan', $pertemuanTanggal)->count();
+                $hadir = Absensi::whereIn('id_pertemuan', $pertemuanTanggal)->where('status', 'hadir')->count();
                 $persen = $totalAbsensi > 0 ? round(($hadir / $totalAbsensi) * 100) : 0;
-
                 $persenChart[] = $persen;
             }
 
@@ -75,19 +70,33 @@ class DashboardController extends Controller
         // Guru
         if (Auth::user()->role == 'guru') {
             $guru = Auth::user()->guru;
+            $hariIni = now()->translatedFormat('l');
 
-            $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
+            $hariMap = [
+                'Monday' => 'Senin',
+                'Tuesday' => 'Selasa',
+                'Wednesday' => 'Rabu',
+                'Thursday' => 'Kamis',
+                'Friday' => 'Jumat',
+                'Saturday' => 'Sabtu',
+            ];
+
+            $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi'])
                 ->where('id_guru', $guru->id_guru)
-                ->whereDate('tanggal', $today)
-                ->orderBy('jam_mulai')
+                ->where('hari', $hariMap[now()->format('l')])
+                ->orderBy('id_sesi')
                 ->get();
 
             $kelasHariIni = $jadwalHariIni->count();
-
             $absensiSelesai = 0;
 
             foreach ($jadwalHariIni as $jadwal) {
-                $sudahAbsen = Absensi::where('id_jadwal_pelajaran', $jadwal->id_jadwal_pelajaran)->whereDate('tanggal', $today)->exists();
+                $pertemuanHariIni = PertemuanPelajaran::where('id_jadwal_pelajaran', $jadwal->id_jadwal_pelajaran)->whereDate('tanggal', $today)->first();
+                $sudahAbsen = false;
+
+                if ($pertemuanHariIni) {
+                    $sudahAbsen = Absensi::where('id_pertemuan', $pertemuanHariIni->id_pertemuan)->exists();
+                }
 
                 if ($sudahAbsen) {
                     $absensiSelesai++;
@@ -101,13 +110,16 @@ class DashboardController extends Controller
 
             foreach ($jadwalHariIni as $jadwal) {
                 $totalSiswa = Siswa::where('id_kelas', $jadwal->id_kelas)->count();
+                $hadir = 0;
 
-                $hadir = Absensi::where('id_jadwal_pelajaran', $jadwal->id_jadwal_pelajaran)->whereDate('tanggal', $today)->where('status', 'hadir')->count();
+                if ($pertemuanHariIni) {
+                    $hadir = Absensi::where('id_pertemuan', $pertemuanHariIni->id_pertemuan)->where('status', 'hadir')->count();
+                }
 
                 if ($totalSiswa > 0) {
                     $absensiTerbaru[] = [
                         'kelas' => $jadwal->kelas->nama_kelas,
-                        'waktu' => Carbon::parse($jadwal->jam_mulai)->format('H:i'),
+                        'waktu' => Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i'),
                         'persen' => round(($hadir / $totalSiswa) * 100, 1),
                         'hadir' => $hadir,
                         'total' => $totalSiswa,
@@ -121,7 +133,7 @@ class DashboardController extends Controller
         // Orang Tua
         if (Auth::user()->role == 'orang_tua') {
             $siswa = Siswa::with(['kelas.waliKelas'])
-                ->where('id_user', Auth::user()->id_user)
+                ->where('id_user', Auth::id())
                 ->first();
 
             $totalHadir = 0;

@@ -9,7 +9,7 @@ class JadwalPelajaran extends Model
     protected $table = 'jadwal_pelajaran';
     protected $primaryKey = 'id_jadwal_pelajaran';
 
-    protected $fillable = ['id_kelas', 'id_guru', 'id_mata_pelajaran', 'hari', 'tanggal', 'jam_mulai', 'jam_selesai'];
+    protected $guarded = ['id_jadwal_pelajaran'];
 
     public function kelas()
     {
@@ -24,5 +24,15 @@ class JadwalPelajaran extends Model
     public function mataPelajaran()
     {
         return $this->belongsTo(MataPelajaran::class, 'id_mata_pelajaran');
+    }
+
+    public function sesi()
+    {
+        return $this->belongsTo(SesiPelajaran::class, 'id_sesi');
+    }
+
+    public function pertemuan()
+    {
+        return $this->hasMany(PertemuanPelajaran::class, 'id_jadwal_pelajaran', 'id_jadwal_pelajaran');
     }
 }

@@ -20,12 +20,6 @@
             <div class="card-body">
                 <form action="{{ route('absensi.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control"
-                            value="{{ \Carbon\Carbon::parse($selectedTanggal)->format('Y-m-d') }}"
-                            onchange="this.form.submit()">
-                    </div>
-                    <div class="col-md-3">
                         <label class="form-label fw-semibold">Kelas</label>
                         <select name="kelas" class="form-select" onchange="this.form.submit()">
                             @foreach ($kelasList as $id => $kelas)
@@ -41,21 +35,36 @@
                         </label>
 
                         <select name="jadwal" class="form-select" onchange="this.form.submit()">
-
                             @forelse ($jadwalList as $jadwal)
                                 <option value="{{ $jadwal->id_jadwal_pelajaran }}"
                                     {{ $selectedJadwal == $jadwal->id_jadwal_pelajaran ? 'selected' : '' }}>
-
-                                    {{ substr($jadwal->jam_mulai, 0, 5) }}
+                                    {{ $jadwal->sesi->nama_sesi }}
                                     -
                                     {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
-
                                 </option>
-
                             @empty
-
                                 <option disabled>
                                     Tidak ada jadwal
+                                </option>
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">
+                            Pertemuan
+                        </label>
+                        <select name="pertemuan" class="form-select" onchange="this.form.submit()">
+                            @forelse ($pertemuanList as $pertemuan)
+                                <option value="{{ $pertemuan->id_pertemuan }}"
+                                    {{ $selectedPertemuan == $pertemuan->id_pertemuan ? 'selected' : '' }}>
+                                    Pertemuan
+                                    {{ $pertemuan->pertemuan_ke }}
+                                    -
+                                    {{ $pertemuan->tanggal->format('d M Y') }}
+                                </option>
+                            @empty
+                                <option disabled>
+                                    Belum ada pertemuan
                                 </option>
                             @endforelse
                         </select>
@@ -72,20 +81,24 @@
         <div class="alert alert-primary border-0 shadow-sm">
             <div class="d-flex flex-wrap gap-4 align-items-center">
                 <div>
-                    <strong>Hari:</strong>
-                    {{ \Carbon\Carbon::parse($selectedTanggal)->translatedFormat('l') }}
+                    <strong>Sesi:</strong>
+                    {{ $jadwalAktif?->sesi?->nama_sesi ?? '-' }}
                 </div>
-
                 <div>
-                    <strong>Jam:</strong> {{ $jadwalAktif->jam_mulai ?? '-' }} - {{ $jadwalAktif->jam_selesai ?? '-' }}
+                    <strong>Jam:</strong>
+                    {{ $jadwalAktif?->sesi?->jam_mulai ?? '-' }}
+                    -
+                    {{ $jadwalAktif?->sesi?->jam_selesai ?? '-' }}
                 </div>
-
                 <div>
                     <strong>Kelas:</strong> {{ $kelasList[$selectedKelas] ?? '-' }}
                 </div>
-
                 <div>
                     <strong>Mata Pelajaran:</strong> {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}
+                </div>
+                <div>
+                    <strong>Pertemuan:</strong>
+                    {{ optional($pertemuanList->where('id_pertemuan', $selectedPertemuan)->first())->pertemuan_ke ?? '-' }}
                 </div>
             </div>
         </div>
@@ -164,7 +177,8 @@
         @if (!$jadwalAktif)
             <div class="alert alert-warning shadow-sm border-0">
                 <i data-feather="alert-triangle" class="me-2"></i>
-                Tidak ada jadwal pelajaran pada tanggal ini.
+                Belum ada jadwal atau pertemuan
+                yang tersedia.
             </div>
         @endif
 
@@ -173,17 +187,17 @@
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 fw-semibold">
                     <i data-feather="list" class="me-2" width="18" height="18"></i>
-                    Daftar Siswa Kelas {{ $kelasList[$selectedKelas] ?? '-' }} -
-                    {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}
+                    Absensi Pertemuan
+                    {{ optional($pertemuanList->where('id_pertemuan', $selectedPertemuan)->first())->pertemuan_ke ?? '-' }}
+                    -
+                    {{ $kelasList[$selectedKelas] ?? '-' }}
                 </h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <form action="{{ route('absensi.store') }}" method="POST" id="formAbsensi">
                         @csrf
-                        <input type="hidden" name="tanggal" value="{{ $selectedTanggal }}">
-                        <input type="hidden" name="id_jadwal_pelajaran"
-                            value="{{ $jadwalAktif?->id_jadwal_pelajaran }}">
+                        <input type="hidden" name="id_pertemuan" value="{{ $selectedPertemuan }}">
                         <table class="table table-hover align-middle mb-0" id="siswaTable">
                             <thead class="table">
                                 <tr>

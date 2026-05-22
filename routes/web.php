@@ -83,6 +83,8 @@ Route::middleware('auth')->group(function () {
     });
     Route::put('/jadwal/{id}', [JadwalPelajaranController::class, 'update'])->name('jadwal.update');
     Route::delete('/jadwal/{id}', [JadwalPelajaranController::class, 'destroy'])->name('jadwal.destroy');
+    Route::get('/jadwal/{id}/pertemuan', [JadwalPelajaranController::class, 'pertemuan'])->name('jadwal.pertemuan');
+    Route::put('/pertemuan/{id}/update', [JadwalPelajaranController::class, 'updatePertemuan'])->name('pertemuan.update');
 
     // Absensi Siswa
     Route::get('/absensi', [AbsensiSiswaController::class, 'index'])->name('absensi.index');

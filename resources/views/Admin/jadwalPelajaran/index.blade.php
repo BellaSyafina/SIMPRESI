@@ -16,7 +16,6 @@
 
 @section('content')
     @php
-        use Carbon\Carbon;
 
         // DAFTAR HARI
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -24,9 +23,6 @@
         $selectedKelas = request('kelas') ?? optional($kelasList->keys())->first();
         $namaKelas = $kelasList[$selectedKelas] ?? '-';
         \Carbon\Carbon::setLocale('id');
-        $selectedDate = Carbon::parse($selectedTanggal);
-        $selectedHari = $selectedDate->translatedFormat('l');
-        $formattedDate = $selectedDate->translatedFormat('l, d F Y');
     @endphp
 
     <div class="container-fluid px-0">
@@ -51,10 +47,34 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label fw-semibold">Pilih Tanggal</label>
-
-                            <input type="date" name="tanggal" class="form-control" value="{{ $selectedTanggal }}"
-                                onchange="this.form.submit()">
+                            <label class="form-label fw-semibold">Pilih Hari</label>
+                            <select name="hari" class="form-select" onchange="this.form.submit()">
+                                @foreach ($hariList as $hari)
+                                    <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>
+                                        {{ $hari }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Pilih Semester</label>
+                            <select name="semester" class="form-select" onchange="this.form.submit()">
+                                <option value="">Pilih Semester</option>
+                                <option value="Ganjil" {{ $selectedSemester == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
+                                <option value="Genap" {{ $selectedSemester == 'Genap' ? 'selected' : '' }}>Genap</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Pilih Tahun Ajaran</label>
+                            <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
+                                <option value="">Pilih Tahun Ajaran</option>
+                                @foreach ($tahunAjaranList as $tahun)
+                                    <option value="{{ $tahun }}"
+                                        {{ $selectedTahunAjaran == $tahun ? 'selected' : '' }}>
+                                        {{ $tahun }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
@@ -82,7 +102,10 @@
                             <h5 class="card-title mb-0 fw-semibold">
                                 <i data-feather="calendar" class="me-2" width="18" height="18"></i>
                                 Jadwal {{ $selectedHari }} - {{ $namaKelas }}
-                                <span class="text-muted fs-6 ms-2">({{ $formattedDate }})</span>
+                                <span class="text-muted fs-6 ms-2">
+                                    Semester {{ $selectedSemester }}
+                                    | {{ $selectedTahunAjaran }}
+                                </span>
                             </h5>
                         </div>
                         <div class="card-body">
@@ -102,7 +125,8 @@
                                                 </div>
                                                 <div class="ms-3">
                                                     <span class="badge bg-light text-dark border px-3 py-2 fs-6">
-                                                        {{ $j->jam_mulai }} - {{ $j->jam_selesai }}
+                                                        {{ $j->sesi->nama_sesi }}
+                                                        {{ $j->sesi->jam_mulai }} - {{ $j->sesi->jam_selesai }}
                                                     </span>
                                                 </div>
                                                 <div class="ms-2">
@@ -110,10 +134,10 @@
                                                         data-id="{{ $j->id_jadwal_pelajaran }}"
                                                         data-kelas="{{ $j->id_kelas }}"
                                                         data-mapel="{{ $j->id_mata_pelajaran }}"
-                                                        data-guru="{{ $j->id_guru }}"
-                                                        data-jam_mulai="{{ $j->jam_mulai }}"
-                                                        data-jam_selesai="{{ $j->jam_selesai }}"
-                                                        data-tanggal="{{ $j->tanggal }}">
+                                                        data-guru="{{ $j->id_guru }}" data-hari="{{ $j->hari }}"
+                                                        data-sesi="{{ $j->id_sesi }}"
+                                                        data-semester="{{ $j->semester }}"
+                                                        data-tahun_ajaran="{{ $j->tahun_ajaran }}">
                                                         <i data-feather="edit-2"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-outline-danger btn-hapus"
@@ -128,8 +152,9 @@
                             @else
                                 <div class="text-center py-5 text-muted">
                                     <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
-                                    Tidak ada jadwal pelajaran untuk hari {{ $selectedHari }} di kelas
-                                    {{ $namaKelas }}.
+                                    Belum ada jadwal pelajaran
+                                    untuk hari {{ $selectedHari }}
+                                    semester {{ $selectedSemester }}.
                                 </div>
                             @endif
                         </div>
@@ -142,12 +167,8 @@
                         <div class="card-header bg-white py-3">
                             <h5 class="card-title mb-0 fw-semibold">
                                 <i data-feather="bar-chart-2" class="me-2" width="18" height="18"></i>
-                                Ringkasan Mingguan - {{ $namaKelas }}
-
-                                <span class="text-muted fs-6">
-                                    ({{ $startOfWeek->translatedFormat('d M') }} -
-                                    {{ $endOfWeek->translatedFormat('d M Y') }})
-                                </span>
+                                Ringkasan Jadwal -
+                                {{ $namaKelas }}
                             </h5>
                         </div>
                         <div class="card-body">
@@ -156,7 +177,8 @@
                                     <tbody>
                                         @foreach ($hariList as $hari)
                                             <tr>
-                                                <td style="width: 30%"><strong class="fs-5">{{ $hari }}</strong>
+                                                <td style="width: 30%"><strong
+                                                        class="fs-5">{{ $hari }}</strong>
                                                 </td>
                                                 <td style="width: 70%">
                                                     <div class="d-flex align-items-center gap-2">
@@ -190,10 +212,14 @@
                 <div class="col-12">
                     <div class="alert alert-light border shadow-sm mb-0" role="alert">
                         <i data-feather="info" class="me-2" width="16" height="16"></i>
-                        Menampilkan jadwal untuk kelas <strong>{{ $namaKelas }}</strong> pada hari
-                        <strong>{{ $selectedHari }}</strong> ({{ $formattedDate }}). Ringkasan mingguan dihitung
-                        berdasarkan
-                        jumlah mata pelajaran per hari.
+                        Menampilkan jadwal kelas
+                        <strong>{{ $namaKelas }}</strong>
+                        pada hari
+                        <strong>{{ $selectedHari }}</strong>
+                        semester
+                        <strong>{{ $selectedSemester }}</strong>
+                        tahun ajaran
+                        <strong>{{ $selectedTahunAjaran }}</strong>.
                     </div>
                 </div>
             </div>
@@ -249,29 +275,59 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Jam Mulai</label>
-                                <input type="time" class="form-control" name="jam_mulai" value="07:30">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Jam Selesai</label>
-                                <input type="time" class="form-control" name="jam_selesai" value="08:30">
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Hari</label>
+                            <select class="form-select" name="hari">
+                                <option value="" disabled selected>Pilih Hari</option>
+                                @foreach ($hariList as $hari)
+                                    <option value="{{ $hari }}" {{ old('hari') == $hari ? 'selected' : '' }}>
+                                        {{ $hari }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Tanggal (sesuai hari)</label>
-                            <input type="date" class="form-control" name="tanggal"
-                                value="{{ $selectedDate->format('Y-m-d') }}">
-                            <small class="text-muted">
-                                Tanggal akan otomatis disesuaikan dengan hari yang dipilih.
-                            </small>
+                            <label class="form-label fw-semibold">Sesi Pelajaran</label>
+                            <select class="form-select" name="id_sesi">
+                                <option value="" disabled selected>Pilih Sesi Pelajaran</option>
+                                @foreach ($sesiList as $sesi)
+                                    <option value="{{ $sesi->id_sesi }}">
+                                        {{ $sesi->nama_sesi }}
+                                        ({{ $sesi->jam_mulai }} - {{ $sesi->jam_selesai }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Semester</label>
+                            <select class="form-select" name="semester">
+                                <option value="" disabled selected>Pilih Semester</option>
+                                @foreach ($semesterList as $semester)
+                                    <option value="{{ $semester }}"
+                                        {{ old('semester') == $semester ? 'selected' : '' }}>
+                                        {{ $semester }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tahun Ajaran</label>
+                            <select class="form-select" name="tahun_ajaran">
+                                <option value="" disabled selected>Pilih Tahun Ajaran</option>
+                                @foreach ($tahunAjaranList as $tahun)
+                                    <option value="{{ $tahun }}"
+                                        {{ old('tahun_ajaran') == $tahun ? 'selected' : '' }}>
+                                        {{ $tahun }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="save" class="me-1" width="16" height="16"></i> Simpan
+                            <i data-feather="save" class="me-1" width="16" height="16"></i>
+                            Simpan
                         </button>
                     </div>
                 </form>
@@ -308,23 +364,48 @@
                             <label>Guru</label>
                             <select name="id_guru" id="edit_guru" class="form-select"></select>
                         </div>
-
-                        <div class="row">
-                            <div class="col">
-                                <label>Jam Mulai</label>
-                                <input type="time" name="jam_mulai" id="edit_mulai" class="form-control">
-                            </div>
-                            <div class="col">
-                                <label>Jam Selesai</label>
-                                <input type="time" name="jam_selesai" id="edit_selesai" class="form-control">
-                            </div>
+                        <div class="mb-3">
+                            <label>Hari</label>
+                            <select name="hari" id="edit_hari" class="form-select">
+                                @foreach ($hariList as $hari)
+                                    <option value="{{ $hari }}">
+                                        {{ $hari }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-
-                        <div class="mt-3">
-                            <label>Tanggal</label>
-                            <input type="date" name="tanggal" id="edit_tanggal" class="form-control">
+                        <div class="mb-3">
+                            <label>Sesi Pelajaran</label>
+                            <select name="id_sesi" id="edit_sesi" class="form-select">
+                                @foreach ($sesiList as $sesi)
+                                    <option value="{{ $sesi->id_sesi }}">
+                                        {{ $sesi->nama_sesi }}
+                                        ({{ $sesi->jam_mulai }}
+                                        - {{ $sesi->jam_selesai }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-
+                        <div class="mb-3">
+                            <label>Tahun Ajaran</label>
+                            <select name="tahun_ajaran" id="edit_tahun_ajaran" class="form-select">
+                                @foreach ($tahunAjaranList as $tahun)
+                                    <option value="{{ $tahun }}">
+                                        {{ $tahun }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Semester</label>
+                            <select name="semester" id="edit_semester" class="form-select">
+                                @foreach ($semesterList as $semester)
+                                    <option value="{{ $semester }}">
+                                        {{ $semester }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -417,15 +498,14 @@
 
                     document.getElementById('edit_kelas').value = this.dataset.kelas;
                     document.getElementById('edit_mapel').value = this.dataset.mapel;
-
-                    function formatJam(jam) {
-                        return jam ? jam.substring(0, 5) : '';
-                    }
-
-                    document.getElementById('edit_mulai').value = formatJam(this.dataset.jam_mulai);
-                    document.getElementById('edit_selesai').value = formatJam(this.dataset
-                        .jam_selesai);
-                    document.getElementById('edit_tanggal').value = this.dataset.tanggal;
+                    document.getElementById('edit_hari').value =
+                        this.dataset.hari;
+                    document.getElementById('edit_sesi').value =
+                        this.dataset.sesi;
+                    document.getElementById('edit_semester').value =
+                        this.dataset.semester;
+                    document.getElementById('edit_tahun_ajaran').value =
+                        this.dataset.tahun_ajaran;
 
                     // 🔥 LOAD GURU SESUAI MAPEL
                     fetch(`/guru-by-mapel/${this.dataset.mapel}`)

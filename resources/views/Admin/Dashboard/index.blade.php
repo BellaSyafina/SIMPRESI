@@ -405,27 +405,36 @@
                             <div class="list-group list-group-flush">
                                 @forelse ($jadwalHariIni as $jadwal)
                                     @php
-
-                                        $sudahAbsen = \App\Models\Absensi::where(
+                                        $pertemuanHariIni = \App\Models\PertemuanPelajaran::where(
                                             'id_jadwal_pelajaran',
                                             $jadwal->id_jadwal_pelajaran,
                                         )
                                             ->whereDate('tanggal', now())
-                                            ->exists();
+                                            ->first();
+
+                                        $sudahAbsen = false;
+
+                                        if ($pertemuanHariIni) {
+                                            $sudahAbsen = \App\Models\Absensi::where(
+                                                'id_pertemuan',
+                                                $pertemuanHariIni->id_pertemuan,
+                                            )->exists();
+                                        }
 
                                         $now = now()->format('H:i:s');
+                                        $jamMulai = $jadwal->sesi->jam_mulai;
+                                        $jamSelesai = $jadwal->sesi->jam_selesai;
 
                                         if ($sudahAbsen) {
                                             $status = 'Selesai';
                                             $badge = 'success';
-                                        } elseif ($now >= $jadwal->jam_mulai && $now <= $jadwal->jam_selesai) {
+                                        } elseif ($now >= $jamMulai && $now <= $jamSelesai) {
                                             $status = 'Berlangsung';
                                             $badge = 'warning text-dark';
                                         } else {
                                             $status = 'Menunggu';
                                             $badge = 'info';
                                         }
-
                                     @endphp
 
                                     <div class="list-group-item py-3">
@@ -434,9 +443,9 @@
                                             <div class="mb-2 mb-sm-0">
 
                                                 <span class="badge bg-secondary fs-7 me-3">
-                                                    {{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }}
+                                                    {{ \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') }}
                                                     -
-                                                    {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}
+                                                    {{ \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') }}
                                                 </span>
 
                                                 <span class="fw-bold fs-6">

@@ -8,12 +8,34 @@ class Absensi extends Model
 {
     protected $table = 'absensi';
     protected $primaryKey = 'id_absensi';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
     protected $guarded = ['id_absensi'];
 
-    public function jadwalPelajaran()
+    // 🔥 relasi siswa
+    public function siswa()
     {
-        return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal_pelajaran');
+        return $this->belongsTo(Siswa::class, 'id_siswa', 'id_siswa');
+    }
+
+    // 🔥 relasi pertemuan
+    public function pertemuan()
+    {
+        return $this->belongsTo(PertemuanPelajaran::class, 'id_pertemuan', 'id_pertemuan');
+    }
+
+    // 🔥 helper badge
+    public function getStatusBadgeAttribute()
+    {
+        return match ($this->status) {
+            'hadir' => 'success',
+            'izin' => 'warning',
+            'sakit' => 'info',
+            'alpa' => 'danger',
+            
+            default => 'secondary',
+        };
     }
 }
