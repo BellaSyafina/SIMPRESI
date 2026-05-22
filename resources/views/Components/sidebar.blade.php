@@ -149,20 +149,20 @@
                         </li>
                     @endif
 
-                    {{--  @if (Auth::user()->role == 'admin')
+                    @if (Auth::user()->role == 'admin')
                         <li class="sidebar-list">
                             <i class="fa fa-thumb-tack"></i>
-                            <a class="sidebar-link sidebar-title link-nav" href="/orangtua">
+                            <a class="sidebar-link sidebar-title link-nav" href="/sesi">
                                 <svg class="stroke-icon">
                                     <use href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-ecommerce"></use>
                                 </svg>
                                 <svg class="fill-icon">
                                     <use href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-ecommerce"></use>
                                 </svg>
-                                <span>Data Orang Tua</span>
+                                <span>Data Sesi</span>
                             </a>
                         </li>
-                    @endif  --}}
+                    @endif
 
                     @if (Auth::user()->role == 'admin')
                         <li class="sidebar-main-title">

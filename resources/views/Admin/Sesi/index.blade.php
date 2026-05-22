@@ -15,7 +15,6 @@
 @endsection
 
 @section('content')
-
     <div class="container-fluid px-0">
 
         {{-- HEADER --}}
@@ -39,52 +38,54 @@
         {{-- FILTER --}}
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body p-4">
-                <div class="row g-3 align-items-end">
+                <form method="GET">
+                    <div class="row g-3 align-items-end">
 
-                    {{-- SEARCH --}}
-                    <div class="col-lg-4">
-                        <label class="form-label fw-semibold">
-                            Cari Sesi
-                        </label>
+                        {{-- SEARCH --}}
+                        <div class="col-lg-4">
+                            <label class="form-label fw-semibold">
+                                Cari Sesi
+                            </label>
+                            <div class="position-relative">
+                                <i data-feather="search" width="16"
+                                    class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"> </i>
+                                <input type="text" name="search" value="{{ request('search') }}"
+                                    class="form-control ps-5" placeholder="Cari sesi pertemuan...">
+                            </div>
+                        </div>
 
-                        <div class="position-relative">
-                            <i data-feather="search" width="16"
-                                class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"> </i>
-                            <input type="text" class="form-control ps-5" placeholder="Cari sesi pertemuan...">
+                        {{-- FILTER HARI --}}
+                        <div class="col-lg-3">
+                            <label class="form-label fw-semibold"> Filter Hari </label>
+                            <select name="hari" class="form-select">
+                                <option selected> Semua Hari </option>
+                                <option>Senin</option>
+                                <option>Selasa</option>
+                                <option>Rabu</option>
+                                <option>Kamis</option>
+                                <option>Jumat</option>
+                                <option>Sabtu</option>
+                            </select>
+                        </div>
+
+                        {{-- STATUS --}}
+                        <div class="col-lg-3">
+                            <label class="form-label fw-semibold">
+                                Status
+                            </label>
+                            <select class="form-select">
+                                <option selected> Semua Status </option>
+                                <option>Tersedia</option>
+                                <option>Sudah Digunakan</option>
+                            </select>
+                        </div>
+
+                        {{-- BUTTON --}}
+                        <div class="col-lg-2">
+                            <a href="{{ route('sesi.index') }}" class="btn btn-secondary">Reset</a>
                         </div>
                     </div>
-
-                    {{-- FILTER HARI --}}
-                    <div class="col-lg-3">
-                        <label class="form-label fw-semibold"> Filter Hari </label>
-                        <select class="form-select">
-                            <option selected> Semua Hari </option>
-                            <option>Senin</option>
-                            <option>Selasa</option>
-                            <option>Rabu</option>
-                            <option>Kamis</option>
-                            <option>Jumat</option>
-                            <option>Sabtu</option>
-                        </select>
-                    </div>
-
-                    {{-- STATUS --}}
-                    <div class="col-lg-3">
-                        <label class="form-label fw-semibold">
-                            Status
-                        </label>
-                        <select class="form-select">
-                            <option selected> Semua Status </option>
-                            <option>Tersedia</option>
-                            <option>Sudah Digunakan</option>
-                        </select>
-                    </div>
-
-                    {{-- BUTTON --}}
-                    <div class="col-lg-2">
-                        <a href="#" class="btn btn-secondary">Reset</a>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -96,10 +97,8 @@
                         <h5 class="fw-bold mb-1"> List Sesi Pembelajaran </h5>
                         <small class="text-muted"> Data sesi digunakan pada menu jadwal pelajaran </small>
                     </div>
-
-                    <span class="badge bg-primary px-3 py-2 rounded-pill"> 12 Sesi </span>
+                    <span class="badge bg-primary px-3 py-2 rounded-pill"> {{ $sesiList->total() }} Sesi </span>
                 </div>
-
             </div>
             <div class="card-body p-4">
                 <div class="table-responsive">
@@ -118,92 +117,92 @@
                         </thead>
 
                         <tbody>
-                            {{-- ITEM --}}
-                            <tr>
-                                <td> 1 </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <h6 class="fw-semibold mb-0">
-                                                Sesi Pertemuan 1
+                            @forelse ($sesiList as $sesi)
+                                <tr>
+                                    <td>
+                                        {{ $loop->iteration }}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <h6 class="fw-semibold mb-0">
+                                                    {{ $sesi->nama_sesi }}
+                                                </h6>
+                                                <small class="text-muted">
+                                                    {{ $sesi->keterangan ?? 'Sesi Pembelajaran' }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light-primary text-primary px-3 py-2">
+                                            {{ $sesi->hari }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ substr($sesi->jam_mulai, 0, 5) }}
+                                    </td>
+                                    <td>
+                                        {{ substr($sesi->jam_selesai, 0, 5) }}
+                                    </td>
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($sesi->jam_mulai)->diffInMinutes(\Carbon\Carbon::parse($sesi->jam_selesai)) }}
+                                        Menit
+                                    </td>
+                                    <td>
+                                        @if ($sesi->jadwalPelajaran->count() > 0)
+                                            <span class="badge bg-danger px-3 py-2">
+                                                Sudah Digunakan
+                                            </span>
+                                        @else
+                                            <span class="badge bg-success px-3 py-2">
+                                                Tersedia
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            {{-- EDIT --}}
+                                            <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
+                                                data-id="{{ $sesi->id_sesi }}" data-nama="{{ $sesi->nama_sesi }}"
+                                                data-hari="{{ $sesi->hari }}" data-jam_mulai="{{ $sesi->jam_mulai }}"
+                                                data-jam_selesai="{{ $sesi->jam_selesai }}"
+                                                data-keterangan="{{ $sesi->keterangan }}">
+                                                <i data-feather="edit-2"></i>
+                                                Edit
+                                            </button>
+                                            {{-- DELETE --}}
+                                            <form action="{{ route('sesi.destroy', $sesi->id_sesi) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i data-feather="trash-2"></i>
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i data-feather="calendar" style="width: 48px; height: 48px;"
+                                                class="mb-3"></i>
+                                            <h6 class="fw-semibold">
+                                                Belum Ada Data Sesi
                                             </h6>
-                                            <small class="text-muted">
-                                                Shift Pagi
-                                            </small>
                                         </div>
-                                    </div>
-                                </td>
-
-                                <td> <span class="badge bg-light-primary text-primary px-3 py-2"> Senin </span> </td>
-                                <td> 07:00 </td>
-                                <td> 08:30 </td>
-                                <td> 90 Menit </td>
-                                <td> <span class="badge bg-success px-3 py-2"> Tersedia </span> </td>
-
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        {{-- EDIT --}}
-                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit">
-                                            <i data-feather="edit-2"></i> Edit
-                                        </button>
-
-                                        {{-- DELETE --}}
-                                        <form action="#">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i data-feather="trash-2"></i> Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            {{-- ITEM --}}
-                            <tr>
-                                <td> 2 </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <h6 class="fw-semibold mb-0"> Sesi Pertemuan 2 </h6>
-                                            <small class="text-muted"> Shift Pagi </small>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td>
-                                    <span class="badge bg-light-warning text-warning px-3 py-2"> Selasa </span>
-                                </td>
-                                <td> 08:30 </td>
-                                <td> 10:00 </td>
-                                <td> 90 Menit </td>
-
-                                <td>
-                                    {{-- KETIKA SUDAH DIPAKAI DI JADWAL --}}
-                                    <span class="badge bg-danger px-3 py-2"> Sudah Digunakan </span>
-
-                                </td>
-
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        {{-- EDIT --}}
-                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit">
-                                            <i data-feather="edit-2"></i> Edit
-                                        </button>
-
-                                        {{-- DELETE --}}
-                                        <form action="#">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i data-feather="trash-2"></i> Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
+                    @if ($sesiList->hasPages())
+                        <div class="mt-4">
+                            {{ $sesiList->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
