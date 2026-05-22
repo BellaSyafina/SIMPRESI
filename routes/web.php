@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\OrangTuaController;
+use App\Http\Controllers\Admin\SesiController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Auth\AuthController;
@@ -105,4 +106,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
     Route::put('/settings/security', [SettingsController::class, 'updateSecurity'])->name('settings.security');
     Route::put('/settings/logout-all', [SettingsController::class, 'logoutAll'])->name('settings.logoutAll');
+
+    // Sesi
+    Route::get('/sesi', [SesiController::class, 'index'])->name('sesi.index');
 });
