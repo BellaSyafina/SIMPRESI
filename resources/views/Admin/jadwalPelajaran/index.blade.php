@@ -76,17 +76,29 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
-                                <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
-                                data-bs-target="#tambahJadwalModal">
-                                <i data-feather="plus" class="me-1" width="16" height="16"></i> Tambah Jadwal
-                                Pelajaran
-                            </button>
+                        <div class="col-12">
+
+                            <div class="d-flex justify-content-center gap-3 mt-2">
+
+                                <div class="col-md-3">
+                                    <a href="{{ route('jadwal.index') }}" class="btn btn-outline-secondary w-100">
+                                        <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i>
+                                        Reset
+                                    </a>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#tambahJadwalModal">
+
+                                        <i data-feather="plus" class="me-1" width="16" height="16"></i>
+                                        Tambah Jadwal Pelajaran
+
+                                    </button>
+                                </div>
+
+                            </div>
+
                         </div>
                     </form>
                 </div>
