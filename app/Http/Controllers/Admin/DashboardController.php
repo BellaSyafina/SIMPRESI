@@ -156,14 +156,17 @@ class DashboardController extends Controller
 
             if ($siswa) {
                 // 🔥 absensi bulan ini
-                $absensi = Absensi::where('id_siswa', $siswa->id_siswa)->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->get();
+                $absensi = Absensi::with('pertemuan')
+                    ->where('id_siswa', $siswa->id_siswa)
+                    ->whereHas('pertemuan', function ($q) {
+                        $q->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year);
+                    })
+                    ->get();
 
                 $totalHadir = $absensi->where('status', 'hadir')->count();
                 $totalIzin = $absensi->where('status', 'izin')->count();
                 $totalSakit = $absensi->where('status', 'sakit')->count();
                 $totalAlpa = $absensi->where('status', 'alpa')->count();
-
-                // dst...
             }
 
             return view('Admin.Dashboard.index', compact('siswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'kehadiranHariIni', 'chartTanggal', 'chartHadir', 'chartIzin', 'chartSakit', 'chartAlpa', 'persenHadir', 'persenIzin', 'persenSakit', 'persenAlpa'));

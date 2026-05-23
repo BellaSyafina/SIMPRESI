@@ -485,17 +485,7 @@
 
             <!-- Statistik Ringkasan (kartu) -->
             <div class="row g-3 mb-4">
-                <div class="col-md-2">
-                    <div class="card h-100 shadow-sm border-0 bg-primary bg-opacity-10">
-                        <div class="card-body text-center">
-                            <i data-feather="users" class="mb-2" width="28" height="28"
-                                style="color: white;"></i>
-                            <h6 class="mb-1 fw-bold text-white">Total Siswa</h6>
-                            <h3 class="mb-0 fw-bold text-white">{{ $totalSiswa }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
+                <div class="col">
                     <div class="card h-100 shadow-sm border-0 bg-success bg-opacity-10">
                         <div class="card-body text-center">
                             <i data-feather="check-circle" class="mb-2" width="28" height="28"
@@ -505,7 +495,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                     <div class="card h-100 shadow-sm border-0 bg-warning bg-opacity-10">
                         <div class="card-body text-center">
                             <i data-feather="file-text" class="mb-2" width="28" height="28"
@@ -515,7 +505,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                     <div class="card h-100 shadow-sm border-0 bg-info bg-opacity-10">
                         <div class="card-body text-center">
                             <i data-feather="thermometer" class="mb-2" width="28" height="28"
@@ -525,7 +515,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                     <div class="card h-100 shadow-sm border-0 bg-danger bg-opacity-10">
                         <div class="card-body text-center">
                             <i data-feather="x-circle" class="mb-2" width="28" height="28"
@@ -535,7 +525,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                     <div class="card h-100 shadow-sm border-0 bg-secondary bg-opacity-10">
                         <div class="card-body text-center">
                             <i data-feather="percent" class="mb-2" width="28" height="28"
