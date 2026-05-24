@@ -39,8 +39,8 @@ class SiswaController extends Controller
             $query->where('status', $request->status);
         }
 
-        // 🔥 sorting
-        $query->orderBy('nama_siswa');
+        // 🔥 sorting berdasarkan ID database
+        $query->orderBy('id_siswa', 'asc');
 
         $siswas = $query->paginate(10)->appends($request->all());
 
@@ -124,7 +124,7 @@ class SiswaController extends Controller
                 'alamat' => $request->alamat,
                 'status' => $request->status ?? 'aktif',
                 'id_kelas' => $request->id_kelas,
-                'id_user' => $user->id_user,
+                'id_user' => $user->id,
 
                 'nama_ayah' => $request->nama_ayah,
                 'no_hp_ayah' => $request->no_hp_ayah,

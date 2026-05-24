@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Imports;
-
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use App\Models\Kelas;
 use App\Models\Siswa;
 use Carbon\Carbon;
@@ -27,6 +28,14 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
             return null;
         }
 
+        // 🔥 BUAT AKUN USER
+        $user = User::create([
+            'name' => $row['nama_siswa'],
+            'email' => $row['nisn'] . '@siswa.com',
+            'password' => Hash::make('12345678'),
+            'role' => 'orang_tua',
+        ]);
+
         // 🔥 SIMPAN SISWA
         return new Siswa([
             // 🔥 biodata siswa
@@ -49,6 +58,8 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
             'status' => $row['status'] ?? 'aktif',
 
             'id_kelas' => $kelas->id_kelas,
+
+            'id_user' => $user->id,
 
             // 🔥 data ayah
             'nama_ayah' => $row['nama_ayah'] ?? null,

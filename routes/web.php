@@ -108,4 +108,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/sesi', [SesiController::class, 'index'])->name('sesi.index');
     Route::post('/sesi', [SesiController::class, 'store'])->name('sesi.store');
     Route::delete('/sesi/{id}', [SesiController::class, 'destroy'])->name('sesi.destroy');
+    Route::put('/sesi/{id}', [SesiController::class, 'update'])->name('sesi.update');
 });
