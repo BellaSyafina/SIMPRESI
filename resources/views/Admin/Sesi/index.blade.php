@@ -54,32 +54,6 @@
                             </div>
                         </div>
 
-                        {{-- FILTER HARI --}}
-                        <div class="col-lg-3">
-                            <label class="form-label fw-semibold"> Filter Hari </label>
-                            <select name="hari" class="form-select">
-                                <option selected> Semua Hari </option>
-                                <option>Senin</option>
-                                <option>Selasa</option>
-                                <option>Rabu</option>
-                                <option>Kamis</option>
-                                <option>Jumat</option>
-                                <option>Sabtu</option>
-                            </select>
-                        </div>
-
-                        {{-- STATUS --}}
-                        <div class="col-lg-3">
-                            <label class="form-label fw-semibold">
-                                Status
-                            </label>
-                            <select class="form-select">
-                                <option selected> Semua Status </option>
-                                <option>Tersedia</option>
-                                <option>Sudah Digunakan</option>
-                            </select>
-                        </div>
-
                         {{-- BUTTON --}}
                         <div class="col-lg-2">
                             <a href="{{ route('sesi.index') }}" class="btn btn-secondary">Reset</a>
@@ -88,6 +62,8 @@
                 </form>
             </div>
         </div>
+
+        @include('Components.alert')
 
         {{-- TABLE --}}
         <div class="card border-0 shadow-sm">
@@ -107,11 +83,9 @@
                             <tr>
                                 <th width="5%"> No </th>
                                 <th> Sesi Pertemuan </th>
-                                <th> Hari </th>
                                 <th> Jam Mulai </th>
                                 <th> Jam Selesai </th>
                                 <th> Durasi </th>
-                                <th> Status </th>
                                 <th class="text-center"> Action </th>
                             </tr>
                         </thead>
@@ -135,11 +109,6 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light-primary text-primary px-3 py-2">
-                                            {{ $sesi->hari }}
-                                        </span>
-                                    </td>
-                                    <td>
                                         {{ substr($sesi->jam_mulai, 0, 5) }}
                                     </td>
                                     <td>
@@ -150,24 +119,12 @@
                                         Menit
                                     </td>
                                     <td>
-                                        @if ($sesi->jadwalPelajaran->count() > 0)
-                                            <span class="badge bg-danger px-3 py-2">
-                                                Sudah Digunakan
-                                            </span>
-                                        @else
-                                            <span class="badge bg-success px-3 py-2">
-                                                Tersedia
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             {{-- EDIT --}}
                                             <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
                                                 data-id="{{ $sesi->id_sesi }}" data-nama="{{ $sesi->nama_sesi }}"
-                                                data-hari="{{ $sesi->hari }}" data-jam_mulai="{{ $sesi->jam_mulai }}"
-                                                data-jam_selesai="{{ $sesi->jam_selesai }}"
-                                                data-keterangan="{{ $sesi->keterangan }}">
+                                                data-jam_mulai="{{ $sesi->jam_mulai }}"
+                                                data-jam_selesai="{{ $sesi->jam_selesai }}">
                                                 <i data-feather="edit-2"></i>
                                                 Edit
                                             </button>
@@ -185,7 +142,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-5">
+                                    <td colspan="6" class="text-center py-5">
                                         <div class="text-muted">
                                             <i data-feather="calendar" style="width: 48px; height: 48px;"
                                                 class="mb-3"></i>
@@ -208,13 +165,169 @@
         </div>
     </div>
 
+    {{-- MODAL TAMBAH SESI --}}
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
+                {{-- HEADER --}}
+                <div class="modal-header bg-success text-white border-0">
+                    <div>
+                        <h5 class="modal-title fw-bold">
+                            Tambah Sesi Pembelajaran
+                        </h5>
+                        <small class="text-white-50">
+                            Tambahkan sesi pembelajaran baru
+                        </small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                {{-- FORM --}}
+                <form action="{{ route('sesi.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="row g-4">
+                            {{-- NAMA SESI --}}
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">
+                                    Nama Sesi
+                                </label>
+                                <input type="text" name="nama_sesi" class="form-control" placeholder="Contoh: Sesi 1"
+                                    required>
+                            </div>
+                            {{-- JAM MULAI --}}
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Jam Mulai
+                                </label>
+                                <input type="time" name="jam_mulai" class="form-control" required>
+                            </div>
+                            {{-- JAM SELESAI --}}
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Jam Selesai
+                                </label>
+                                <input type="time" name="jam_selesai" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- FOOTER --}}
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light border rounded-pill px-4" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-success rounded-pill px-4">
+                            <i data-feather="save" class="me-1"></i>
+                            Simpan Sesi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL EDIT SESI --}}
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
+                {{-- HEADER --}}
+                <div class="modal-header bg-primary text-white border-0">
+                    <div>
+                        <h5 class="modal-title fw-bold">
+                            Edit Sesi Pembelajaran
+                        </h5>
+                        <small class="text-white-50">
+                            Perbarui data sesi pembelajaran
+                        </small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                {{-- FORM --}}
+                <form method="POST" id="formEditSesi">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body p-4">
+                        <div class="row g-4">
+                            {{-- NAMA SESI --}}
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">
+                                    Nama Sesi
+                                </label>
+                                <input type="text" name="nama_sesi" id="edit_nama_sesi" class="form-control"
+                                    required>
+                            </div>
+                            {{-- JAM MULAI --}}
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Jam Mulai
+                                </label>
+                                <input type="time" name="jam_mulai" id="edit_jam_mulai" class="form-control"
+                                    required>
+                            </div>
+                            {{-- JAM SELESAI --}}
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Jam Selesai
+                                </label>
+                                <input type="time" name="jam_selesai" id="edit_jam_selesai" class="form-control"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- FOOTER --}}
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light border rounded-pill px-4" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4">
+                            <i data-feather="save" class="me-1"></i>
+                            Update Sesi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
-@push('scripts')
+@push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
 
+            const editButtons =
+                document.querySelectorAll('.btn-edit');
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id =
+                        this.dataset.id;
+
+                    // 🔥 SET ACTION
+                    document
+                        .getElementById('formEditSesi')
+                        .action =
+                        `/sesi/${id}`;
+
+                    // 🔥 SET VALUE
+                    document
+                        .getElementById('edit_nama_sesi')
+                        .value =
+                        this.dataset.nama;
+                    document
+                        .getElementById('edit_jam_mulai')
+                        .value =
+                        this.dataset.jam_mulai;
+                    document
+                        .getElementById('edit_jam_selesai')
+                        .value =
+                        this.dataset.jam_selesai;
+
+                    // 🔥 OPEN MODAL
+                    new bootstrap.Modal(
+                        document.getElementById('modalEdit')
+                    ).show();
+                });
+            });
         });
     </script>
 @endpush

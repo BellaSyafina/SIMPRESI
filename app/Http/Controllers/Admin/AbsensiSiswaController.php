@@ -31,7 +31,6 @@ class AbsensiSiswaController extends Controller
                 'jadwalList' => collect(),
                 'selectedKelas' => null,
                 'selectedJadwal' => null,
-                'selectedTanggal' => $selectedTanggal,
                 'siswa' => collect(),
                 'absensi' => collect(),
                 'jadwalAktif' => null,
@@ -41,6 +40,8 @@ class AbsensiSiswaController extends Controller
                 'totalSakit' => 0,
                 'totalAlpha' => 0,
                 'persenHadir' => 0,
+                'selectedPertemuan' => null,
+                'pertemuanList' => collect(),
             ]);
         }
 
@@ -83,7 +84,7 @@ class AbsensiSiswaController extends Controller
         $totalAlpha = $absensi->where('status', 'alpa')->count();
         $persenHadir = $totalSiswa > 0 ? round(($totalHadir / $totalSiswa) * 100, 1) : 0;
 
-        return view('Admin.absensiSiswa.index', compact('kelasList', 'jadwalList', 'selectedKelas', 'selectedJadwal', 'selectedTanggal', 'siswa', 'absensi', 'jadwalAktif', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir'));
+        return view('Admin.absensiSiswa.index', compact('kelasList', 'jadwalList', 'selectedKelas', 'selectedJadwal', 'selectedPertemuan', 'pertemuanList', 'siswa', 'absensi', 'jadwalAktif', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir'));
     }
 
     public function store(Request $request)

@@ -38,7 +38,7 @@
                             @forelse ($jadwalList as $jadwal)
                                 <option value="{{ $jadwal->id_jadwal_pelajaran }}"
                                     {{ $selectedJadwal == $jadwal->id_jadwal_pelajaran ? 'selected' : '' }}>
-                                    {{ $jadwal->sesi->nama_sesi }}
+                                    {{ $jadwal->sesi?->nama_sesi ?? '-' }}
                                     -
                                     {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
                                 </option>
