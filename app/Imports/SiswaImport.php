@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Kelas;
 use App\Models\Siswa;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -39,7 +40,7 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
 
             'tempat_lahir' => $row['tempat_lahir'] ?? null,
 
-            'tanggal_lahir' => $row['tanggal_lahir'] ?? null,
+            'tanggal_lahir' => isset($row['tanggal_lahir']) ? \Carbon\Carbon::createFromFormat('d-m-Y', $row['tanggal_lahir'])->format('Y-m-d') : null,
 
             'agama' => $row['agama'] ?? null,
 
