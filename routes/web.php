@@ -77,18 +77,15 @@ Route::middleware('auth')->group(function () {
     // Jadwal Pelajaran
     Route::get('/jadwal', [JadwalPelajaranController::class, 'index'])->name('jadwal.index');
     Route::post('/jadwal', [JadwalPelajaranController::class, 'store'])->name('jadwal.store');
-    Route::get('/guru-by-mapel/{id}', function ($id) {
-        return \App\Models\Guru::whereHas('mataPelajaran', function ($q) use ($id) {
-            $q->where('mata_pelajaran.id_mata_pelajaran', $id);
-        })->pluck('nama_guru', 'id_guru');
-    });
+    Route::get('/guru-by-mapel/{id}', [JadwalPelajaranController::class, 'guruByMapel'])->name('guru.by.mapel');
     Route::put('/jadwal/{id}', [JadwalPelajaranController::class, 'update'])->name('jadwal.update');
     Route::delete('/jadwal/{id}', [JadwalPelajaranController::class, 'destroy'])->name('jadwal.destroy');
     Route::get('/jadwal/{id}/pertemuan', [JadwalPelajaranController::class, 'pertemuan'])->name('jadwal.pertemuan');
     Route::put('/pertemuan/{id}/update', [JadwalPelajaranController::class, 'updatePertemuan'])->name('pertemuan.update');
 
     // Absensi Siswa
-    Route::get('/absensi', [AbsensiSiswaController::class, 'index'])->name('absensi.index');
+    Route::get('/absensi', [AbsensiSiswaController::class, 'jadwalMengajar'])->name('absensi.index');
+    Route::get('/absensi/form/{jadwal}/{pertemuan}', [AbsensiSiswaController::class, 'formAbsensi'])->name('absensi.form');
     Route::post('/absensi', [AbsensiSiswaController::class, 'store'])->name('absensi.store');
 
     // Laporan

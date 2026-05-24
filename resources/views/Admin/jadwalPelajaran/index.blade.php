@@ -269,10 +269,13 @@
                             <label class="form-label fw-semibold">Mata Pelajaran</label>
                             <select class="form-select" name="id_mata_pelajaran" id="mapelSelect">
                                 <option value="" disabled selected>Pilih Mata Pelajaran</option>
-                                @foreach ($mapelList as $id => $mapel)
-                                    <option value="{{ $id }}"
-                                        {{ old('id_mata_pelajaran') == $id ? 'selected' : '' }}>
-                                        {{ $mapel }}
+                                @foreach ($mapelObject as $mapel)
+                                    <option value="{{ $mapel->id_mata_pelajaran }}">
+
+                                        {{ $mapel->nama_mata_pelajaran }}
+                                        -
+                                        {{ $mapel->kode_mapel }}
+
                                     </option>
                                 @endforeach
                             </select>
@@ -280,11 +283,11 @@
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Guru Pengajar</label>
                             <select class="form-select" name="id_guru" id="guruSelect">
-                                @foreach ($guruList as $id => $guru)
-                                    <option value="{{ $id }}" {{ old('id_guru') == $id ? 'selected' : '' }}>
-                                        {{ $guru }}
-                                    </option>
-                                @endforeach
+
+                                <option value="" disabled selected>
+                                    Pilih Guru
+                                </option>
+
                             </select>
                         </div>
                         <div class="mb-3">
@@ -464,91 +467,81 @@
             </div>
         </div>
     </div>
-@endsection
 
-@push('script')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            feather.replace();
+        console.log('SCRIPT JALAN');
 
-            const mapelSelect = document.getElementById('mapelSelect');
-            const guruSelect = document.getElementById('guruSelect');
+        document.addEventListener(
+            'DOMContentLoaded',
+            function() {
 
-            mapelSelect.addEventListener('change', function() {
+                console.log('DOM READY');
 
-                let mapelId = this.value;
+                const mapelSelect =
+                    document.getElementById(
+                        'mapelSelect'
+                    );
 
-                // 🔥 TARUH DI SINI
-                guruSelect.innerHTML = '<option disabled selected>Loading...</option>';
+                const guruSelect =
+                    document.getElementById(
+                        'guruSelect'
+                    );
 
-                fetch(`/guru-by-mapel/${mapelId}`)
-                    .then(res => res.json())
-                    .then(data => {
+                console.log(mapelSelect);
 
-                        guruSelect.innerHTML = '<option value="" disabled selected>Pilih Guru</option>';
+                mapelSelect.addEventListener(
+                    'change',
+                    function() {
 
-                        if (Object.keys(data).length === 0) {
-                            guruSelect.innerHTML = '<option value="">Tidak ada guru</option>';
-                            return;
-                        }
+                        let mapelId = this.value;
 
-                        for (const id in data) {
-                            guruSelect.innerHTML += `<option value="${id}">${data[id]}</option>`;
-                        }
+                        console.log(mapelId);
+
+                        guruSelect.innerHTML =
+                            '<option value="">Loading...</option>';
+
+                        console.log('FETCH JALAN');
+
+                        fetch(
+                                `{{ url('/guru-by-mapel') }}/${mapelId}`
+                            )
+
+                            .then(response => response.json())
+
+                            .then(data => {
+
+                                console.log(data);
+
+                                guruSelect.innerHTML =
+                                    '<option value="">-- Pilih Guru --</option>';
+
+                                for (const id in data) {
+
+                                    guruSelect.innerHTML += `
+                                    <option value="${id}">
+                                        ${data[id]}
+                                    </option>
+                                `;
+
+                                }
+
+                                $('#guruSelect').html(
+                                    guruSelect.innerHTML
+                                ).trigger('change');
+
+                            })
+
+                            .catch(error => {
+
+                                console.error(error);
+
+                            });
 
                     });
 
             });
-
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-
-                btn.addEventListener('click', function() {
-
-                    let id = this.dataset.id;
-
-                    document.getElementById('formEditJadwal').action = `/jadwal/${id}`;
-
-                    document.getElementById('edit_kelas').value = this.dataset.kelas;
-                    document.getElementById('edit_mapel').value = this.dataset.mapel;
-                    document.getElementById('edit_hari').value =
-                        this.dataset.hari;
-                    document.getElementById('edit_sesi').value =
-                        this.dataset.sesi;
-                    document.getElementById('edit_semester').value =
-                        this.dataset.semester;
-                    document.getElementById('edit_tahun_ajaran').value =
-                        this.dataset.tahun_ajaran;
-
-                    // 🔥 LOAD GURU SESUAI MAPEL
-                    fetch(`/guru-by-mapel/${this.dataset.mapel}`)
-                        .then(res => res.json())
-                        .then(data => {
-
-                            let guruSelect = document.getElementById('edit_guru');
-                            guruSelect.innerHTML = '';
-
-                            for (const gid in data) {
-                                let selected = gid == this.dataset.guru ? 'selected' : '';
-                                guruSelect.innerHTML +=
-                                    `<option value="${gid}" ${selected}>${data[gid]}</option>`;
-                            }
-                        });
-
-                    new bootstrap.Modal(document.getElementById('editJadwalModal')).show();
-                });
-
-            });
-
-            document.querySelectorAll('.btn-hapus').forEach(btn => {
-                btn.addEventListener('click', function() {
-
-                    let id = this.dataset.id;
-
-                    document.getElementById('formHapusJadwal').action = `/jadwal/${id}`;
-
-                    new bootstrap.Modal(document.getElementById('hapusJadwalModal')).show();
-                });
-            });
-        });
     </script>
+@endsection
+
+@push('script')
 @endpush

@@ -47,8 +47,9 @@ class JadwalPelajaranController extends Controller
         // 🔥 dropdown modal
         $guruList = Guru::orderBy('nama_guru')->pluck('nama_guru', 'id_guru');
         $mapelList = MataPelajaran::orderBy('nama_mata_pelajaran')->pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
+        $mapelObject = MataPelajaran::orderBy('nama_mata_pelajaran')->get();
 
-        return view('Admin.jadwalPelajaran.index', compact('kelasList', 'hariList', 'jadwal', 'ringkasan', 'selectedKelas', 'selectedHari', 'selectedSemester', 'selectedTahunAjaran', 'guruList', 'mapelList', 'sesiList', 'semesterList', 'tahunAjaranList'));
+        return view('Admin.jadwalPelajaran.index', compact('kelasList', 'hariList', 'jadwal', 'ringkasan', 'selectedKelas', 'selectedHari', 'selectedSemester', 'selectedTahunAjaran', 'guruList', 'mapelList', 'sesiList', 'semesterList', 'tahunAjaranList', 'mapelObject'));
     }
 
     public function store(Request $request)
@@ -255,6 +256,17 @@ class JadwalPelajaranController extends Controller
                 ->route('jadwal.pertemuan', $pertemuan->id_jadwal_pelajaran)
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function guruByMapel($id)
+    {
+        $guru = Guru::whereHas('mataPelajaran', function ($q) use ($id) {
+            $q->where('mata_pelajaran.id_mata_pelajaran', $id);
+        })
+            ->orderBy('nama_guru')
+            ->pluck('nama_guru', 'id_guru');
+
+        return response()->json($guru);
     }
 
     private function generateTahunAjaranList()

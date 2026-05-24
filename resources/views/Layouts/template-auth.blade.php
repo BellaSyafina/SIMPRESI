@@ -37,6 +37,22 @@
     <link id="color" rel="stylesheet" href="{{ asset('') }}assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('') }}assets/css/responsive.css">
+
+    <style>
+        .show-hide {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+        }
+
+        .show-hide svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
 </head>
 
 <body>
@@ -92,7 +108,9 @@
                                     <div class="form-input position-relative">
                                         <input class="form-control" type="password" name="password" required
                                             placeholder="*********">
-                                        <div class="show-hide"><span class="show"></span></div>
+                                        <div class="show-hide" id="togglePassword">
+                                            <i data-feather="eye"></i>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -130,6 +148,56 @@
         <script src="{{ asset('') }}assets/js/script1.js"></script>
         <!-- Plugin used-->
     </div>
+
+    <script>
+        document.addEventListener(
+            'DOMContentLoaded',
+            function() {
+
+                const passwordInput =
+                    document.querySelector(
+                        'input[name="password"]'
+                    );
+
+                const togglePassword =
+                    document.getElementById(
+                        'togglePassword'
+                    );
+
+                togglePassword.addEventListener(
+                    'click',
+                    function() {
+
+                        const icon =
+                            this.querySelector('svg');
+
+                        if (
+                            passwordInput.type ===
+                            'password'
+                        ) {
+
+                            passwordInput.type =
+                                'text';
+
+                            this.innerHTML =
+                                feather.icons['eye-off']
+                                .toSvg();
+
+                        } else {
+
+                            passwordInput.type =
+                                'password';
+
+                            this.innerHTML =
+                                feather.icons['eye']
+                                .toSvg();
+
+                        }
+
+                    });
+
+            });
+    </script>
 </body>
 
 </html>
