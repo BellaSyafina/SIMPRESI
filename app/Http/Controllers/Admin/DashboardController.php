@@ -79,6 +79,7 @@ class DashboardController extends Controller
                 'Thursday' => 'Kamis',
                 'Friday' => 'Jumat',
                 'Saturday' => 'Sabtu',
+                'Sunday' => 'Minggu',
             ];
 
             $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi'])
