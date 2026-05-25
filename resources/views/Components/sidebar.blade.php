@@ -4,8 +4,7 @@
             <a href="/dashboard" class="d-flex align-items-center text-decoration-none">
 
                 <!-- Logo -->
-                <img src="{{ asset('assets/images/logo/smpn.png') }}" alt="logo"
-                    style="width: 55px; height: 55px;">
+                <img src="{{ asset('assets/images/logo/smpn.png') }}" alt="logo" style="width: 55px; height: 55px;">
 
                 <!-- Tulisan -->
                 <span style="color: white; font-size: 22px; font-weight: 700; letter-spacing: 1px;">
@@ -229,6 +228,25 @@
                                     <use href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-ui-kits"></use>
                                 </svg>
                                 <span>Laporan Kehadiran</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (Auth::user()->role == 'admin')
+                        <li class="sidebar-list">
+                            <i class="fa fa-thumb-tack"></i>
+                            <a class="sidebar-link sidebar-title link-nav" href="/setting-sistem">
+                                <svg class="stroke-icon">
+                                    <use
+                                        href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-setting">
+                                    </use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use
+                                        href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-setting">
+                                    </use>
+                                </svg>
+                                <span>Setting Sistem</span>
                             </a>
                         </li>
                     @endif

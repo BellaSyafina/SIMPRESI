@@ -1,4 +1,4 @@
-<footer class="footer">
+<footer class="footer mt-3">
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between align-items-center flex-wrap">

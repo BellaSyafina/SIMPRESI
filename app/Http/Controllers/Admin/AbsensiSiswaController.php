@@ -7,6 +7,7 @@ use App\Models\Absensi;
 use App\Models\Guru;
 use App\Models\JadwalPelajaran;
 use App\Models\PertemuanPelajaran;
+use App\Models\SettingSistem;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,11 +72,15 @@ class AbsensiSiswaController extends Controller
             'Sunday' => 'Minggu',
         ];
 
-        $hariIni = 'Senin';
+        $hariIni = $hariMap[now()->format('l')] ?? null;
+
+        $setting = SettingSistem::first();
 
         $jadwalList = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi'])
             ->where('id_guru', $guru->id_guru)
             ->where('hari', $hariIni)
+            ->where('semester', $setting->semester_aktif)
+            ->where('tahun_ajaran', $setting->tahun_ajaran_aktif)
             ->orderBy('id_sesi')
             ->get();
 

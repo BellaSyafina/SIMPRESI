@@ -9,6 +9,7 @@ use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use App\Models\PertemuanPelajaran;
 use App\Models\SesiPelajaran;
+use App\Models\SettingSistem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,8 +26,10 @@ class JadwalPelajaranController extends Controller
         // 🔥 default filter
         $selectedKelas = $request->kelas ?? $kelasList->keys()->first();
         $selectedHari = $request->hari ?? 'Senin';
-        $selectedSemester = $request->semester ?? 'Ganjil';
-        $selectedTahunAjaran = $request->tahun_ajaran ?? date('Y') . '/' . (date('Y') + 1);
+        $setting = SettingSistem::first();
+
+        $selectedSemester = $setting->semester_aktif;
+        $selectedTahunAjaran = $setting->tahun_ajaran_aktif;
 
         // 🔥 ambil jadwal
         $jadwal = JadwalPelajaran::with(['guru', 'mataPelajaran', 'sesi'])
@@ -49,7 +52,7 @@ class JadwalPelajaranController extends Controller
         $mapelList = MataPelajaran::orderBy('nama_mata_pelajaran')->pluck('nama_mata_pelajaran', 'id_mata_pelajaran');
         $mapelObject = MataPelajaran::orderBy('nama_mata_pelajaran')->get();
 
-        return view('Admin.jadwalPelajaran.index', compact('kelasList', 'hariList', 'jadwal', 'ringkasan', 'selectedKelas', 'selectedHari', 'selectedSemester', 'selectedTahunAjaran', 'guruList', 'mapelList', 'sesiList', 'semesterList', 'tahunAjaranList', 'mapelObject'));
+        return view('Admin.jadwalPelajaran.index', compact('kelasList', 'hariList', 'jadwal', 'ringkasan', 'selectedKelas', 'selectedHari', 'selectedSemester', 'selectedTahunAjaran', 'guruList', 'mapelList', 'sesiList', 'semesterList', 'tahunAjaranList', 'mapelObject', 'setting'));
     }
 
     public function store(Request $request)
@@ -60,8 +63,6 @@ class JadwalPelajaranController extends Controller
                     'id_kelas' => 'required|exists:kelas,id_kelas',
                     'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
                     'id_sesi' => 'required|exists:sesi_pelajaran,id_sesi',
-                    'semester' => 'required|in:Ganjil,Genap',
-                    'tahun_ajaran' => 'required|regex:/^\d{4}\/\d{4}$/',
                     'id_guru' => 'required|exists:guru,id_guru',
                     'id_mata_pelajaran' => 'required|exists:mata_pelajaran,id_mata_pelajaran',
                 ],
@@ -72,10 +73,6 @@ class JadwalPelajaranController extends Controller
                     'hari.in' => 'Hari yang dipilih tidak valid.',
                     'id_sesi.required' => 'Sesi harus dipilih.',
                     'id_sesi.exists' => 'Sesi yang dipilih tidak valid.',
-                    'semester.required' => 'Semester harus dipilih.',
-                    'semester.in' => 'Semester yang dipilih tidak valid.',
-                    'tahun_ajaran.required' => 'Tahun ajaran harus diisi.',
-                    'tahun_ajaran.regex' => 'Format tahun ajaran harus YYYY/YYYY.',
                     'id_guru.required' => 'Guru harus dipilih.',
                     'id_guru.exists' => 'Guru yang dipilih tidak valid.',
                     'id_mata_pelajaran.required' => 'Mata pelajaran harus dipilih.',
@@ -89,12 +86,14 @@ class JadwalPelajaranController extends Controller
                 return back()->withInput()->with('error', 'Jadwal bentrok dengan jadwal lain pada kelas dan tanggal yang sama.');
             }
 
+            $setting = SettingSistem::first();
+
             $jadwal = JadwalPelajaran::create([
                 'id_kelas' => $request->id_kelas,
                 'hari' => $request->hari,
                 'id_sesi' => $request->id_sesi,
-                'semester' => $request->semester,
-                'tahun_ajaran' => $request->tahun_ajaran,
+                'semester' => $setting->semester_aktif,
+                'tahun_ajaran' => $setting->tahun_ajaran_aktif,
                 'id_guru' => $request->id_guru,
                 'id_mata_pelajaran' => $request->id_mata_pelajaran,
             ]);
@@ -155,8 +154,6 @@ class JadwalPelajaranController extends Controller
                     'id_kelas' => 'required|exists:kelas,id_kelas',
                     'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
                     'id_sesi' => 'required|exists:sesi_pelajaran,id_sesi',
-                    'semester' => 'required|in:Ganjil,Genap',
-                    'tahun_ajaran' => 'required|regex:/^\d{4}\/\d{4}$/',
                     'id_guru' => 'required|exists:guru,id_guru',
                     'id_mata_pelajaran' => 'required|exists:mata_pelajaran,id_mata_pelajaran',
                 ],
@@ -167,10 +164,6 @@ class JadwalPelajaranController extends Controller
                     'hari.in' => 'Hari yang dipilih tidak valid.',
                     'id_sesi.required' => 'Sesi harus dipilih.',
                     'id_sesi.exists' => 'Sesi yang dipilih tidak valid.',
-                    'semester.required' => 'Semester harus dipilih.',
-                    'semester.in' => 'Semester yang dipilih tidak valid.',
-                    'tahun_ajaran.required' => 'Tahun ajaran harus diisi.',
-                    'tahun_ajaran.regex' => 'Format tahun ajaran harus YYYY/YYYY.',
                     'id_guru.required' => 'Guru harus dipilih.',
                     'id_guru.exists' => 'Guru yang dipilih tidak valid.',
                     'id_mata_pelajaran.required' => 'Mata pelajaran harus dipilih.',
@@ -184,12 +177,14 @@ class JadwalPelajaranController extends Controller
                 return back()->withInput()->with('error', 'Jadwal bentrok dengan jadwal lain pada kelas dan tanggal yang sama.');
             }
 
+            $setting = SettingSistem::first();
+
             $jadwal->update([
                 'id_kelas' => $request->id_kelas,
                 'hari' => $request->hari,
                 'id_sesi' => $request->id_sesi,
-                'semester' => $request->semester,
-                'tahun_ajaran' => $request->tahun_ajaran,
+                'semester' => $setting->semester_aktif,
+                'tahun_ajaran' => $setting->tahun_ajaran_aktif,
                 'id_guru' => $request->id_guru,
                 'id_mata_pelajaran' => $request->id_mata_pelajaran,
             ]);

@@ -99,18 +99,19 @@ class SiswaController extends Controller
                 ],
             );
 
-            // 🔥 generate email dari NIS/NISN
-            $emailLogin = $request->nisn . '@siswa.com';
-            // 🔥 password default = tanggal lahir
-            $passwordDefault = $request->tanggal_lahir ? \Carbon\Carbon::parse($request->tanggal_lahir)->format('dmY') : '12345678';
+            $email = $request->nisn . '@siswa.com';
+            $user = User::where('email', $email)->first();
 
-            // 🔥 buat akun user siswa
-            $user = User::create([
-                'name' => $request->nama_siswa,
-                'email' => $emailLogin,
-                'password' => Hash::make($passwordDefault),
-                'role' => 'orang_tua',
-            ]);
+            if (!$user) {
+                $passwordDefault = $request->tanggal_lahir ? \Carbon\Carbon::parse($request->tanggal_lahir)->format('dmY') : '12345678';
+
+                $user = User::create([
+                    'name' => $request->nama_siswa,
+                    'email' => $email,
+                    'password' => Hash::make($passwordDefault),
+                    'role' => 'orang_tua',
+                ]);
+            }
 
             // 🔥 simpan siswa
             Siswa::create([
@@ -124,7 +125,7 @@ class SiswaController extends Controller
                 'alamat' => $request->alamat,
                 'status' => $request->status ?? 'aktif',
                 'id_kelas' => $request->id_kelas,
-                'id_user' => $user->id_user,
+                'id_user' => $user->id,
 
                 'nama_ayah' => $request->nama_ayah,
                 'no_hp_ayah' => $request->no_hp_ayah,
@@ -238,7 +239,14 @@ class SiswaController extends Controller
     public function destroy($id)
     {
         try {
-            $siswa = Siswa::findOrFail($id);
+            $siswa = Siswa::with('user')->findOrFail($id);
+
+            // 🔥 hapus akun user
+            if ($siswa->user) {
+                $siswa->user->delete();
+            }
+
+            // 🔥 hapus siswa
             $siswa->delete();
 
             return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus');

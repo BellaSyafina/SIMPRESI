@@ -14,6 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\LaporanExport;
 use App\Models\JadwalPelajaran;
+use App\Models\SettingSistem;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -62,26 +63,14 @@ class LaporanController extends Controller
         }
 
         // FILTER
-        $selectedBulan = $request->bulan ?? date('m');
-        $selectedTahun = $request->tahun ?? date('Y');
         $selectedMapel = $request->mapel;
+        $setting = SettingSistem::first();
 
-        $namaBulan = [
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
-        ];
+        $selectedSemester = request('semester') ?? $setting->semester_aktif;
+        $selectedTahunAjaran = request('tahun_ajaran') ?? $setting->tahun_ajaran_aktif;
 
-        $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
+        $semesterList = ['Ganjil', 'Genap'];
+        $tahunAjaranList = JadwalPelajaran::select('tahun_ajaran')->distinct()->pluck('tahun_ajaran');
 
         // SISWA / ORANG TUA
         if (Auth::user()->role == 'orang_tua') {
@@ -93,7 +82,9 @@ class LaporanController extends Controller
         }
 
         // QUERY ABSENSI
-        $pertemuanIds = PertemuanPelajaran::whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->pluck('id_pertemuan');
+        $pertemuanIds = PertemuanPelajaran::whereHas('jadwalPelajaran', function ($q) use ($selectedSemester, $selectedTahunAjaran) {
+            $q->where('semester', $selectedSemester)->where('tahun_ajaran', $selectedTahunAjaran);
+        })->pluck('id_pertemuan');
 
         $absensiQuery = Absensi::with(['pertemuan.jadwalPelajaran'])
             ->whereIn('id_siswa', $siswaList->pluck('id_siswa'))
@@ -122,7 +113,8 @@ class LaporanController extends Controller
             $izin = $absensi->where('status', 'izin')->count();
             $sakit = $absensi->where('status', 'sakit')->count();
             $alpa = $absensi->where('status', 'alpa')->count();
-            $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
+            $totalPertemuan = $hadir + $izin + $sakit + $alpa;
+            $persen = $totalPertemuan > 0 ? round(($hadir / $totalPertemuan) * 100, 1) : 0;
 
             $rekap[] = [
                 'nis' => $siswa->nis,
@@ -152,8 +144,10 @@ class LaporanController extends Controller
 
         // TOTAL
         $totalSiswa = $siswaList->count();
-        $rataPersen = $totalSiswa > 0 && $jumlahHari > 0 ? round(($totalHadir / ($totalSiswa * $jumlahHari)) * 100, 1) : 0;
-        return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedBulan', 'selectedTahun', 'selectedMapel', 'namaBulan', 'jumlahHari', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen'));
+        $totalSemuaPertemuan = $totalHadir + $totalIzin + $totalSakit + $totalAlpa;
+        $rataPersen = $totalSemuaPertemuan > 0 ? round(($totalHadir / $totalSemuaPertemuan) * 100, 1) : 0;
+
+        return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedMapel', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen', 'semesterList', 'tahunAjaranList', 'selectedSemester', 'selectedTahunAjaran'));
     }
 
     public function exportExcel(Request $request)
@@ -162,9 +156,9 @@ class LaporanController extends Controller
 
         // ambil kelas + relasi guru
         $kelas = Kelas::with('guru')->find($data['selectedKelas']);
-        $bulan = $data['namaBulan'][$data['selectedBulan']] ?? '-';
-        $tahun = $data['selectedTahun'];
-        return Excel::download(new LaporanExport($data['rekap'], $kelas, $bulan, $tahun), 'laporan-kehadiran.xlsx');
+        $semester = $data['selectedSemester'];
+        $tahunAjaran = $data['selectedTahunAjaran'];
+        return Excel::download(new LaporanExport($data['rekap'], $kelas, $semester, $tahunAjaran), 'laporan-kehadiran.xlsx');
     }
 
     public function exportPdf(Request $request)
@@ -175,19 +169,12 @@ class LaporanController extends Controller
         $kelas = Kelas::with('guru')->find($data['selectedKelas']);
 
         $pdf = Pdf::loadView('Admin.Laporan.pdf', [
-            // DATA TABEL
             'rekap' => $data['rekap'],
-
-            // DATA KELAS
             'kelas' => $kelas,
-
-            // FILTER
-            'selectedBulan' => $data['selectedBulan'],
-            'selectedTahun' => $data['selectedTahun'],
-
-            // NAMA BULAN
-            'namaBulan' => $data['namaBulan'],
+            'selectedSemester' => $data['selectedSemester'],
+            'selectedTahunAjaran' => $data['selectedTahunAjaran'],
         ]);
+
         return $pdf->download('laporan-kehadiran.pdf');
     }
 
@@ -212,26 +199,10 @@ class LaporanController extends Controller
         }
 
         // FILTER
-        $selectedBulan = $request->bulan ?? date('m');
-        $selectedTahun = $request->tahun ?? date('Y');
         $selectedMapel = $request->mapel;
-
-        $namaBulan = [
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
-        ];
-
-        $jumlahHari = Carbon::create($selectedTahun, $selectedBulan)->daysInMonth;
+        $setting = SettingSistem::first();
+        $selectedSemester = $request->semester ?? $setting->semester_aktif;
+        $selectedTahunAjaran = $request->tahun_ajaran ?? $setting->tahun_ajaran_aktif;
 
         // SISWA / ORANG TUA
         if (Auth::user()->role == 'orang_tua') {
@@ -243,7 +214,9 @@ class LaporanController extends Controller
         }
 
         // QUERY ABSENSI
-        $pertemuanIds = PertemuanPelajaran::whereMonth('tanggal', $selectedBulan)->whereYear('tanggal', $selectedTahun)->pluck('id_pertemuan');
+        $pertemuanIds = PertemuanPelajaran::whereHas('jadwalPelajaran', function ($q) use ($selectedSemester, $selectedTahunAjaran) {
+            $q->where('semester', $selectedSemester)->where('tahun_ajaran', $selectedTahunAjaran);
+        })->pluck('id_pertemuan');
 
         $absensiQuery = Absensi::with(['pertemuan.jadwalPelajaran'])
             ->whereIn('id_siswa', $siswaList->pluck('id_siswa'))
@@ -267,7 +240,8 @@ class LaporanController extends Controller
             $izin = $absensi->where('status', 'izin')->count();
             $sakit = $absensi->where('status', 'sakit')->count();
             $alpa = $absensi->where('status', 'alpa')->count();
-            $persen = $jumlahHari > 0 ? round(($hadir / $jumlahHari) * 100, 1) : 0;
+            $totalPertemuan = $hadir + $izin + $sakit + $alpa;
+            $persen = $totalPertemuan > 0 ? round(($hadir / $totalPertemuan) * 100, 1) : 0;
 
             $rekap[] = [
                 'nis' => $siswa->nis,
@@ -283,9 +257,8 @@ class LaporanController extends Controller
         return [
             'rekap' => $rekap,
             'selectedKelas' => $selectedKelas,
-            'selectedBulan' => $selectedBulan,
-            'selectedTahun' => $selectedTahun,
-            'namaBulan' => $namaBulan,
+            'selectedSemester' => $selectedSemester,
+            'selectedTahunAjaran' => $selectedTahunAjaran,
         ];
     }
 }

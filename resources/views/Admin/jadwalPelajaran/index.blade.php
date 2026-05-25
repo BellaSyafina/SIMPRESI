@@ -56,25 +56,20 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">Pilih Semester</label>
-                            <select name="semester" class="form-select" onchange="this.form.submit()">
-                                <option value="">Pilih Semester</option>
-                                <option value="Ganjil" {{ $selectedSemester == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
-                                <option value="Genap" {{ $selectedSemester == 'Genap' ? 'selected' : '' }}>Genap</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">Pilih Tahun Ajaran</label>
-                            <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
-                                <option value="">Pilih Tahun Ajaran</option>
-                                @foreach ($tahunAjaranList as $tahun)
-                                    <option value="{{ $tahun }}"
-                                        {{ $selectedTahunAjaran == $tahun ? 'selected' : '' }}>
-                                        {{ $tahun }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <div class="col-md-6">
+
+                            <div class="alert alert-primary mb-0 py-2">
+
+                                <strong>Semester Aktif:</strong>
+                                {{ $selectedSemester }}
+
+                                |
+
+                                <strong>Tahun Ajaran:</strong>
+                                {{ $selectedTahunAjaran }}
+
+                            </div>
+
                         </div>
                         <div class="col-12">
 
@@ -189,8 +184,7 @@
                                     <tbody>
                                         @foreach ($hariList as $hari)
                                             <tr>
-                                                <td style="width: 30%"><strong
-                                                        class="fs-5">{{ $hari }}</strong>
+                                                <td style="width: 30%"><strong class="fs-5">{{ $hari }}</strong>
                                                 </td>
                                                 <td style="width: 70%">
                                                     <div class="d-flex align-items-center gap-2">
@@ -313,29 +307,24 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Semester</label>
-                            <select class="form-select" name="semester">
-                                <option value="" disabled selected>Pilih Semester</option>
-                                @foreach ($semesterList as $semester)
-                                    <option value="{{ $semester }}"
-                                        {{ old('semester') == $semester ? 'selected' : '' }}>
-                                        {{ $semester }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Tahun Ajaran</label>
-                            <select class="form-select" name="tahun_ajaran">
-                                <option value="" disabled selected>Pilih Tahun Ajaran</option>
-                                @foreach ($tahunAjaranList as $tahun)
-                                    <option value="{{ $tahun }}"
-                                        {{ old('tahun_ajaran') == $tahun ? 'selected' : '' }}>
-                                        {{ $tahun }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <div class="alert alert-light border">
+
+                            Jadwal akan otomatis disimpan
+                            untuk:
+
+                            <br>
+
+                            <strong>
+                                Semester {{ $selectedSemester }}
+                            </strong>
+
+                            |
+
+                            <strong>
+                                Tahun Ajaran
+                                {{ $selectedTahunAjaran }}
+                            </strong>
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -359,7 +348,8 @@
 
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Jadwal</h5>
-                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
                     </div>
 
                     <div class="modal-body">
@@ -367,12 +357,25 @@
                         <input type="hidden" name="id_kelas" id="edit_kelas">
 
                         <div class="mb-3">
-                            <label>Mata Pelajaran</label>
+
+                            <label class="form-label fw-semibold">
+                                Mata Pelajaran
+                            </label>
+
                             <select name="id_mata_pelajaran" id="edit_mapel" class="form-select">
-                                @foreach ($mapelList as $id => $mapel)
-                                    <option value="{{ $id }}">{{ $mapel }}</option>
+
+                                @foreach ($mapelObject as $mapel)
+                                    <option value="{{ $mapel->id_mata_pelajaran }}">
+
+                                        {{ $mapel->nama_mata_pelajaran }}
+                                        -
+                                        {{ $mapel->kode_mapel }}
+
+                                    </option>
                                 @endforeach
+
                             </select>
+
                         </div>
 
                         <div class="mb-3">
@@ -401,26 +404,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label>Tahun Ajaran</label>
-                            <select name="tahun_ajaran" id="edit_tahun_ajaran" class="form-select">
-                                @foreach ($tahunAjaranList as $tahun)
-                                    <option value="{{ $tahun }}">
-                                        {{ $tahun }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label>Semester</label>
-                            <select name="semester" id="edit_semester" class="form-select">
-                                @foreach ($semesterList as $semester)
-                                    <option value="{{ $semester }}">
-                                        {{ $semester }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -445,7 +428,8 @@
                             <i data-feather="alert-triangle" class="me-2"></i>
                             Konfirmasi Hapus
                         </h5>
-                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
                     </div>
 
                     <div class="modal-body text-center">
@@ -534,6 +518,178 @@
                             .catch(error => {
 
                                 console.error(error);
+
+                            });
+
+                    });
+
+            });
+    </script>
+
+    <script>
+        document.addEventListener(
+            'DOMContentLoaded',
+            function() {
+
+                // =========================
+                // EDIT JADWAL
+                // =========================
+
+                document.querySelectorAll(
+                    '.btn-edit'
+                ).forEach(button => {
+
+                    button.addEventListener(
+                        'click',
+                        function() {
+
+                            const id =
+                                this.dataset.id;
+
+                            // FORM ACTION
+                            document.getElementById(
+                                    'formEditJadwal'
+                                ).action =
+                                `/jadwal/${id}`;
+
+                            // SET VALUE
+                            document.getElementById(
+                                    'edit_kelas'
+                                ).value =
+                                this.dataset.kelas;
+
+                            document.getElementById(
+                                    'edit_mapel'
+                                ).value =
+                                this.dataset.mapel;
+
+                            document.getElementById(
+                                    'edit_hari'
+                                ).value =
+                                this.dataset.hari;
+
+                            document.getElementById(
+                                    'edit_sesi'
+                                ).value =
+                                this.dataset.sesi;
+
+                            // LOAD GURU BERDASARKAN MAPEL
+                            fetch(
+                                    `/guru-by-mapel/${this.dataset.mapel}`
+                                )
+
+                                .then(response =>
+                                    response.json()
+                                )
+
+                                .then(data => {
+
+                                    let guruSelect =
+                                        document.getElementById(
+                                            'edit_guru'
+                                        );
+
+                                    guruSelect.innerHTML = '';
+
+                                    for (const id in data) {
+
+                                        guruSelect.innerHTML += `
+                                <option value="${id}">
+                                    ${data[id]}
+                                </option>
+                            `;
+
+                                    }
+
+                                    guruSelect.value =
+                                        button.dataset.guru;
+
+                                });
+
+                            // TAMPILKAN MODAL
+                            new bootstrap.Modal(
+                                document.getElementById(
+                                    'editJadwalModal'
+                                )
+                            ).show();
+
+                        });
+
+                });
+
+                // =========================
+                // HAPUS JADWAL
+                // =========================
+
+                document.querySelectorAll(
+                    '.btn-hapus'
+                ).forEach(button => {
+
+                    button.addEventListener(
+                        'click',
+                        function() {
+
+                            const id =
+                                this.dataset.id;
+
+                            document.getElementById(
+                                    'formHapusJadwal'
+                                ).action =
+                                `/jadwal/${id}`;
+
+                            new bootstrap.Modal(
+                                document.getElementById(
+                                    'hapusJadwalModal'
+                                )
+                            ).show();
+
+                        });
+
+                });
+
+                // =========================
+                // CHANGE MAPEL EDIT
+                // =========================
+
+                document.getElementById(
+                    'edit_mapel'
+                ).addEventListener(
+                    'change',
+                    function() {
+
+                        const mapelId =
+                            this.value;
+
+                        const guruSelect =
+                            document.getElementById(
+                                'edit_guru'
+                            );
+
+                        guruSelect.innerHTML =
+                            '<option>Loading...</option>';
+
+                        fetch(
+                                `/guru-by-mapel/${mapelId}`
+                            )
+
+                            .then(response =>
+                                response.json()
+                            )
+
+                            .then(data => {
+
+                                guruSelect.innerHTML =
+                                    '<option value="">Pilih Guru</option>';
+
+                                for (const id in data) {
+
+                                    guruSelect.innerHTML += `
+                    <option value="${id}">
+                        ${data[id]}
+                    </option>
+                `;
+
+                                }
 
                             });
 

@@ -11,6 +11,7 @@ use App\Models\MataPelajaran;
 use App\Models\Siswa;
 use App\Models\User;
 use App\Models\PertemuanPelajaran;
+use App\Models\SettingSistem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ class DashboardController extends Controller
     public function index()
     {
         $today = now()->format('Y-m-d');
+        $setting = SettingSistem::first();
 
         // Admin
         if (Auth::user()->role == 'admin') {
@@ -64,7 +66,7 @@ class DashboardController extends Controller
                 $persenChart[] = $persen;
             }
 
-            return view('Admin.Dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalMataPelajaran', 'chartKelas', 'hadirData', 'izinData', 'sakitData', 'alpaData', 'hariChart', 'persenChart'));
+            return view('Admin.Dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalMataPelajaran', 'chartKelas', 'hadirData', 'izinData', 'sakitData', 'alpaData', 'hariChart', 'persenChart', 'setting'));
         }
 
         // Guru
@@ -120,7 +122,7 @@ class DashboardController extends Controller
                 if ($totalSiswa > 0) {
                     $absensiTerbaru[] = [
                         'kelas' => $jadwal->kelas->nama_kelas,
-                        'waktu' => Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i'),
+                        'waktu' => $jadwal->sesi ? Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') : '-',
                         'persen' => round(($hadir / $totalSiswa) * 100, 1),
                         'hadir' => $hadir,
                         'total' => $totalSiswa,
@@ -128,7 +130,7 @@ class DashboardController extends Controller
                 }
             }
 
-            return view('Admin.Dashboard.index', compact('jadwalHariIni', 'kelasHariIni', 'absensiSelesai', 'menungguAbsensi', 'absensiTerbaru'));
+            return view('Admin.Dashboard.index', compact('jadwalHariIni', 'kelasHariIni', 'absensiSelesai', 'menungguAbsensi', 'absensiTerbaru', 'setting'));
         }
 
         // Orang Tua
@@ -170,7 +172,7 @@ class DashboardController extends Controller
                 $totalAlpa = $absensi->where('status', 'alpa')->count();
             }
 
-            return view('Admin.Dashboard.index', compact('siswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'kehadiranHariIni', 'chartTanggal', 'chartHadir', 'chartIzin', 'chartSakit', 'chartAlpa', 'persenHadir', 'persenIzin', 'persenSakit', 'persenAlpa'));
+            return view('Admin.Dashboard.index', compact('siswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'kehadiranHariIni', 'chartTanggal', 'chartHadir', 'chartIzin', 'chartSakit', 'chartAlpa', 'persenHadir', 'persenIzin', 'persenSakit', 'persenAlpa', 'setting'));
         }
     }
 }

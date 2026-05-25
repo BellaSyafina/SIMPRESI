@@ -139,8 +139,64 @@
                 </div>
             </div>
 
+            {{-- ================= INFO AKADEMIK ================= --}}
+            <div class="col-12 mt-3">
+                <div class="card border-0 shadow-sm overflow-hidden"
+                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
+
+                    <div class="card-body py-4 px-4">
+
+                        <div class="row align-items-center">
+
+                            <div class="col-md-8">
+
+                                <h4 class="text-white fw-bold mb-2">
+                                    Tahun Akademik Aktif
+                                </h4>
+
+                                <div class="d-flex flex-wrap gap-3">
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+
+                                        Semester:
+                                        {{ $setting?->semester_aktif ?? '-' }}
+
+                                    </div>
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+
+                                        Tahun Ajaran:
+                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 text-end d-none d-md-block">
+
+                                <div
+                                    style="
+                            font-size:70px;
+                            opacity:.2;
+                        ">
+
+                                    🎓
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
             {{-- ================= CHART AREA ================= --}}
-            <div class="row mt-4 g-3">
+            <div class="row g-3">
 
                 {{-- BAR CHART: Kehadiran per Kelas Hari Ini (11 kelas) --}}
                 <div class="col-md-6">
@@ -391,6 +447,51 @@
                 </div>
             </div>
 
+            <div class="col-12">
+                <div class="card border-0 shadow-sm overflow-hidden"
+                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
+
+                    <div class="card-body py-4 px-4">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                            <div>
+
+                                <h4 class="text-white fw-bold mb-2">
+                                    Tahun Akademik Aktif
+                                </h4>
+
+                                <div class="d-flex flex-wrap gap-3">
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+
+                                        Semester:
+                                        {{ $setting?->semester_aktif ?? '-' }}
+
+                                    </div>
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+
+                                        Tahun Ajaran:
+                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="d-none d-md-block" style="font-size:65px; opacity:.2;">
+                                📚
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
             <!-- Baris kedua: Jadwal Mengajar Hari Ini -->
             <div class="row">
                 <div class="col-12">
@@ -422,8 +523,8 @@
                                         }
 
                                         $now = now()->format('H:i:s');
-                                        $jamMulai = $jadwal->sesi->jam_mulai;
-                                        $jamSelesai = $jadwal->sesi->jam_selesai;
+                                        $jamMulai = $jadwal->sesi?->jam_mulai;
+                                        $jamSelesai = $jadwal->sesi?->jam_selesai;
 
                                         if ($sudahAbsen) {
                                             $status = 'Selesai';
@@ -443,9 +544,9 @@
                                             <div class="mb-2 mb-sm-0">
 
                                                 <span class="badge bg-secondary fs-7 me-3">
-                                                    {{ \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') }}
+                                                    {{ $jadwal->sesi?->jam_mulai ? \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') : '-' }}
                                                     -
-                                                    {{ \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') }}
+                                                    {{ $jadwal->sesi?->jam_selesai ? \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') : '-' }}
                                                 </span>
 
                                                 <span class="fw-bold fs-6">
@@ -607,8 +708,52 @@
                 </div>
             </div>
 
+            <div class="col-12">
+                <div class="card border-0 shadow-sm overflow-hidden"
+                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
+                    <div class="card-body py-4 px-4">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                            <div>
+
+                                <h4 class="text-white fw-bold mb-2">
+                                    Tahun Akademik Aktif
+                                </h4>
+
+                                <div class="d-flex flex-wrap gap-3">
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+
+                                        Semester:
+                                        {{ $setting?->semester_aktif ?? '-' }}
+
+                                    </div>
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+
+                                        Tahun Ajaran:
+                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="d-none d-md-block" style="font-size:65px; opacity:.2;">
+                                🏫
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
             <!-- Statistik Kehadiran -->
-            <div class="row mt-1 g-3">
+            <div class="row g-3">
                 <div class="col-md-3 col-6">
                     <div class="card shadow-sm border-0 text-center h-100 bg-success bg-opacity-10">
                         <div class="card-body">

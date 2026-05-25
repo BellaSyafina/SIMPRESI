@@ -132,7 +132,8 @@
                             <label class="form-label">
                                 Nama Mata Pelajaran
                             </label>
-                            <input type="text" name="nama_mata_pelajaran" class="form-control" placeholder="Masukkan Nama Mata Pelajaran" required>
+                            <input type="text" name="nama_mata_pelajaran" class="form-control"
+                                placeholder="Masukkan Nama Mata Pelajaran" required>
                         </div>
                     </div>
 
@@ -204,8 +205,9 @@
                     <form method="POST" id="formHapus">
                         @csrf
                         @method('DELETE')
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-hapus"
-                            data-id="{{ $item->id_mata_pelajaran }}">>Hapus</button>
+                        <button type="submit" class="btn btn-danger">
+                            Hapus
+                        </button>
                     </form>
                 </div>
             </div>

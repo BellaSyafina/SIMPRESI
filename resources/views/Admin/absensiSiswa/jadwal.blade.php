@@ -231,8 +231,8 @@
 
                             @if ($pertemuanHariIni)
                                 <a href="{{ route('absensi.form', [
-                                    'idJadwal' => $jadwal->id_jadwal_pelajaran,
-                                    'idPertemuan' => $pertemuanHariIni->id_pertemuan,
+                                    'jadwal' => $jadwal->id_jadwal_pelajaran,
+                                    'pertemuan' => $pertemuanHariIni->id_pertemuan,
                                 ]) }}"
                                     class="btn btn-primary w-100 rounded-pill py-2">
 

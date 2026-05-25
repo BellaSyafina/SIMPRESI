@@ -32,22 +32,45 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Bulan</label>
-                            <select name="bulan" class="form-select" onchange="this.form.submit()">
-                                @foreach ($namaBulan as $angka => $nama)
-                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
-                                        {{ $nama }}</option>
+
+                            <label class="form-label fw-semibold">
+                                Semester
+                            </label>
+
+                            <select name="semester" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($semesterList as $semester)
+                                    <option value="{{ $semester }}"
+                                        {{ $selectedSemester == $semester ? 'selected' : '' }}>
+
+                                        {{ $semester }}
+
+                                    </option>
                                 @endforeach
+
                             </select>
+
                         </div>
+
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Tahun</label>
-                            <select name="tahun" class="form-select" onchange="this.form.submit()">
-                                @for ($t = 2024; $t <= 2026; $t++)
-                                    <option value="{{ $t }}" {{ $selectedTahun == $t ? 'selected' : '' }}>
-                                        {{ $t }}</option>
-                                @endfor
+
+                            <label class="form-label fw-semibold">
+                                Tahun Ajaran
+                            </label>
+
+                            <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($tahunAjaranList as $tahun)
+                                    <option value="{{ $tahun }}"
+                                        {{ $selectedTahunAjaran == $tahun ? 'selected' : '' }}>
+
+                                        {{ $tahun }}
+
+                                    </option>
+                                @endforeach
+
                             </select>
+
                         </div>
                         <div class="col-md-2">
                             <a href="{{ route('laporan.index') }}" class="btn btn-outline-secondary w-100">
@@ -140,8 +163,8 @@
                     <h5 class="card-title mb-0 fw-semibold">
                         <i data-feather="list" class="me-2" width="18" height="18"></i>
                         Rekap Kehadiran Siswa - Kelas {{ $kelasList[$selectedKelas] ?? '-' }}
-                        ({{ $namaBulan[$selectedBulan] }}
-                        {{ $selectedTahun }})
+                        Semester {{ $selectedSemester }}
+                        {{ $selectedTahunAjaran }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -194,11 +217,22 @@
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="alert alert-light border shadow-sm mb-0" role="alert">
+
                         <i data-feather="info" class="me-2" width="16" height="16"></i>
-                        Menampilkan rekap kehadiran untuk kelas <strong>{{ $kelasList[$selectedKelas] ?? '-' }}</strong>
+
+                        Menampilkan rekap kehadiran untuk
+                        kelas
+                        <strong>
+                            {{ $kelasList[$selectedKelas] ?? '-' }}
+                        </strong>
+
                         periode
-                        <strong>{{ $namaBulan[$selectedBulan] }} {{ $selectedTahun }}</strong>.
-                        Jumlah hari dalam bulan ini: <strong>{{ $jumlahHari }} hari</strong>.
+
+                        <strong>
+                            Semester {{ $selectedSemester }}
+                            {{ $selectedTahunAjaran }}
+                        </strong>.
+
                     </div>
                 </div>
             </div>
@@ -245,30 +279,46 @@
                             </select>
                         </div>
 
-                        {{-- BULAN --}}
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Bulan</label>
 
-                            <select name="bulan" class="form-select" onchange="this.form.submit()">
-                                @foreach ($namaBulan as $angka => $nama)
-                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
-                                        {{ $nama }}
+                            <label class="form-label fw-semibold">
+                                Semester
+                            </label>
+
+                            <select name="semester" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($semesterList as $semester)
+                                    <option value="{{ $semester }}"
+                                        {{ $selectedSemester == $semester ? 'selected' : '' }}>
+
+                                        {{ $semester }}
+
                                     </option>
                                 @endforeach
+
                             </select>
+
                         </div>
 
-                        {{-- TAHUN --}}
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Tahun</label>
 
-                            <select name="tahun" class="form-select" onchange="this.form.submit()">
-                                @for ($t = 2024; $t <= 2026; $t++)
-                                    <option value="{{ $t }}" {{ $selectedTahun == $t ? 'selected' : '' }}>
-                                        {{ $t }}
+                            <label class="form-label fw-semibold">
+                                Tahun Ajaran
+                            </label>
+
+                            <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($tahunAjaranList as $tahun)
+                                    <option value="{{ $tahun }}"
+                                        {{ $selectedTahunAjaran == $tahun ? 'selected' : '' }}>
+
+                                        {{ $tahun }}
+
                                     </option>
-                                @endfor
+                                @endforeach
+
                             </select>
+
                         </div>
 
                         {{-- RESET --}}
@@ -367,8 +417,8 @@
                     <h5 class="card-title mb-0 fw-semibold">
                         <i data-feather="list" class="me-2" width="18" height="18"></i>
                         Rekap Kehadiran Siswa - Kelas {{ $kelasList[$selectedKelas] ?? '-' }}
-                        ({{ $namaBulan[$selectedBulan] }}
-                        {{ $selectedTahun }})
+                        Semester {{ $selectedSemester }}
+                        {{ $selectedTahunAjaran }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -420,11 +470,22 @@
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="alert alert-light border shadow-sm mb-0" role="alert">
+
                         <i data-feather="info" class="me-2" width="16" height="16"></i>
-                        Menampilkan rekap kehadiran untuk kelas <strong>{{ $kelasList[$selectedKelas] ?? '-' }}</strong>
+
+                        Menampilkan rekap kehadiran untuk
+                        kelas
+                        <strong>
+                            {{ $kelasList[$selectedKelas] ?? '-' }}
+                        </strong>
+
                         periode
-                        <strong>{{ $namaBulan[$selectedBulan] }} {{ $selectedTahun }}</strong>.
-                        Jumlah hari dalam bulan ini: <strong>{{ $jumlahHari }} hari</strong>.
+
+                        <strong>
+                            Semester {{ $selectedSemester }}
+                            {{ $selectedTahunAjaran }}
+                        </strong>.
+
                     </div>
                 </div>
             </div>
@@ -444,22 +505,45 @@
                                 disabled>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Bulan</label>
-                            <select name="bulan" class="form-select" onchange="this.form.submit()">
-                                @foreach ($namaBulan as $angka => $nama)
-                                    <option value="{{ $angka }}" {{ $selectedBulan == $angka ? 'selected' : '' }}>
-                                        {{ $nama }}</option>
+
+                            <label class="form-label fw-semibold">
+                                Semester
+                            </label>
+
+                            <select name="semester" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($semesterList as $semester)
+                                    <option value="{{ $semester }}"
+                                        {{ $selectedSemester == $semester ? 'selected' : '' }}>
+
+                                        {{ $semester }}
+
+                                    </option>
                                 @endforeach
+
                             </select>
+
                         </div>
+
                         <div class="col-md-2">
-                            <label class="form-label fw-semibold">Tahun</label>
-                            <select name="tahun" class="form-select" onchange="this.form.submit()">
-                                @for ($t = 2024; $t <= 2026; $t++)
-                                    <option value="{{ $t }}" {{ $selectedTahun == $t ? 'selected' : '' }}>
-                                        {{ $t }}</option>
-                                @endfor
+
+                            <label class="form-label fw-semibold">
+                                Tahun Ajaran
+                            </label>
+
+                            <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
+
+                                @foreach ($tahunAjaranList as $tahun)
+                                    <option value="{{ $tahun }}"
+                                        {{ $selectedTahunAjaran == $tahun ? 'selected' : '' }}>
+
+                                        {{ $tahun }}
+
+                                    </option>
+                                @endforeach
+
                             </select>
+
                         </div>
                         <div class="col-md-2">
                             <a href="{{ route('laporan.index') }}" class="btn btn-outline-secondary w-100">
@@ -543,8 +627,8 @@
                     <h5 class="card-title mb-0 fw-semibold">
                         <i data-feather="list" class="me-2" width="18" height="18"></i>
                         Rekap Kehadiran Siswa - {{ $rekap[0]['nama'] ?? '-' }}
-                        ({{ $namaBulan[$selectedBulan] }}
-                        {{ $selectedTahun }})
+                        Semester {{ $selectedSemester }}
+                        {{ $selectedTahunAjaran }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -590,11 +674,22 @@
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="alert alert-light border shadow-sm mb-0" role="alert">
+
                         <i data-feather="info" class="me-2" width="16" height="16"></i>
-                        Menampilkan rekap kehadiran untuk <strong>{{ $rekap[0]['nama'] ?? '-' }}</strong>
+
+                        Menampilkan rekap kehadiran untuk
+                        kelas
+                        <strong>
+                            {{ $kelasList[$selectedKelas] ?? '-' }}
+                        </strong>
+
                         periode
-                        <strong>{{ $namaBulan[$selectedBulan] }} {{ $selectedTahun }}</strong>.
-                        Jumlah hari dalam bulan ini: <strong>{{ $jumlahHari }} hari</strong>.
+
+                        <strong>
+                            Semester {{ $selectedSemester }}
+                            {{ $selectedTahunAjaran }}
+                        </strong>.
+
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\OrangTuaController;
 use App\Http\Controllers\Admin\SesiController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\SettingSistemController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -108,4 +109,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/sesi', [SesiController::class, 'index'])->name('sesi.index');
     Route::post('/sesi', [SesiController::class, 'store'])->name('sesi.store');
     Route::delete('/sesi/{id}', [SesiController::class, 'destroy'])->name('sesi.destroy');
+
+    // Setting Sistem
+    Route::get('/setting-sistem', [SettingSistemController::class, 'index'])->name('setting-sistem.index');
+    Route::put('/setting-sistem', [SettingSistemController::class, 'update'])->name('setting-sistem.update');
 });
