@@ -15,69 +15,6 @@
 
 @section('content')
     <div class="container-fluid px-0">
-        <!-- Filter -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body">
-                <form action="{{ route('absensi.index') }}" method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Kelas</label>
-                        <select name="kelas" class="form-select" onchange="this.form.submit()">
-                            @foreach ($kelasList as $id => $kelas)
-                                <option value="{{ $id }}" {{ $selectedKelas == $id ? 'selected' : '' }}>
-                                    {{ $kelas }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">
-                            Jadwal Pelajaran
-                        </label>
-
-                        <select name="jadwal" class="form-select" onchange="this.form.submit()">
-                            @forelse ($jadwalList as $jadwal)
-                                <option value="{{ $jadwal->id_jadwal_pelajaran }}"
-                                    {{ $selectedJadwal == $jadwal->id_jadwal_pelajaran ? 'selected' : '' }}>
-                                    {{ $jadwal->sesi?->nama_sesi ?? '-' }}
-                                    -
-                                    {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
-                                </option>
-                            @empty
-                                <option disabled>
-                                    Tidak ada jadwal
-                                </option>
-                            @endforelse
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">
-                            Pertemuan
-                        </label>
-                        <select name="pertemuan" class="form-select" onchange="this.form.submit()">
-                            @forelse ($pertemuanList as $pertemuan)
-                                <option value="{{ $pertemuan->id_pertemuan }}"
-                                    {{ $selectedPertemuan == $pertemuan->id_pertemuan ? 'selected' : '' }}>
-                                    Pertemuan
-                                    {{ $pertemuan->pertemuan_ke }}
-                                    -
-                                    {{ $pertemuan->tanggal->format('d M Y') }}
-                                </option>
-                            @empty
-                                <option disabled>
-                                    Belum ada pertemuan
-                                </option>
-                            @endforelse
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ route('absensi.index') }}" class="btn btn-outline-secondary w-100">
-                            <i data-feather="refresh-cw" class="me-1" width="16" height="16"></i> Reset
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <div class="alert alert-primary border-0 shadow-sm">
             <div class="d-flex flex-wrap gap-4 align-items-center">
                 <div>
@@ -91,14 +28,14 @@
                     {{ $jadwalAktif?->sesi?->jam_selesai ?? '-' }}
                 </div>
                 <div>
-                    <strong>Kelas:</strong> {{ $kelasList[$selectedKelas] ?? '-' }}
+                    <strong>Kelas:</strong> {{ $jadwalAktif?->kelas?->nama_kelas ?? '-' }}
                 </div>
                 <div>
                     <strong>Mata Pelajaran:</strong> {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}
                 </div>
                 <div>
                     <strong>Pertemuan:</strong>
-                    {{ optional($pertemuanList->where('id_pertemuan', $selectedPertemuan)->first())->pertemuan_ke ?? '-' }}
+                    {{ $pertemuan?->pertemuan_ke ?? '-' }}
                 </div>
             </div>
         </div>
@@ -160,13 +97,14 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-body text-center py-4">
                         <h5 class="card-title fw-semibold mb-3">Persentase Kehadiran</h5>
-                        <p class="text-muted mb-2" id="persenKelasMapel">Kelas {{ $kelasList[$selectedKelas] ?? '-' }} -
+                        <p class="text-muted mb-2" id="persenKelasMapel">Kelas
+                            {{ $jadwalAktif?->kelas?->nama_kelas ?? '-' }} -
                             {{ $jadwalAktif?->mataPelajaran?->nama_mata_pelajaran ?? '-' }}</p>
                         <h2 class="fw-bold text-primary display-4" id="persenValue">{{ $persenHadir }}%</h2>
                         <div class="progress mt-3 mx-auto" style="height: 10px; max-width: 80%;">
                             <div class="progress-bar bg-primary" id="persenProgress" role="progressbar"
-                                style="width: {{ $persenHadir }}%;" aria-valuenow="{{ $persenHadir }}"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                                style="width: {{ $persenHadir }}%;" aria-valuenow="{{ $persenHadir }}" aria-valuemin="0"
+                                aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -188,16 +126,16 @@
                 <h5 class="card-title mb-0 fw-semibold">
                     <i data-feather="list" class="me-2" width="18" height="18"></i>
                     Absensi Pertemuan
-                    {{ optional($pertemuanList->where('id_pertemuan', $selectedPertemuan)->first())->pertemuan_ke ?? '-' }}
+                    {{ $pertemuan?->pertemuan_ke ?? '-' }}
                     -
-                    {{ $kelasList[$selectedKelas] ?? '-' }}
+                    {{ $jadwalAktif?->kelas?->nama_kelas ?? '-' }}
                 </h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <form action="{{ route('absensi.store') }}" method="POST" id="formAbsensi">
                         @csrf
-                        <input type="hidden" name="id_pertemuan" value="{{ $selectedPertemuan }}">
+                        <input type="hidden" name="id_pertemuan" value="{{ $pertemuan->id_pertemuan }}">
                         <table class="table table-hover align-middle mb-0" id="siswaTable">
                             <thead class="table">
                                 <tr>

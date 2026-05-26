@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\Guru;
 use App\Models\JadwalPelajaran;
+use App\Models\Kelas;
 use App\Models\PertemuanPelajaran;
 use App\Models\SettingSistem;
 use App\Models\Siswa;
@@ -114,6 +115,8 @@ class AbsensiSiswaController extends Controller
         $totalAlpha = $absensi->where('status', 'alpa')->count();
         $persenHadir = $totalSiswa > 0 ? round(($totalHadir / $totalSiswa) * 100, 1) : 0;
 
-        return view('Admin.absensiSiswa.form', compact('jadwalAktif', 'pertemuan', 'siswa', 'absensi', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir'));
+        $kelasList = Kelas::orderBy('nama_kelas')->pluck('nama_kelas', 'id_kelas');
+
+        return view('Admin.absensiSiswa.form', compact('jadwalAktif', 'pertemuan', 'siswa', 'absensi', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir', 'kelasList'));
     }
 }
