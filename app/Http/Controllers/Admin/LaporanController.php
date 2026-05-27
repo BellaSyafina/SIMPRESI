@@ -54,7 +54,7 @@ class LaporanController extends Controller
             // MAPEL GURU
             $mapelList = $jadwalGuru->pluck('mataPelajaran')->filter()->unique('id_mata_pelajaran')->values();
         } elseif (Auth::user()->role == 'orang_tua') {
-            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
+            $anak = Siswa::where('id_user', Auth::id())->first();
 
             $selectedKelas = $anak?->id_kelas;
         } else {
@@ -74,7 +74,7 @@ class LaporanController extends Controller
 
         // SISWA / ORANG TUA
         if (Auth::user()->role == 'orang_tua') {
-            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
+            $anak = Siswa::where('id_user', Auth::id())->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
         } else {
@@ -167,12 +167,14 @@ class LaporanController extends Controller
 
         // AMBIL DATA KELAS + WALI KELAS
         $kelas = Kelas::with('guru')->find($data['selectedKelas']);
+        $mataPelajaran = $request->mapel ? MataPelajaran::find($request->mapel)?->nama_mata_pelajaran : 'Semua Mata Pelajaran';
 
         $pdf = Pdf::loadView('Admin.Laporan.pdf', [
             'rekap' => $data['rekap'],
             'kelas' => $kelas,
             'selectedSemester' => $data['selectedSemester'],
             'selectedTahunAjaran' => $data['selectedTahunAjaran'],
+            'mataPelajaran' => $mataPelajaran,
         ]);
 
         return $pdf->download('laporan-kehadiran.pdf');
@@ -191,7 +193,7 @@ class LaporanController extends Controller
             $semuaIdKelas = array_unique(array_merge($idKelasJadwal, $idKelasWali));
             $selectedKelas = $request->kelas ?? ($semuaIdKelas[0] ?? null);
         } elseif (Auth::user()->role == 'orang_tua') {
-            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
+            $anak = Siswa::where('id_user', Auth::id())->first();
 
             $selectedKelas = $anak?->id_kelas;
         } else {
@@ -206,7 +208,7 @@ class LaporanController extends Controller
 
         // SISWA / ORANG TUA
         if (Auth::user()->role == 'orang_tua') {
-            $anak = Siswa::where('id_user', Auth::user()->id_user)->first();
+            $anak = Siswa::where('id_user', Auth::id())->first();
 
             $siswaList = $anak ? collect([$anak]) : collect();
         } else {

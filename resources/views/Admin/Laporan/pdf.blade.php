@@ -136,11 +136,13 @@
                     <h3>LAPORAN KEHADIRAN SISWA</h3>
 
                     <p>
-                        Bulan
-                        {{ $namaBulan[$selectedBulan] ?? '-' }}
+                        Semester
+                        {{ $selectedSemester ?? '-' }}
 
-                        Tahun
-                        {{ $selectedTahun ?? '-' }}
+                        |
+
+                        Tahun Ajaran
+                        {{ $selectedTahunAjaran ?? '-' }}
                     </p>
                 </td>
             </tr>
@@ -161,6 +163,17 @@
 
                 <td>
                     {{ $kelas->nama_kelas ?? '-' }}
+                </td>
+            </tr>
+            <tr>
+                <td width="60">
+                    <strong>Mapel</strong>
+                </td>
+
+                <td width="10">:</td>
+
+                <td>
+                    {{ $mataPelajaran ?? '-' }}
                 </td>
             </tr>
         </table>
