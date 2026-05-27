@@ -158,6 +158,31 @@ class DashboardController extends Controller
             $persenAlpa = 0;
 
             if ($siswa) {
+                // 🔥 TOTAL KEHADIRAN
+                $totalHadir = Absensi::where('id_siswa', $siswa->id_siswa)
+
+                    ->where('status', 'hadir')
+
+                    ->count();
+
+                $totalIzin = Absensi::where('id_siswa', $siswa->id_siswa)
+
+                    ->where('status', 'izin')
+
+                    ->count();
+
+                $totalSakit = Absensi::where('id_siswa', $siswa->id_siswa)
+
+                    ->where('status', 'sakit')
+
+                    ->count();
+
+                $totalAlpa = Absensi::where('id_siswa', $siswa->id_siswa)
+
+                    ->where('status', 'alpa')
+
+                    ->count();
+                    
                 // 🔥 KEHADIRAN HARI INI
                 $absensiHariIni = Absensi::with(['pertemuan.jadwal.mataPelajaran', 'pertemuan.jadwal.guru'])
 
