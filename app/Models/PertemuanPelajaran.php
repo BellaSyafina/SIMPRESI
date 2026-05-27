@@ -32,4 +32,9 @@ class PertemuanPelajaran extends Model
             default => 'warning',
         };
     }
+
+    public function jadwal()
+    {
+        return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal_pelajaran');
+    }
 }
