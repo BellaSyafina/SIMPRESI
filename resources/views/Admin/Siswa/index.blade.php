@@ -156,7 +156,9 @@
                         <tbody>
                             @forelse($siswas as $siswa)
                                 <tr>
-                                    <td>{{ $siswa->id_siswa }}</td>
+                                    <td>
+                                        {{ $siswas->firstItem() + $loop->index }}
+                                    </td>
                                     <td>
                                         @if ($siswa->nisn)
                                             <div><span class="text-primary fw-semibold">NISN:</span> <span

@@ -135,7 +135,9 @@
                         <tbody>
                             @forelse($gurus as $guru)
                                 <tr>
-                                    <td>{{ $guru->id_guru }}</td>
+                                    <td>
+                                        {{ $gurus->firstItem() + $loop->index }}
+                                    </td>
                                     <td class="fw-semibold">
                                         {{ $guru->nama_guru }}
 
