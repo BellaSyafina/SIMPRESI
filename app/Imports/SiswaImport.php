@@ -50,12 +50,11 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
         // 🔥 SIMPAN SISWA
         return Siswa::updateOrCreate(
             [
-                'nisn' => $row['nisn'],
+                'nis' => $row['nis'],
             ],
 
             [
-                // 🔥 biodata siswa
-                'nis' => $row['nis'],
+                'nisn' => $row['nisn'],
 
                 'nama_siswa' => $row['nama_siswa'],
 
@@ -75,21 +74,18 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
 
                 'id_user' => $user->id,
 
-                // 🔥 data ayah
                 'nama_ayah' => $row['nama_ayah'] ?? null,
 
                 'no_hp_ayah' => $row['no_hp_ayah'] ?? null,
 
                 'pekerjaan_ayah' => $row['pekerjaan_ayah'] ?? null,
 
-                // 🔥 data ibu
                 'nama_ibu' => $row['nama_ibu'] ?? null,
 
                 'no_hp_ibu' => $row['no_hp_ibu'] ?? null,
 
                 'pekerjaan_ibu' => $row['pekerjaan_ibu'] ?? null,
 
-                // 🔥 data wali
                 'nama_wali' => $row['nama_wali'] ?? null,
 
                 'no_hp_wali' => $row['no_hp_wali'] ?? null,
