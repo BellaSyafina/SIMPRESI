@@ -48,55 +48,66 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
         );
 
         // 🔥 SIMPAN SISWA
-        return Siswa::updateOrCreate(
-            [
-                'nis' => $row['nis'],
-            ],
+        $siswa = Siswa::where('nis', $row['nis'])
 
-            [
-                'nisn' => $row['nisn'],
+            ->orWhere('nisn', $row['nisn'])
 
-                'nama_siswa' => $row['nama_siswa'],
+            ->first();
 
-                'jenis_kelamin' => $row['jenis_kelamin'],
+        if (!$siswa) {
+            $siswa = new Siswa();
+        }
 
-                'tempat_lahir' => $row['tempat_lahir'] ?? null,
+        $siswa->nisn = trim($row['nisn']);
 
-                'tanggal_lahir' => isset($row['tanggal_lahir']) ? Carbon::createFromFormat('d-m-Y', $row['tanggal_lahir'])->format('Y-m-d') : null,
+        $siswa->nis = trim($row['nis']);
 
-                'agama' => $row['agama'] ?? null,
+        $siswa->nama_siswa = strtoupper(trim($row['nama_siswa']));
 
-                'alamat' => $row['alamat'] ?? null,
+        $siswa->jenis_kelamin = strtoupper(trim($row['jenis_kelamin']));
 
-                'status' => $row['status'] ?? 'aktif',
+        $siswa->tempat_lahir = isset($row['tempat_lahir']) ? strtoupper(trim($row['tempat_lahir'])) : null;
 
-                'id_kelas' => $kelas->id_kelas,
+        $siswa->tanggal_lahir = isset($row['tanggal_lahir']) ? Carbon::createFromFormat('d-m-Y', $row['tanggal_lahir'])->format('Y-m-d') : null;
 
-                'id_user' => $user->id,
+        $siswa->agama = isset($row['agama']) ? strtoupper(trim($row['agama'])) : null;
 
-                'nama_ayah' => $row['nama_ayah'] ?? null,
+        $siswa->alamat = isset($row['alamat']) ? trim($row['alamat']) : null;
 
-                'no_hp_ayah' => $row['no_hp_ayah'] ?? null,
+        $siswa->status = $row['status'] ?? 'aktif';
 
-                'pekerjaan_ayah' => $row['pekerjaan_ayah'] ?? null,
+        $siswa->id_kelas = $kelas->id_kelas;
 
-                'nama_ibu' => $row['nama_ibu'] ?? null,
+        $siswa->id_user = $user->id;
 
-                'no_hp_ibu' => $row['no_hp_ibu'] ?? null,
+        // 🔥 ayah
+        $siswa->nama_ayah = isset($row['nama_ayah']) ? strtoupper(trim($row['nama_ayah'])) : null;
 
-                'pekerjaan_ibu' => $row['pekerjaan_ibu'] ?? null,
+        $siswa->no_hp_ayah = $row['no_hp_ayah'] ?? null;
 
-                'nama_wali' => $row['nama_wali'] ?? null,
+        $siswa->pekerjaan_ayah = isset($row['pekerjaan_ayah']) ? strtoupper(trim($row['pekerjaan_ayah'])) : null;
 
-                'no_hp_wali' => $row['no_hp_wali'] ?? null,
+        // 🔥 ibu
+        $siswa->nama_ibu = isset($row['nama_ibu']) ? strtoupper(trim($row['nama_ibu'])) : null;
 
-                'email_wali' => $row['email_wali'] ?? null,
+        $siswa->no_hp_ibu = $row['no_hp_ibu'] ?? null;
 
-                'pekerjaan_wali' => $row['pekerjaan_wali'] ?? null,
+        $siswa->pekerjaan_ibu = isset($row['pekerjaan_ibu']) ? strtoupper(trim($row['pekerjaan_ibu'])) : null;
 
-                'alamat_orang_tua' => $row['alamat_orang_tua'] ?? null,
-            ],
-        );
+        // 🔥 wali
+        $siswa->nama_wali = isset($row['nama_wali']) ? strtoupper(trim($row['nama_wali'])) : null;
+
+        $siswa->no_hp_wali = $row['no_hp_wali'] ?? null;
+
+        $siswa->email_wali = $row['email_wali'] ?? null;
+
+        $siswa->pekerjaan_wali = isset($row['pekerjaan_wali']) ? strtoupper(trim($row['pekerjaan_wali'])) : null;
+
+        $siswa->alamat_orang_tua = $row['alamat_orang_tua'] ?? null;
+
+        $siswa->save();
+
+        return $siswa;
     }
 
     public function rules(): array
