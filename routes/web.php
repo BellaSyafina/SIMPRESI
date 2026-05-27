@@ -66,15 +66,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
     Route::put('/siswa/{siswa}/reset-password', [SiswaController::class, 'resetPassword'])->name('siswa.reset-password');
 
-    // Orang Tua
-    Route::get('/orangtua', [OrangTuaController::class, 'index'])->name('orangtua.index');
-    Route::get('/orangtua/create', [OrangTuaController::class, 'create'])->name('orangtua.create');
-    Route::post('/orangtua/store', [OrangTuaController::class, 'store'])->name('orangtua.store');
-    Route::post('/orangtua/import', [OrangTuaController::class, 'import'])->name('orangtua.import');
-    Route::get('/orangtua/{orangTua}/edit', [OrangTuaController::class, 'edit'])->name('orangtua.edit');
-    Route::put('/orangtua/{orangTua}', [OrangTuaController::class, 'update'])->name('orangtua.update');
-    Route::delete('/orangtua/{orangTua}', [OrangTuaController::class, 'destroy'])->name('orangtua.destroy');
-
     // Jadwal Pelajaran
     Route::get('/jadwal', [JadwalPelajaranController::class, 'index'])->name('jadwal.index');
     Route::post('/jadwal', [JadwalPelajaranController::class, 'store'])->name('jadwal.store');
@@ -109,4 +100,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/sesi', [SesiController::class, 'index'])->name('sesi.index');
     Route::post('/sesi', [SesiController::class, 'store'])->name('sesi.store');
     Route::delete('/sesi/{id}', [SesiController::class, 'destroy'])->name('sesi.destroy');
+
+    // Setting Sistem
+    Route::get('/setting-sistem', [SettingSistemController::class, 'index'])->name('setting-sistem.index');
+    Route::put('/setting-sistem', [SettingSistemController::class, 'update'])->name('setting-sistem.update');
 });

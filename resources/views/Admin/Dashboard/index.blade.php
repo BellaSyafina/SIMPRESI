@@ -130,7 +130,7 @@
 
                                     <div class="position-absolute"
                                         style=" right:-10px; bottom:-20px; font-size:90px; opacity:.15; ">
-                                        🕒
+                                        📚
                                     </div>
                                 </div>
                             </div>
