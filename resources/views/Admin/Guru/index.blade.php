@@ -181,7 +181,7 @@
                                             </a>
                                             <button type="button" class="btn btn-sm btn-outline-info"
                                                 data-bs-toggle="modal" data-bs-target="#akunModal{{ $guru->id_guru }}">
-                                                <i data-feather="eye"></i> Akun
+                                                <i data-feather="eye"></i> Detail
                                             </button>
                                             <form action="{{ route('guru.destroy', $guru->id_guru) }}" method="POST"
                                                 onsubmit="return confirm('Yakin hapus data ini?')"
@@ -200,7 +200,7 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Informasi Akun</h5>
+                                                <h5 class="modal-title">Detail Guru</h5>
                                                 <button type="button" class="btn-close"
                                                     data-bs-dismiss="modal"></button>
                                             </div>
@@ -209,6 +209,28 @@
                                                     <strong>Nama:</strong><br>
                                                     {{ $guru->nama_guru }}
                                                 </div>
+
+                                                <div class="mb-2">
+                                                    <strong>NUPTK:</strong><br>
+                                                    {{ $guru->nuptk ?? '-' }}
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <strong>NIP:</strong><br>
+                                                    {{ $guru->nip ?? '-' }}
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <strong>Jenis Kelamin:</strong><br>
+                                                    {{ $guru->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <strong>Alamat:</strong><br>
+                                                    {{ $guru->alamat ?? '-' }}
+                                                </div>
+
+                                                <hr>
 
                                                 <div class="mb-2">
                                                     <strong>Email:</strong><br>

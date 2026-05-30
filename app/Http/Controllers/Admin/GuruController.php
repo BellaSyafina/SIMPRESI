@@ -17,7 +17,7 @@ class GuruController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Guru::with('user', 'mataPelajaran'); // 🔥 penting
+        $query = Guru::with('user', 'mataPelajaran');
 
         // Filter pencarian
         if ($request->filled('search')) {
