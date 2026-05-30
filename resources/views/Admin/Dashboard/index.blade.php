@@ -18,11 +18,45 @@
     @if (Auth::user()->role == 'admin')
         <div class="container-fluid default-dashboard">
 
+            {{-- ================= INFO AKADEMIK ================= --}}
+            <div class="col-12 mb-3">
+                <div class="card border-0 shadow-sm overflow-hidden"
+                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
+
+                    <div class="card-body py-4 px-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4 class="text-white fw-bold mb-2">
+                                    Tahun Akademik Aktif
+                                </h4>
+
+                                <div class="d-flex flex-wrap gap-3">
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+                                        Semester:
+                                        {{ $setting?->semester_aktif ?? '-' }}
+                                    </div>
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+                                        Tahun Ajaran:
+                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end d-none d-md-block">
+                                <div style=" font-size:70px; opacity:.2; "> 🏫 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row g-3">
 
                 {{-- ================= GREETING (KIRI) ================= --}}
                 <div class="col-xl-5 col-md-6">
-                    <div class="card profile-greeting p-0 h-100">
+                    <div class="card profile-greeting p-0">
                         <div class="card-body">
                             <div class="img-overlay">
                                 <h1>Hallo, {{ Auth::user()->name }}!</h1>
@@ -38,7 +72,7 @@
 
                 {{-- ================= CARD STATISTIK ================= --}}
                 <div class="col-xl-7 col-md-6">
-                    <div class="row g-4">
+                    <div class="row">
 
                         {{-- Total Siswa --}}
                         <div class="col-6">
@@ -136,62 +170,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {{-- ================= INFO AKADEMIK ================= --}}
-            <div class="col-12 mt-3">
-                <div class="card border-0 shadow-sm overflow-hidden"
-                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
-
-                    <div class="card-body py-4 px-4">
-
-                        <div class="row align-items-center">
-
-                            <div class="col-md-8">
-
-                                <h4 class="text-white fw-bold mb-2">
-                                    Tahun Akademik Aktif
-                                </h4>
-
-                                <div class="d-flex flex-wrap gap-3">
-
-                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
-
-                                        Semester:
-                                        {{ $setting?->semester_aktif ?? '-' }}
-
-                                    </div>
-
-                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
-
-                                        Tahun Ajaran:
-                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-4 text-end d-none d-md-block">
-
-                                <div
-                                    style="
-                            font-size:70px;
-                            opacity:.2;
-                        ">
-
-                                    🎓
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
             </div>
 
@@ -376,6 +354,39 @@
 
     @if (Auth::user()->role == 'guru')
         <div class="container-fluid default-dashboard">
+
+            {{-- ================= INFO AKADEMIK ================= --}}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm overflow-hidden"
+                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
+
+                    <div class="card-body py-4 px-4">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <div>
+                                <h4 class="text-white fw-bold mb-2">
+                                    Tahun Akademik Aktif
+                                </h4>
+
+                                <div class="d-flex flex-wrap gap-3">
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+                                        Semester:
+                                        {{ $setting?->semester_aktif ?? '-' }}
+                                    </div>
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+                                        Tahun Ajaran:
+                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="d-none d-md-block" style="font-size:65px; opacity:.2;"> 🏫 </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row widget-grid">
                 <div class="col-xl-5 col-md-6 proorder-xl-1 proorder-md-1">
                     <div class="card profile-greeting p-0">
@@ -444,51 +455,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-12">
-                <div class="card border-0 shadow-sm overflow-hidden"
-                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
-
-                    <div class="card-body py-4 px-4">
-
-                        <div class="d-flex justify-content-between align-items-center flex-wrap">
-
-                            <div>
-
-                                <h4 class="text-white fw-bold mb-2">
-                                    Tahun Akademik Aktif
-                                </h4>
-
-                                <div class="d-flex flex-wrap gap-3">
-
-                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
-
-                                        Semester:
-                                        {{ $setting?->semester_aktif ?? '-' }}
-
-                                    </div>
-
-                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
-
-                                        Tahun Ajaran:
-                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="d-none d-md-block" style="font-size:65px; opacity:.2;">
-                                📚
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
             </div>
 
@@ -639,6 +605,40 @@
 
     @if (Auth::user()->role == 'orang_tua')
         <div class="container-fluid default-dashboard">
+
+            {{-- ================= INFO AKADEMIK ================= --}}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm overflow-hidden"
+                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
+                    <div class="card-body py-4 px-4">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <div>
+                                <h4 class="text-white fw-bold mb-2">
+                                    Tahun Akademik Aktif
+                                </h4>
+
+                                <div class="d-flex flex-wrap gap-3">
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+                                        Semester:
+                                        {{ $setting?->semester_aktif ?? '-' }}
+                                    </div>
+
+                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
+                                        Tahun Ajaran:
+                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="d-none d-md-block" style="font-size:65px; opacity:.2;"> 🏫
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row align-items-stretch">
                 <!-- Card Greeting (kiri) -->
                 <div class="col-xl-5 col-md-6 mb-4 d-flex">
@@ -705,50 +705,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-12">
-                <div class="card border-0 shadow-sm overflow-hidden"
-                    style="border-radius:20px; background: linear-gradient(135deg,#7366ff,#9b8cff);">
-                    <div class="card-body py-4 px-4">
-
-                        <div class="d-flex justify-content-between align-items-center flex-wrap">
-
-                            <div>
-
-                                <h4 class="text-white fw-bold mb-2">
-                                    Tahun Akademik Aktif
-                                </h4>
-
-                                <div class="d-flex flex-wrap gap-3">
-
-                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
-
-                                        Semester:
-                                        {{ $setting?->semester_aktif ?? '-' }}
-
-                                    </div>
-
-                                    <div class="bg-white bg-opacity-25 px-4 py-2 rounded-pill text-white fw-semibold">
-
-                                        Tahun Ajaran:
-                                        {{ $setting?->tahun_ajaran_aktif ?? '-' }}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="d-none d-md-block" style="font-size:65px; opacity:.2;">
-                                🏫
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
             </div>
 
