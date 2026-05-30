@@ -60,7 +60,9 @@
                     <tbody>
                         @forelse ($mapel as $index => $item)
                             <tr>
-                                <td class="text-center">{{ $item->id_mata_pelajaran }}</td>
+                                <td class="text-center">
+                                    {{ $loop->iteration + ($mapel->currentPage() - 1) * $mapel->perPage() }}
+                                </td>
                                 <td>
                                     <span class="badge bg-primary">
                                         {{ $item->kode_mapel }}
@@ -75,7 +77,7 @@
                                             data-nama="{{ $item->nama_mata_pelajaran }}">
                                             <i data-feather="edit-2"></i> Edit
                                         </button>
-
+                                        {{--
                                         <!-- Form Hapus dengan confirm -->
                                         <form action="{{ route('mata-pelajaran.destroy', $item->id_mata_pelajaran) }}"
                                             method="POST" onsubmit="return confirm('Yakin hapus data mata pelajaran ini?')"
@@ -85,7 +87,7 @@
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                                 <i data-feather="trash-2"></i> Hapus
                                             </button>
-                                        </form>
+                                        </form> --}}
                                     </div>
                                 </td>
                             </tr>

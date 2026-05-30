@@ -127,8 +127,8 @@
                                 <th style="width: 15%">Nama Guru</th>
                                 <th style="width: 20%">NUPTK/NIP</th>
                                 <th style="width: 10%">Jenis Kelamin</th>
-                                <th style="width: 15%">Mata Pelajaran</th>
                                 <th style="width: 20%">Alamat</th>
+                                <th style="width: 15%">Mata Pelajaran</th>
                                 <th style="width: 15%">Aksi</th>
                             </tr>
                         </thead>
@@ -161,6 +161,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $guru->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                                    <td class="text-truncate" style="max-width: 200px;">{{ $guru->alamat }}</td>
                                     <td>
                                         @if ($guru->mataPelajaran->count())
                                             @foreach ($guru->mataPelajaran as $mapel)
@@ -172,7 +173,6 @@
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td class="text-truncate" style="max-width: 200px;">{{ $guru->alamat }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="{{ route('guru.show', $guru->id_guru) }}"
@@ -261,8 +261,9 @@
                             <input type="file" name="file_excel" class="form-control">
                         </div>
                         <small class="text-muted">
-                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), mata_pelajaran (pisahkan dengan koma jika
-                            lebih dari 1), alamat
+                            Format: nama_guru, nuptk, nip, jenis_kelamin (L/P), alamat, mata_pelajaran (pisahkan dengan koma
+                            jika
+                            lebih dari 1)
                         </small>
                     </div>
                     <div class="modal-footer">

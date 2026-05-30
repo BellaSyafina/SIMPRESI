@@ -18,7 +18,8 @@ class MataPelajaranController extends Controller
             });
         }
 
-        $mapel = $query->paginate(10)->appends($request->all());
+        $mapel = $query->orderByDesc('id_mata_pelajaran')->paginate(10)->appends($request->all());
+
         $totalMapel = MataPelajaran::count();
 
         return view('Admin.MataPelajaran.index', compact('mapel', 'totalMapel'));
