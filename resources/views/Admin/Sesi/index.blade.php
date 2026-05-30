@@ -123,8 +123,8 @@
                                             {{-- EDIT --}}
                                             <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
                                                 data-id="{{ $sesi->id_sesi }}" data-nama="{{ $sesi->nama_sesi }}"
-                                                data-jam_mulai="{{ $sesi->jam_mulai }}"
-                                                data-jam_selesai="{{ $sesi->jam_selesai }}">
+                                                data-jam_mulai="{{ substr($sesi->jam_mulai, 0, 5) }}"
+                                                data-jam_selesai="{{ substr($sesi->jam_selesai, 0, 5) }}">
                                                 <i data-feather="edit-2"></i>
                                                 Edit
                                             </button>
