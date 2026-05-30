@@ -136,12 +136,11 @@
                         <label class="fw-semibold">Alamat Orang Tua / Wali</label>
                         <div>{{ $siswa->alamat_orang_tua ?? '-' }}</div>
                     </div>
-
                 </div>
+                <button type="button" class="btn btn-outline-secondary mt-4" onclick="window.history.back()">
+                    <i data-feather="arrow-left"></i> Kembali
+                </button>
             </div>
-            <a href="{{ route('siswa.index') }}" class="btn btn-secondary btn-sm">
-                Kembali
-            </a>
         </div>
     </div>
 

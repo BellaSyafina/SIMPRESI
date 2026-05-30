@@ -11,8 +11,8 @@ class KelasController extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::with(['guru'])
-            ->withCount('siswa') // 🔥 ini kuncinya
+        $kelas = Kelas::with(['guru', 'siswa'])
+            ->withCount('siswa')
             ->get();
         $guru = Guru::all()->pluck('nama_guru', 'id_guru'); // Ambil nama guru untuk dropdown (jika diperlukan)
 
@@ -65,17 +65,10 @@ class KelasController extends Controller
         }
     }
 
-    public function destroy(Kelas $kelas)
+    public function detail($id)
     {
-        try {
-            $kelas->delete();
+        $kelas = Kelas::with(['guru', 'siswa'])->findOrFail($id);
 
-            return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dihapus!');
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('kelas.index')
-                ->with('error', 'Terjadi kesalahan saat menghapus kelas: ' . $e->getMessage());
-        }
+        return view('Admin.Kelas.detail', compact('kelas'));
     }
-
 }

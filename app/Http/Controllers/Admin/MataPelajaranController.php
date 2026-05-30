@@ -62,18 +62,4 @@ class MataPelajaranController extends Controller
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-
-    public function destroy($id)
-    {
-        $mataPelajaran = MataPelajaran::findOrFail($id);
-        try {
-            $mataPelajaran->delete();
-
-            return redirect()->route('mata-pelajaran.index')->with('success', 'Mata pelajaran berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('mata-pelajaran.index')
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
 }

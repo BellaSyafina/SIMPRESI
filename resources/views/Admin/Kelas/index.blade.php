@@ -180,10 +180,75 @@
                                 data-ruang="{{ $item->ruang }}" data-tingkat="{{ $item->tingkat }}">
                                 <i data-feather="edit-2"></i> Edit
                             </button>
-                            <button class="btn btn-sm btn-outline-danger btn-hapus" data-id="{{ $item->id_kelas }}"
-                                data-nama="{{ $item->nama_kelas }}">
-                                <i data-feather="trash-2"></i> Hapus
-                            </button>
+                            <a href="{{ route('kelas.detail', $item->id_kelas) }}" class="btn btn-outline-info">
+                                <i data-feather="eye"></i> Detail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modalDetailKelas{{ $item->id_kelas }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">Detail Kelas {{ $item->nama_kelas }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <table class="table table-sm table-borderless mb-3">
+                                    <tr>
+                                        <td width="30%">Nama Kelas</td>
+                                        <td>: {{ $item->nama_kelas }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wali Kelas</td>
+                                        <td>: {{ $item->guru->nama_guru ?? 'Tidak ada' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ruang</td>
+                                        <td>: {{ $item->ruang ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah Siswa</td>
+                                        <td>: {{ $item->siswa_count }} siswa</td>
+                                    </tr>
+                                </table>
+
+                                <h6 class="fw-bold mb-3">Daftar Siswa</h6>
+
+                                <div class="table-responsive" style="max-height:400px; overflow-y:auto;">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="8%">No</th>
+                                                <th>NIS</th>
+                                                <th>Nama Siswa</th>
+                                                <th>Jenis Kelamin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($item->siswa as $siswa)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $siswa->nis }}</td>
+                                                    <td>{{ $siswa->nama_siswa }}</td>
+                                                    <td>{{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">
+                                                        Belum ada siswa di kelas ini.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -294,44 +359,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modalHapusKelas" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <form id="formHapus" method="POST">
-                    @csrf
-                    @method('DELETE')
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi Hapus</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <p>
-                            Yakin ingin menghapus kelas
-                            <strong id="namaKelasHapus"></strong>?
-                        </p>
-                        <p class="text-danger small">
-                            Data yang dihapus tidak bisa dikembalikan!
-                        </p>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Batal
-                        </button>
-                        <button type="submit" class="btn btn-danger">
-                            Ya, Hapus
-                        </button>
-                    </div>
-
-                </form>
-
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('script')
@@ -369,22 +396,6 @@
                     feather.replace();
                 });
             });
-
-            // HAPUS
-            document.querySelectorAll('.btn-hapus').forEach(button => {
-                button.addEventListener('click', function() {
-
-                    let id = this.dataset.id;
-                    let nama = this.dataset.nama;
-
-                    document.getElementById('namaKelasHapus').innerText = nama;
-                    document.getElementById('formHapus').action = '/kelas/' + id;
-
-                    new bootstrap.Modal(document.getElementById('modalHapusKelas')).show();
-                    feather.replace();
-                });
-            });
-
         });
     </script>
 @endpush

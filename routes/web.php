@@ -37,7 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/mata-pelajaran', [MataPelajaranController::class, 'index'])->name('mata-pelajaran.index');
     Route::post('/mata-pelajaran', [MataPelajaranController::class, 'store'])->name('mata-pelajaran.store');
     Route::put('/mata-pelajaran/{id}', [MataPelajaranController::class, 'update'])->name('mata-pelajaran.update');
-    Route::delete('/mata-pelajaran/{id}', [MataPelajaranController::class, 'destroy'])->name('mata-pelajaran.destroy');
 
     // Guru
     Route::get('/guru', [GuruController::class, 'index'])->name('guru.index');
@@ -53,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/data-kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
     Route::put('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
-    Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
+    Route::get('/kelas/{id}/detail', [KelasController::class, 'detail'])->name('kelas.detail');
 
     // Siswa
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
