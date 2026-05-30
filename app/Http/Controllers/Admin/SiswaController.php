@@ -34,6 +34,12 @@ class SiswaController extends Controller
             $query->where('id_kelas', $request->kelas);
         }
 
+        if ($request->filled('tingkat')) {
+            $query->whereHas('kelas', function ($q) use ($request) {
+                $q->where('tingkat', $request->tingkat);
+            });
+        }
+
         // 🔍 Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -42,7 +48,7 @@ class SiswaController extends Controller
         // 🔥 sorting berdasarkan ID database
         $query->orderBy('id_siswa', 'asc');
 
-        $siswas = $query->paginate(10)->appends($request->all());
+        $siswas = $query->paginate(25)->appends($request->all());
 
         // 📊 Statistik
         $totalSiswa = Siswa::count();

@@ -137,9 +137,11 @@
                         <div>{{ $siswa->alamat_orang_tua ?? '-' }}</div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-secondary mt-4" onclick="window.history.back()">
-                    <i data-feather="arrow-left"></i> Kembali
-                </button>
+                <div class="mt-3">
+                    <a href="{{ route('siswa.index') }}" class="btn btn-outline-secondary w-100">
+                        Kembali ke Data Siswa
+                    </a>
+                </div>
             </div>
         </div>
     </div>

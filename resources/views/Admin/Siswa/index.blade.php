@@ -134,176 +134,203 @@
                         <i data-feather="plus" class="me-1" width="16" height="16"></i> Tambah Siswa
                     </button>
                 </div>
+
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1400px">
-                        <thead class="table">
-                            <tr>
-                                <th style="width: 5%">ID</th>
-                                <th style="width: 12%">NISN / NIS</th>
-                                <th style="width: 14%">Nama Siswa</th>
-                                <th style="width: 12%">TTL</th>
-                                <th style="width: 8%">Agama</th>
-                                <th style="width: 8%">Kelas</th>
-                                <th style="width: 10%">Jenis Kelamin</th>
-                                <th style="width: 18%">Orang Tua / Wali</th>
-                                <th style="width: 15%">Alamat</th>
-                                <th style="width: 7%">Status</th>
-                                <th style="width: 14%">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($siswas as $siswa)
-                                <tr>
-                                    <td>
-                                        {{ $siswas->firstItem() + $loop->index }}
-                                    </td>
-                                    <td>
-                                        @if ($siswa->nisn)
-                                            <div><span class="text-primary fw-semibold">NISN:</span> <span
-                                                    class="text-primary">{{ $siswa->nisn }}</span></div>
-                                        @endif
-                                        @if ($siswa->nis)
-                                            <div><span class="text-success fw-semibold">NIS:</span> <span
-                                                    class="text-success">{{ $siswa->nis }}</span></div>
-                                        @endif
-                                        @if (!$siswa->nisn && !$siswa->nis)
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $siswa->nama_siswa }}</td>
 
-                                    <td>
+            <div class="px-3 py-2 border-bottom">
+                <div class="btn-group" role="group">
 
-                                        @if ($siswa->tempat_lahir || $siswa->tanggal_lahir)
-                                            {{ $siswa->tempat_lahir ?? '-' }}
+                    <a href="{{ route('siswa.index') }}"
+                        class="btn btn-sm {{ request('tingkat') == null ? 'btn-primary' : 'btn-outline-primary' }}">
+                        Semua
+                    </a>
 
-                                            @if ($siswa->tanggal_lahir)
-                                                ,
+                    <a href="{{ route('siswa.index', array_merge(request()->query(), ['tingkat' => '7'])) }}"
+                        class="btn btn-sm {{ request('tingkat') == '7' ? 'btn-success' : 'btn-outline-success' }}">
+                        Kelas 7
+                    </a>
 
-                                                {{ \Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d M Y') }}
-                                            @endif
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
+                    <a href="{{ route('siswa.index', array_merge(request()->query(), ['tingkat' => '8'])) }}"
+                        class="btn btn-sm {{ request('tingkat') == '8' ? 'btn-warning' : 'btn-outline-warning' }}">
+                        Kelas 8
+                    </a>
 
-                                    </td>
+                    <a href="{{ route('siswa.index', array_merge(request()->query(), ['tingkat' => '9'])) }}"
+                        class="btn btn-sm {{ request('tingkat') == '9' ? 'btn-info' : 'btn-outline-info' }}">
+                        Kelas 9
+                    </a>
 
-                                    <td>
-                                        {{ $siswa->agama ?? '-' }}
-                                    </td>
-
-                                    <td>{{ $siswa->kelas->nama_kelas ?? '-' }}</td>
-                                    <td>
-                                        @if ($siswa->jenis_kelamin == 'L')
-                                            Laki-Laki
-                                        @elseif($siswa->jenis_kelamin == 'P')
-                                            Perempuan
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-
-                                        @if ($siswa->nama_ayah)
-                                            <div>
-                                                <span class="fw-semibold text-primary">
-                                                    Ayah:
-                                                </span>
-                                                {{ $siswa->nama_ayah }}
-                                            </div>
-                                        @endif
-
-                                        @if ($siswa->nama_ibu)
-                                            <div>
-                                                <span class="fw-semibold text-danger">
-                                                    Ibu:
-                                                </span>
-                                                {{ $siswa->nama_ibu }}
-                                            </div>
-                                        @endif
-
-                                        @if ($siswa->nama_wali)
-                                            <div>
-                                                <span class="fw-semibold text-success">
-                                                    Wali:
-                                                </span>
-                                                {{ $siswa->nama_wali }}
-
-                                                @if ($siswa->no_hp_wali)
-                                                    <div class="small text-muted">
-                                                        {{ $siswa->no_hp_wali }}
-                                                    </div>
-                                                @endif
-
-                                            </div>
-                                        @endif
-
-                                        @if (!$siswa->nama_ayah && !$siswa->nama_ibu && !$siswa->nama_wali)
-                                            <span class="text-muted">-</span>
-                                        @endif
-
-                                    </td>
-                                    <td>
-                                        {{ Str::limit($siswa->alamat, 40) ?? '-' }}
-                                    </td>
-
-                                    @php
-                                        $statusColor = match ($siswa->status) {
-                                            'aktif' => 'success',
-                                            'lulus' => 'primary',
-                                            'pindah' => 'warning',
-                                            'keluar' => 'danger',
-                                            default => 'secondary',
-                                        };
-                                    @endphp
-
-                                    <td>
-                                        <span class="badge bg-{{ $statusColor }}">
-                                            {{ ucfirst($siswa->status) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-2">
-                                            <a href="{{ route('siswa.detail', $siswa->id_siswa) }}"
-                                                class="btn btn-sm btn-outline-info">
-                                                <i data-feather="eye"></i> Detail
-                                            </a>
-                                            <a href="{{ route('siswa.show', $siswa->id_siswa) }}"
-                                                class="btn btn-sm btn-outline-primary">
-                                                <i data-feather="edit-2"></i> Edit
-                                            </a>
-                                            <form action="{{ route('siswa.reset-password', $siswa->id_siswa) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('Reset password siswa ke tanggal lahir?')">
-                                                @csrf
-                                                @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-outline-warning">
-                                                    <i data-feather="key"></i>
-                                                    Reset
-                                                </button>
-                                            </form>
-                                            <button class="btn btn-sm btn-outline-danger btn-hapus"
-                                                data-id="{{ $siswa->id_siswa }}" data-nama="{{ $siswa->nama_siswa }}">
-                                                <i data-feather="trash-2"></i> Hapus
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="12" class="text-center py-5 text-muted">
-                                        <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
-                                        Belum ada data siswa.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
                 </div>
-                @include('Components.pagination', ['data' => $siswas])
             </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1400px">
+                    <thead class="table">
+                        <tr>
+                            <th style="width: 5%">ID</th>
+                            <th style="width: 12%">NISN / NIS</th>
+                            <th style="width: 14%">Nama Siswa</th>
+                            <th style="width: 12%">TTL</th>
+                            <th style="width: 8%">Agama</th>
+                            <th style="width: 8%">Kelas</th>
+                            <th style="width: 10%">Jenis Kelamin</th>
+                            <th style="width: 18%">Orang Tua / Wali</th>
+                            <th style="width: 15%">Alamat</th>
+                            <th style="width: 7%">Status</th>
+                            <th style="width: 14%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($siswas as $siswa)
+                            <tr>
+                                <td>
+                                    {{ $siswas->firstItem() + $loop->index }}
+                                </td>
+                                <td>
+                                    @if ($siswa->nisn)
+                                        <div><span class="text-primary fw-semibold">NISN:</span> <span
+                                                class="text-primary">{{ $siswa->nisn }}</span></div>
+                                    @endif
+                                    @if ($siswa->nis)
+                                        <div><span class="text-success fw-semibold">NIS:</span> <span
+                                                class="text-success">{{ $siswa->nis }}</span></div>
+                                    @endif
+                                    @if (!$siswa->nisn && !$siswa->nis)
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td>{{ $siswa->nama_siswa }}</td>
+
+                                <td>
+
+                                    @if ($siswa->tempat_lahir || $siswa->tanggal_lahir)
+                                        {{ $siswa->tempat_lahir ?? '-' }}
+
+                                        @if ($siswa->tanggal_lahir)
+                                            ,
+
+                                            {{ \Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d M Y') }}
+                                        @endif
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+
+                                </td>
+
+                                <td>
+                                    {{ $siswa->agama ?? '-' }}
+                                </td>
+
+                                <td>{{ $siswa->kelas->nama_kelas ?? '-' }}</td>
+                                <td>
+                                    @if ($siswa->jenis_kelamin == 'L')
+                                        Laki-Laki
+                                    @elseif($siswa->jenis_kelamin == 'P')
+                                        Perempuan
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td>
+
+                                    @if ($siswa->nama_ayah)
+                                        <div>
+                                            <span class="fw-semibold text-primary">
+                                                Ayah:
+                                            </span>
+                                            {{ $siswa->nama_ayah }}
+                                        </div>
+                                    @endif
+
+                                    @if ($siswa->nama_ibu)
+                                        <div>
+                                            <span class="fw-semibold text-danger">
+                                                Ibu:
+                                            </span>
+                                            {{ $siswa->nama_ibu }}
+                                        </div>
+                                    @endif
+
+                                    @if ($siswa->nama_wali)
+                                        <div>
+                                            <span class="fw-semibold text-success">
+                                                Wali:
+                                            </span>
+                                            {{ $siswa->nama_wali }}
+
+                                            @if ($siswa->no_hp_wali)
+                                                <div class="small text-muted">
+                                                    {{ $siswa->no_hp_wali }}
+                                                </div>
+                                            @endif
+
+                                        </div>
+                                    @endif
+
+                                    @if (!$siswa->nama_ayah && !$siswa->nama_ibu && !$siswa->nama_wali)
+                                        <span class="text-muted">-</span>
+                                    @endif
+
+                                </td>
+                                <td>
+                                    {{ Str::limit($siswa->alamat, 40) ?? '-' }}
+                                </td>
+
+                                @php
+                                    $statusColor = match ($siswa->status) {
+                                        'aktif' => 'success',
+                                        'lulus' => 'primary',
+                                        'pindah' => 'warning',
+                                        'keluar' => 'danger',
+                                        default => 'secondary',
+                                    };
+                                @endphp
+
+                                <td>
+                                    <span class="badge bg-{{ $statusColor }}">
+                                        {{ ucfirst($siswa->status) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ route('siswa.detail', $siswa->id_siswa) }}"
+                                            class="btn btn-sm btn-outline-info">
+                                            <i data-feather="eye"></i> Detail
+                                        </a>
+                                        <a href="{{ route('siswa.show', $siswa->id_siswa) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i data-feather="edit-2"></i> Edit
+                                        </a>
+                                        <form action="{{ route('siswa.reset-password', $siswa->id_siswa) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Reset password siswa ke tanggal lahir?')">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                <i data-feather="key"></i>
+                                                Reset
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-sm btn-outline-danger btn-hapus"
+                                            data-id="{{ $siswa->id_siswa }}" data-nama="{{ $siswa->nama_siswa }}">
+                                            <i data-feather="trash-2"></i> Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="12" class="text-center py-5 text-muted">
+                                    <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
+                                    Belum ada data siswa.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            @include('Components.pagination', ['data' => $siswas])
         </div>
     </div>
 
