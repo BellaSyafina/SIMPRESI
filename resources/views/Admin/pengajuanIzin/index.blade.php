@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('Layouts.template-admin')
 
 @section('title', 'Pengajuan Izin')
@@ -308,7 +312,7 @@
 
                                             <td>
 
-                                                <a href="{{ asset('storage/' . $item->file_surat) }}" target="_blank"
+                                                <a href="{{ Storage::url($item->file_surat) }}" target="_blank"
                                                     class="btn btn-sm btn-danger rounded-pill">
 
                                                     <i data-feather="file-text" width="14" height="14"></i>

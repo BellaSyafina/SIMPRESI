@@ -10,6 +10,7 @@ use App\Models\Kelas;
 use App\Models\PertemuanPelajaran;
 use App\Models\SettingSistem;
 use App\Models\Siswa;
+use App\Models\SuratIzin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,18 +38,33 @@ class AbsensiSiswaController extends Controller
                 ],
             );
 
+            $pertemuan = PertemuanPelajaran::findOrFail($request->id_pertemuan);
+
             foreach ($request->status as $idSiswa => $status) {
                 Absensi::updateOrCreate(
                     [
                         'id_pertemuan' => $request->id_pertemuan,
                         'id_siswa' => $idSiswa,
                     ],
-
                     [
                         'status' => $status,
                         'keterangan' => $request->keterangan[$idSiswa] ?? null,
                     ],
                 );
+
+                $surat = SuratIzin::where('id_siswa', $idSiswa)->whereDate('tanggal', $pertemuan->tanggal)->first();
+
+                if ($surat) {
+                    if (in_array($status, ['izin', 'sakit'])) {
+                        $surat->update([
+                            'status_verifikasi' => 'diterima',
+                        ]);
+                    } else {
+                        $surat->update([
+                            'status_verifikasi' => 'ditolak',
+                        ]);
+                    }
+                }
             }
 
             return redirect()->route('absensi.index')->with('success', 'Absensi berhasil disimpan.');
@@ -115,12 +131,12 @@ class AbsensiSiswaController extends Controller
 
         // 🔥 Absensi existing
         $absensi = Absensi::with(['suratIzin'])
-
             ->where('id_pertemuan', $idPertemuan)
-
             ->get()
-
             ->keyBy('id_siswa');
+
+        // 🔥 Surat izin/sakit dari orang tua berdasarkan tanggal pertemuan
+        $suratIzin = SuratIzin::whereDate('tanggal', $pertemuan->tanggal)->whereIn('id_siswa', $siswa->pluck('id_siswa'))->get()->keyBy('id_siswa');
 
         // 🔥 Statistik
         $totalSiswa = $siswa->count();
@@ -132,6 +148,6 @@ class AbsensiSiswaController extends Controller
 
         $kelasList = Kelas::orderBy('nama_kelas')->pluck('nama_kelas', 'id_kelas');
 
-        return view('Admin.absensiSiswa.form', compact('jadwalAktif', 'pertemuan', 'siswa', 'absensi', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir', 'kelasList'));
+        return view('Admin.absensiSiswa.form', compact('jadwalAktif', 'pertemuan', 'siswa', 'absensi', 'suratIzin', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpha', 'persenHadir', 'kelasList'));
     }
 }

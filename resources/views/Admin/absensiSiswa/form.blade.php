@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('Layouts.template-admin')
 
 @section('title', 'Data Absensi Siswa')
@@ -167,11 +171,14 @@
                                         <td class="fs-6">{{ $s->nis }}</td>
                                         <td class="fs-6">{{ $s->jenis_kelamin }}</td>
                                         @php
-                                            $status = $absensi[$s->id_siswa]->status ?? 'hadir';
+                                            $dataAbsensi = $absensi[$s->id_siswa] ?? null;
+                                            $surat = $suratIzin[$s->id_siswa] ?? null;
+
+                                            $status = $dataAbsensi->status ?? ($surat->jenis ?? 'hadir');
                                         @endphp
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group"
-                                                @if (isset($absensi[$s->id_siswa]) && $absensi[$s->id_siswa]?->suratIzin) style="pointer-events: none; opacity: .8;" @endif>
+                                                @if ($surat) class="btn-group btn-group-sm" role="group" @endif>
                                                 <label class="btn btn-outline-success">
                                                     <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="hadir" class="status-radio"
@@ -199,19 +206,22 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control form-control-sm"
-                                                name="keterangan[{{ $s->id_siswa }}]"
-                                                placeholder="Tambahkan keterangan..." style="font-size: 0.875rem;">
-                                            @if (isset($absensi[$s->id_siswa]) && $absensi[$s->id_siswa]?->suratIzin)
-                                                <a href="{{ asset('storage/' . $absensi[$s->id_siswa]->suratIzin->file_surat) }}"
-                                                    target="_blank" class="btn btn-sm btn-danger mt-2 rounded-pill">
+                                            <div>
+                                                <input type="text" name="keterangan[{{ $s->id_siswa }}]"
+                                                    class="form-control" placeholder="Tambahkan keterangan..."
+                                                    value="{{ $absensi[$s->id_siswa]->keterangan ?? '' }}">
 
-                                                    <i data-feather="file-text" width="14" height="14"></i>
+                                                @if ($surat)
+                                                    <div class="d-grid mt-2">
+                                                        <a href="{{ Storage::url($surat->file_surat) }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-danger">
 
-                                                    Lihat Surat
-
-                                                </a>
-                                            @endif
+                                                            <i data-feather="file-text"></i>
+                                                            Lihat Surat
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
