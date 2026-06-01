@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\OrangTuaController;
+use App\Http\Controllers\Admin\PengajuanIzinController;
 use App\Http\Controllers\Admin\SesiController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SettingSistemController;
@@ -104,4 +105,8 @@ Route::middleware('auth')->group(function () {
     // Setting Sistem
     Route::get('/setting-sistem', [SettingSistemController::class, 'index'])->name('setting-sistem.index');
     Route::put('/setting-sistem', [SettingSistemController::class, 'update'])->name('setting-sistem.update');
+
+    // Pengajuan Izin
+    Route::get('/pengajuan-izin', [PengajuanIzinController::class, 'index'])->name('pengajuan-izin.index');
+    Route::post('/pengajuan-izin', [PengajuanIzinController::class, 'store'])->name('pengajuan-izin.store');
 });

@@ -85,10 +85,34 @@ class DashboardController extends Controller
             ];
 
             $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi'])
+
                 ->where('id_guru', $guru->id_guru)
+
                 ->where('hari', $hariMap[now()->format('l')])
+
+                ->where('semester', $setting->semester_aktif)
+
+                ->where('tahun_ajaran', $setting->tahun_ajaran_aktif)
+
                 ->orderBy('id_sesi')
+
                 ->get();
+
+            $jadwalMingguan = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi'])
+
+                ->where('id_guru', $guru->id_guru)
+
+                ->where('semester', $setting->semester_aktif)
+
+                ->where('tahun_ajaran', $setting->tahun_ajaran_aktif)
+
+                ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
+
+                ->orderBy('id_sesi')
+
+                ->get()
+
+                ->groupBy('hari');
 
             $kelasHariIni = $jadwalHariIni->count();
             $absensiSelesai = 0;
@@ -130,7 +154,7 @@ class DashboardController extends Controller
                 }
             }
 
-            return view('Admin.Dashboard.index', compact('jadwalHariIni', 'kelasHariIni', 'absensiSelesai', 'menungguAbsensi', 'absensiTerbaru', 'setting'));
+            return view('Admin.Dashboard.index', compact('jadwalHariIni', 'kelasHariIni', 'absensiSelesai', 'menungguAbsensi', 'absensiTerbaru', 'setting', 'jadwalMingguan'));
         }
 
         // Orang Tua
@@ -182,7 +206,7 @@ class DashboardController extends Controller
                     ->where('status', 'alpa')
 
                     ->count();
-                    
+
                 // 🔥 KEHADIRAN HARI INI
                 $absensiHariIni = Absensi::with(['pertemuan.jadwal.mataPelajaran', 'pertemuan.jadwal.guru'])
 

@@ -105,7 +105,13 @@ class AbsensiSiswaController extends Controller
         $siswa = Siswa::where('id_kelas', $jadwalAktif->id_kelas)->orderBy('nama_siswa')->get();
 
         // 🔥 Absensi existing
-        $absensi = Absensi::where('id_pertemuan', $idPertemuan)->get()->keyBy('id_siswa');
+        $absensi = Absensi::with(['suratIzin'])
+
+            ->where('id_pertemuan', $idPertemuan)
+
+            ->get()
+
+            ->keyBy('id_siswa');
 
         // 🔥 Statistik
         $totalSiswa = $siswa->count();

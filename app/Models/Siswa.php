@@ -22,4 +22,9 @@ class Siswa extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
     }
+
+    public function suratIzin()
+    {
+        return $this->hasMany(SuratIzin::class, 'id_siswa', 'id_siswa');
+    }
 }

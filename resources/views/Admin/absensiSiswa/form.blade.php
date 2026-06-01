@@ -151,14 +151,27 @@
                                 @forelse ($siswa as $s)
                                     <tr>
                                         <td class="fs-6">{{ $loop->iteration }}</td>
-                                        <td class="fs-6">{{ $s->nama_siswa }}</td>
+                                        <td class="fs-6">
+
+                                            {{ $s->nama_siswa }}
+
+                                            @if (isset($absensi[$s->id_siswa]) && $absensi[$s->id_siswa]?->suratIzin)
+                                                <span class="badge bg-warning ms-2">
+
+                                                    Pengajuan Izin
+
+                                                </span>
+                                            @endif
+
+                                        </td>
                                         <td class="fs-6">{{ $s->nis }}</td>
                                         <td class="fs-6">{{ $s->jenis_kelamin }}</td>
                                         @php
                                             $status = $absensi[$s->id_siswa]->status ?? 'hadir';
                                         @endphp
                                         <td>
-                                            <div class="btn-group btn-group-sm" role="group">
+                                            <div class="btn-group btn-group-sm" role="group"
+                                                @if (isset($absensi[$s->id_siswa]) && $absensi[$s->id_siswa]?->suratIzin) style="pointer-events: none; opacity: .8;" @endif>
                                                 <label class="btn btn-outline-success">
                                                     <input type="radio" name="status[{{ $s->id_siswa }}]"
                                                         value="hadir" class="status-radio"
@@ -189,6 +202,16 @@
                                             <input type="text" class="form-control form-control-sm"
                                                 name="keterangan[{{ $s->id_siswa }}]"
                                                 placeholder="Tambahkan keterangan..." style="font-size: 0.875rem;">
+                                            @if (isset($absensi[$s->id_siswa]) && $absensi[$s->id_siswa]?->suratIzin)
+                                                <a href="{{ asset('storage/' . $absensi[$s->id_siswa]->suratIzin->file_surat) }}"
+                                                    target="_blank" class="btn btn-sm btn-danger mt-2 rounded-pill">
+
+                                                    <i data-feather="file-text" width="14" height="14"></i>
+
+                                                    Lihat Surat
+
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

@@ -34,8 +34,14 @@ class Absensi extends Model
             'izin' => 'warning',
             'sakit' => 'info',
             'alpa' => 'danger',
-            
+
             default => 'secondary',
         };
+    }
+
+    public function suratIzin()
+    {
+        return $this->hasOne(SuratIzin::class, 'id_siswa', 'id_siswa')
+        ->whereDate('tanggal', optional($this->pertemuan)->tanggal);
     }
 }

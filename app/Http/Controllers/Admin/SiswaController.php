@@ -193,11 +193,42 @@ class SiswaController extends Controller
                 ],
             );
 
-            // 🔥 update akun login siswa
+            // 🔥 email akun siswa
+            $email = $request->nisn . '@siswa.com';
+
+            // 🔥 jika belum punya akun
+            if (!$siswa->id_user) {
+                $passwordDefault = $request->tanggal_lahir ? \Carbon\Carbon::parse($request->tanggal_lahir)->format('dmY') : '12345678';
+
+                // 🔥 cek user existing
+                $user = User::firstOrCreate(
+                    [
+                        'email' => $email,
+                    ],
+
+                    [
+                        'name' => $request->nama_siswa,
+
+                        'password' => Hash::make($passwordDefault),
+
+                        'role' => 'orang_tua',
+                    ],
+                );
+
+                // 🔥 hubungkan siswa
+                $siswa->id_user = $user->id;
+
+                $siswa->save();
+            }
+
+            // 🔥 update akun login
             if ($siswa->user) {
                 $siswa->user->update([
                     'name' => $request->nama_siswa,
-                    'email' => $request->nisn . '@siswa.com',
+
+                    'email' => $email,
+
+                    'role' => 'orang_tua',
                 ]);
             }
 
