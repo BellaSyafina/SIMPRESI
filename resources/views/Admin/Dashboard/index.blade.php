@@ -458,16 +458,103 @@
                 </div>
             </div>
 
-            <!-- Baris kedua: Jadwal Mengajar Mingguan -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card shadow-sm border-0">
+            <!-- Baris kedua: Jadwal Hari Ini & Mingguan -->
+            <div class="row g-3 mb-4">
+
+                {{-- Jadwal Mengajar Hari Ini --}}
+                <div class="col-xl-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0 fw-semibold fs-4">
+                                <i data-feather="calendar" class="me-2" width="25" height="25"></i>
+                                Jadwal Mengajar Hari Ini
+                            </h5>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                @forelse ($jadwalHariIni as $jadwal)
+                                    @php
+                                        $pertemuanHariIni = \App\Models\PertemuanPelajaran::where(
+                                            'id_jadwal_pelajaran',
+                                            $jadwal->id_jadwal_pelajaran,
+                                        )
+                                            ->whereDate('tanggal', now())
+                                            ->first();
+
+                                        $sudahAbsen = $pertemuanHariIni
+                                            ? \App\Models\Absensi::where(
+                                                'id_pertemuan',
+                                                $pertemuanHariIni->id_pertemuan,
+                                            )->exists()
+                                            : false;
+
+                                        $now = now()->format('H:i:s');
+                                        $jamMulai = $jadwal->sesi?->jam_mulai;
+                                        $jamSelesai = $jadwal->sesi?->jam_selesai;
+
+                                        if ($sudahAbsen) {
+                                            $status = 'Selesai';
+                                            $badge = 'success';
+                                        } elseif (
+                                            $jamMulai &&
+                                            $jamSelesai &&
+                                            $now >= $jamMulai &&
+                                            $now <= $jamSelesai
+                                        ) {
+                                            $status = 'Berlangsung';
+                                            $badge = 'warning text-dark';
+                                        } else {
+                                            $status = 'Menunggu';
+                                            $badge = 'info';
+                                        }
+                                    @endphp
+
+                                    <div class="list-group-item py-3">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                                            <div>
+                                                <span class="badge bg-primary me-2">
+                                                    {{ $jadwal->sesi?->jam_mulai ? \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') : '-' }}
+                                                    -
+                                                    {{ $jadwal->sesi?->jam_selesai ? \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') : '-' }}
+                                                </span>
+
+                                                <span class="fw-bold">
+                                                    {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
+                                                </span>
+
+                                                <span class="text-muted">
+                                                    Kelas {{ $jadwal->kelas->nama_kelas }}
+                                                </span>
+                                            </div>
+
+                                            <span class="badge bg-{{ $badge }}">
+                                                {{ $status }}
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="list-group-item text-center text-muted py-4">
+                                        Tidak ada jadwal hari ini
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Jadwal Mengajar Mingguan --}}
+                <div class="col-xl-6">
+                    <div class="card shadow-sm border-0 h-100">
                         <div class="card-header bg-white py-3">
                             <h5 class="card-title mb-0 fw-semibold fs-4">
                                 <i data-feather="calendar" class="me-2" width="25" height="25"></i>
                                 Jadwal Mengajar Mingguan
                             </h5>
                         </div>
+
                         <div class="card-body p-0">
                             <div class="list-group list-group-flush">
                                 @forelse ($jadwalMingguan as $hari => $jadwalList)
@@ -477,37 +564,23 @@
 
                                     @foreach ($jadwalList as $jadwal)
                                         <div class="list-group-item py-3">
+                                            <span class="badge bg-secondary me-2">
+                                                {{ $jadwal->sesi?->jam_mulai ? \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') : '-' }}
+                                                -
+                                                {{ $jadwal->sesi?->jam_selesai ? \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') : '-' }}
+                                            </span>
 
-                                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                            <span class="fw-bold">
+                                                {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
+                                            </span>
 
-                                                <div>
-
-                                                    <span class="badge bg-secondary me-2">
-
-                                                        {{ $jadwal->sesi?->jam_mulai }}
-                                                        -
-                                                        {{ $jadwal->sesi?->jam_selesai }}
-
-                                                    </span>
-
-                                                    <span class="fw-bold">
-                                                        {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
-                                                    </span>
-
-                                                    <span class="text-muted">
-                                                        Kelas {{ $jadwal->kelas->nama_kelas }}
-                                                    </span>
-
-                                                </div>
-
-                                            </div>
-
+                                            <span class="text-muted">
+                                                Kelas {{ $jadwal->kelas->nama_kelas }}
+                                            </span>
                                         </div>
                                     @endforeach
-
                                 @empty
-
-                                    <div class="list-group-item py-4 text-center text-muted">
+                                    <div class="list-group-item text-center text-muted py-4">
                                         Tidak ada jadwal mengajar
                                     </div>
                                 @endforelse

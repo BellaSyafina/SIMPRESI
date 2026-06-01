@@ -193,76 +193,71 @@
                                     ->whereDate('tanggal', now())
                                     ->first();
 
+                                $totalSiswa = $jadwal->kelas->siswa()->count();
+
+                                $totalAbsensi = $pertemuanHariIni
+                                    ? \App\Models\Absensi::where(
+                                        'id_pertemuan',
+                                        $pertemuanHariIni->id_pertemuan,
+                                    )->count()
+                                    : 0;
+
                             @endphp
 
                             <div class="d-flex align-items-center mb-4">
-
                                 <div class="icon-box bg-light-info text-info rounded-circle me-3">
-
                                     <i data-feather="layers"></i>
-
                                 </div>
 
                                 <div>
-
                                     <small class="text-muted d-block">
                                         Pertemuan Hari Ini
                                     </small>
 
                                     <div class="fw-semibold">
-
                                         @if ($pertemuanHariIni)
                                             Pertemuan
                                             {{ $pertemuanHariIni->pertemuan_ke }}
                                         @else
                                             Belum Ada Pertemuan
                                         @endif
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         {{-- FOOTER --}}
                         <div class="card-footer bg-white border-0 p-4">
 
-                            @if ($pertemuanHariIni)
+                            @if (!$pertemuanHariIni)
+                                <button class="btn btn-secondary w-100 rounded-pill py-2" disabled>
+                                    <i data-feather="slash"></i>
+                                    Belum Ada Pertemuan
+                                </button>
+                            @elseif($totalAbsensi >= $totalSiswa)
+                                <button class="btn btn-success w-100 rounded-pill py-2" disabled>
+                                    <i data-feather="check-circle"></i>
+                                    Selesai
+                                </button>
+                            @else
                                 <a href="{{ route('absensi.form', [
                                     'jadwal' => $jadwal->id_jadwal_pelajaran,
                                     'pertemuan' => $pertemuanHariIni->id_pertemuan,
                                 ]) }}"
                                     class="btn btn-primary w-100 rounded-pill py-2">
 
-                                    <i data-feather="play-circle" class="me-1" width="18" height="18"></i>
-
+                                    <i data-feather="play-circle"></i>
                                     Mulai Sesi
-
                                 </a>
-                            @else
-                                <button class="btn btn-secondary w-100 rounded-pill py-2" disabled>
-
-                                    <i data-feather="slash" class="me-1" width="18" height="18"></i>
-
-                                    Belum Ada Pertemuan
-
-                                </button>
                             @endif
-
                         </div>
-
                     </div>
-
                 </div>
             @empty
+
                 <div class="col-12">
-
                     <div class="card border-0 shadow-sm rounded-4">
-
                         <div class="card-body text-center py-5">
-
                             <i data-feather="calendar" width="64" height="64" class="text-muted mb-3"></i>
 
                             <h5 class="fw-bold">
@@ -270,20 +265,13 @@
                             </h5>
 
                             <p class="text-muted mb-0">
-
                                 Tidak ada jadwal mengajar untuk hari ini.
-
                             </p>
-
                         </div>
-
                     </div>
-
                 </div>
             @endforelse
-
         </div>
-
     </div>
 
     <style>

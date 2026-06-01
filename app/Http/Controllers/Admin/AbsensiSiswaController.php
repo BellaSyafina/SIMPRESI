@@ -74,9 +74,7 @@ class AbsensiSiswaController extends Controller
         ];
 
         $hariIni = $hariMap[now()->format('l')] ?? null;
-
         $setting = SettingSistem::first();
-
         $jadwalList = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi'])
             ->where('id_guru', $guru->id_guru)
             ->where('hari', $hariIni)
@@ -85,6 +83,17 @@ class AbsensiSiswaController extends Controller
             ->orderBy('id_sesi')
             ->get();
 
+        foreach ($jadwalList as $jadwal) {
+            PertemuanPelajaran::firstOrCreate(
+                [
+                    'id_jadwal_pelajaran' => $jadwal->id_jadwal_pelajaran,
+                    'tanggal' => now()->toDateString(),
+                ],
+                [
+                    'pertemuan_ke' => 1,
+                ],
+            );
+        }
         return view('Admin.absensiSiswa.jadwal', compact('jadwalList'));
     }
 
