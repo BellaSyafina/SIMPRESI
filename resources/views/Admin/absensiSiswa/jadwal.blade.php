@@ -235,10 +235,16 @@
                                     Belum Ada Pertemuan
                                 </button>
                             @elseif($totalAbsensi >= $totalSiswa)
-                                <button class="btn btn-success w-100 rounded-pill py-2" disabled>
+                                <a href="{{ route('absensi.form', [
+                                    'jadwal' => $jadwal->id_jadwal_pelajaran,
+                                    'pertemuan' => $pertemuanHariIni->id_pertemuan,
+                                ]) }}"
+                                    class="btn btn-success w-100 rounded-pill py-2">
+
                                     <i data-feather="check-circle"></i>
-                                    Selesai
-                                </button>
+                                    Selesai / Ubah Absensi
+
+                                </a>
                             @else
                                 <a href="{{ route('absensi.form', [
                                     'jadwal' => $jadwal->id_jadwal_pelajaran,
@@ -248,6 +254,7 @@
 
                                     <i data-feather="play-circle"></i>
                                     Mulai Sesi
+
                                 </a>
                             @endif
                         </div>
