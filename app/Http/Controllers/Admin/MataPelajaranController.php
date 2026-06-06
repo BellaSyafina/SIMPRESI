@@ -18,11 +18,15 @@ class MataPelajaranController extends Controller
             });
         }
 
-        $mapel = $query->orderByDesc('id_mata_pelajaran')->paginate(10)->appends($request->all());
+        $mapelAll = $query->orderByDesc('id_mata_pelajaran')->get();
+
+        $mapelGroup = $mapelAll->groupBy(function ($item) {
+            return preg_replace('/\sKelas\s[789]$/', '', $item->nama_mata_pelajaran);
+        });
 
         $totalMapel = MataPelajaran::count();
 
-        return view('Admin.MataPelajaran.index', compact('mapel', 'totalMapel'));
+        return view('Admin.MataPelajaran.index', compact('mapelGroup', 'totalMapel'));
     }
 
     public function store(Request $request)

@@ -57,39 +57,102 @@
                             <th width="20%" class="text-center">Aksi</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        @forelse ($mapel as $index => $item)
+                        @forelse ($mapelGroup as $namaUtama => $items)
                             <tr>
                                 <td class="text-center">
-                                    {{ $loop->iteration + ($mapel->currentPage() - 1) * $mapel->perPage() }}
+                                    {{ $loop->iteration }}
                                 </td>
+
                                 <td>
-                                    <span class="badge bg-primary">
-                                        {{ $item->kode_mapel }}
-                                    </span>
+                                    @foreach ($items as $item)
+                                        <span class="badge bg-primary me-1">
+                                            {{ $item->kode_mapel }}
+                                        </span>
+                                    @endforeach
                                 </td>
-                                <td> {{ $item->nama_mata_pelajaran }} </td>
+
+                                <td>
+                                    {{ $namaUtama }}
+                                </td>
+
                                 <td class="text-center">
-                                    <div class="d-flex gap-2 justify-content-center">
-                                        <!-- Tombol Edit (buka modal) -->
-                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
-                                            data-id="{{ $item->id_mata_pelajaran }}" data-kode="{{ $item->kode_mapel }}"
-                                            data-nama="{{ $item->nama_mata_pelajaran }}">
-                                            <i data-feather="edit-2"></i> Edit
-                                        </button>
-                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalDetailMapel{{ Str::slug($namaUtama) }}">
+                                        <i data-feather="eye"></i> Detail
+                                    </button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-4">Belum ada data mata pelajaran.</td>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    Belum ada data mata pelajaran.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            @include('Components.pagination', ['data' => $mapel])
+            {{-- MODAL DETAIL MAPEL --}}
+            @foreach ($mapelGroup as $namaUtama => $items)
+                <div class="modal fade" id="modalDetailMapel{{ Str::slug($namaUtama) }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Detail {{ $namaUtama }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-bordered align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%">No</th>
+                                            <th width="20%">Kode</th>
+                                            <th>Nama Mata Pelajaran</th>
+                                            <th width="20%" class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach ($items as $item)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+
+                                                <td>
+                                                    <span class="badge bg-primary">
+                                                        {{ $item->kode_mapel }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    {{ $item->nama_mata_pelajaran }}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary btn-edit"
+                                                        data-id="{{ $item->id_mata_pelajaran }}"
+                                                        data-kode="{{ $item->kode_mapel }}"
+                                                        data-nama="{{ $item->nama_mata_pelajaran }}"
+                                                        data-bs-dismiss="modal">
+                                                        <i data-feather="edit-2"></i> Edit
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            @endforeach
 
         </div>
     </div>
