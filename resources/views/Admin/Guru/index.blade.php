@@ -128,6 +128,7 @@
                                 <th style="width: 20%">NUPTK/NIP</th>
                                 <th style="width: 10%">Jenis Kelamin</th>
                                 <th style="width: 20%">Alamat</th>
+                                <th style="width: 10%">Status</th>
                                 <th style="width: 15%">Mata Pelajaran</th>
                                 <th style="width: 15%">Aksi</th>
                             </tr>
@@ -163,6 +164,19 @@
                                     <td>{{ $guru->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                                     <td class="text-truncate" style="max-width: 200px;">{{ $guru->alamat }}</td>
                                     <td>
+                                        @if ($guru->status == 'aktif')
+                                            <span class="badge bg-success">Aktif</span>
+                                        @elseif($guru->status == 'tidak aktif')
+                                            <span class="badge bg-secondary">Tidak Aktif</span>
+                                        @elseif($guru->status == 'berhenti')
+                                            <span class="badge bg-warning">Berhenti</span>
+                                        @elseif($guru->status == 'meninggal')
+                                            <span class="badge bg-dark">Meninggal</span>
+                                        @elseif($guru->status == 'pensiun')
+                                            <span class="badge bg-info">Pensiun</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         @if ($guru->mataPelajaran->count())
                                             @foreach ($guru->mataPelajaran as $mapel)
                                                 <span class="badge bg-primary mb-1">
@@ -183,15 +197,6 @@
                                                 data-bs-toggle="modal" data-bs-target="#akunModal{{ $guru->id_guru }}">
                                                 <i data-feather="eye"></i> Detail
                                             </button>
-                                            <form action="{{ route('guru.destroy', $guru->id_guru) }}" method="POST"
-                                                onsubmit="return confirm('Yakin hapus data ini?')"
-                                                style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i data-feather="trash-2"></i> Hapus
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -253,7 +258,7 @@
                                 </div>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-5 text-muted">
+                                    <td colspan="8" class="text-center py-5 text-muted">
                                         <i data-feather="inbox" width="48" height="48" class="mb-3"></i><br>
                                         Belum ada data guru.
                                     </td>

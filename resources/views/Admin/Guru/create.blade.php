@@ -24,6 +24,7 @@
                     <i data-feather="user-plus" class="me-2" width="18" height="18"></i> Form Tambah Guru
                 </h5>
             </div>
+
             <div class="card-body">
                 <form action="{{ route('guru.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -35,6 +36,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">NUPTK <span class="text-danger">*</span></label>
@@ -53,6 +55,7 @@
                             @enderror
                         </div>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
                         <select name="jenis_kelamin" class="form-select @error('jenis_kelamin') is-invalid @enderror"
@@ -65,8 +68,35 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Alamat</label>
+                        <textarea name="alamat" rows="3" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat') }}</textarea>
+                        @error('alamat')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Status Guru <span class="text-danger">*</span></label>
+                        <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                            <option value="">Pilih Status</option>
+                            <option value="aktif" {{ old('status', 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="tidak aktif" {{ old('status') == 'tidak aktif' ? 'selected' : '' }}>Tidak Aktif
+                            </option>
+                            <option value="berhenti" {{ old('status') == 'berhenti' ? 'selected' : '' }}>Berhenti</option>
+                            <option value="meninggal" {{ old('status') == 'meninggal' ? 'selected' : '' }}>Meninggal
+                            </option>
+                            <option value="pensiun" {{ old('status') == 'pensiun' ? 'selected' : '' }}>Pensiun</option>
+                        </select>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Mata Pelajaran</label>
+
                         <select name="id_mata_pelajaran[]" multiple
                             class="form-select @error('id_mata_pelajaran') is-invalid @enderror">
                             @foreach ($mapelList as $mapel)
@@ -78,6 +108,7 @@
                                 </option>
                             @endforeach
                         </select>
+
                         <small class="text-muted">
                             Gunakan Ctrl (Windows) / Cmd (Mac) untuk memilih lebih dari satu
                         </small>
@@ -85,13 +116,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Alamat</label>
-                        <textarea name="alamat" rows="3" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat') }}</textarea>
-                        @error('alamat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i data-feather="save" class="me-1" width="16" height="16"></i> Simpan

@@ -38,6 +38,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">NUPTK <span class="text-danger">*</span></label>
@@ -56,6 +57,7 @@
                             @enderror
                         </div>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
                         <select name="jenis_kelamin" class="form-select @error('jenis_kelamin') is-invalid @enderror"
@@ -70,6 +72,35 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Alamat</label>
+                        <textarea name="alamat" rows="3" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat', $guru->alamat) }}</textarea>
+                        @error('alamat')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Status Guru <span class="text-danger">*</span></label>
+                        <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                            <option value="">Pilih Status</option>
+                            <option value="aktif" {{ old('status', $guru->status) == 'aktif' ? 'selected' : '' }}>Aktif
+                            </option>
+                            <option value="tidak aktif"
+                                {{ old('status', $guru->status) == 'tidak aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                            <option value="berhenti" {{ old('status', $guru->status) == 'berhenti' ? 'selected' : '' }}>
+                                Berhenti</option>
+                            <option value="meninggal" {{ old('status', $guru->status) == 'meninggal' ? 'selected' : '' }}>
+                                Meninggal</option>
+                            <option value="pensiun" {{ old('status', $guru->status) == 'pensiun' ? 'selected' : '' }}>
+                                Pensiun</option>
+                        </select>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Mata Pelajaran</label>
 
@@ -79,13 +110,11 @@
                             @foreach ($mapelList as $mapel)
                                 <option value="{{ $mapel->id_mata_pelajaran }}"
                                     {{ in_array($mapel->id_mata_pelajaran, old('id_mata_pelajaran', $guru->mataPelajaran->pluck('id_mata_pelajaran')->toArray())) ? 'selected' : '' }}>
-
                                     {{ $mapel->kode_mapel }} - {{ $mapel->nama_mata_pelajaran }}
-
                                 </option>
                             @endforeach
-
                         </select>
+
                         <small class="text-muted">
                             Gunakan Ctrl (Windows) / Cmd (Mac) untuk memilih lebih dari satu
                         </small>
@@ -93,13 +122,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Alamat</label>
-                        <textarea name="alamat" rows="3" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat', $guru->alamat) }}</textarea>
-                        @error('alamat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i data-feather="save" class="me-1" width="16" height="16"></i> Simpan

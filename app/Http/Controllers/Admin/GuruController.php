@@ -78,7 +78,8 @@ class GuruController extends Controller
                     'nip' => 'nullable|unique:guru,nip',
                     'jenis_kelamin' => 'required|in:L,P',
                     'alamat' => 'nullable',
-                    'id_mata_pelajaran' => 'required|array', // 🔥 tambahan
+                    'status' => 'required|in:aktif,tidak aktif,berhenti,meninggal,pensiun',
+                    'id_mata_pelajaran' => 'required|array',
                 ],
                 [
                     'nama_guru.required' => 'Nama guru wajib diisi.',
@@ -114,6 +115,7 @@ class GuruController extends Controller
                 'nip' => $request->nip,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
+                'status' => $request->status,
                 'id_user' => $user->id,
             ]);
 
@@ -141,7 +143,8 @@ class GuruController extends Controller
                     'nip' => 'nullable|unique:guru,nip,' . $id . ',id_guru',
                     'jenis_kelamin' => 'required|in:L,P',
                     'alamat' => 'nullable',
-                    'id_mata_pelajaran' => 'required|array', // 🔥 tambahan
+                    'status' => 'required|in:aktif,tidak aktif,berhenti,meninggal,pensiun',
+                    'id_mata_pelajaran' => 'required|array',
                 ],
                 [
                     'nama_guru.required' => 'Nama guru wajib diisi.',
@@ -166,6 +169,7 @@ class GuruController extends Controller
                 'nip' => $request->nip,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
+                'status' => $request->status,
             ]);
 
             // 🔥 update user
