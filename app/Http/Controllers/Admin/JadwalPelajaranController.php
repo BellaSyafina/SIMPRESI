@@ -255,8 +255,13 @@ class JadwalPelajaranController extends Controller
 
     public function guruByMapel($id)
     {
-        $guru = Guru::whereHas('mataPelajaran', function ($q) use ($id) {
-            $q->where('mata_pelajaran.id_mata_pelajaran', $id);
+        $mapel = MataPelajaran::findOrFail($id);
+
+        // Ambil nama mata pelajaran utama tanpa tulisan "Kelas 7/8/9"
+        $namaMapelUtama = preg_replace('/\sKelas\s[789]$/', '', $mapel->nama_mata_pelajaran);
+
+        $guru = Guru::whereHas('mataPelajaran', function ($q) use ($namaMapelUtama) {
+            $q->where('mata_pelajaran.nama_mata_pelajaran', 'like', '%' . $namaMapelUtama . '%');
         })
             ->orderBy('nama_guru')
             ->pluck('nama_guru', 'id_guru');
