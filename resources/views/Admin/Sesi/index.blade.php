@@ -191,8 +191,17 @@
                                 <label class="form-label fw-semibold">
                                     Nama Sesi
                                 </label>
-                                <input type="text" name="nama_sesi" class="form-control" placeholder="Contoh: Sesi 1"
-                                    required>
+                                <select name="nama_sesi" class="form-select" required>
+                                    <option value="">Pilih Sesi</option>
+                                    <option value="Sesi 1">Sesi 1</option>
+                                    <option value="Sesi 2">Sesi 2</option>
+                                    <option value="Sesi 3">Sesi 3</option>
+                                    <option value="Sesi 4">Sesi 4</option>
+                                    <option value="Sesi 5">Sesi 5</option>
+                                    <option value="Sesi 6">Sesi 6</option>
+                                    <option value="Sesi 7">Sesi 7</option>
+                                    <option value="Sesi 8">Sesi 8</option>
+                                </select>
                             </div>
                             {{-- JAM MULAI --}}
                             <div class="col-md-6">
@@ -252,8 +261,16 @@
                                 <label class="form-label fw-semibold">
                                     Nama Sesi
                                 </label>
-                                <input type="text" name="nama_sesi" id="edit_nama_sesi" class="form-control"
-                                    required>
+                                <select name="nama_sesi" id="edit_nama_sesi" class="form-select" required>
+                                    <option value="Sesi 1">Sesi 1</option>
+                                    <option value="Sesi 2">Sesi 2</option>
+                                    <option value="Sesi 3">Sesi 3</option>
+                                    <option value="Sesi 4">Sesi 4</option>
+                                    <option value="Sesi 5">Sesi 5</option>
+                                    <option value="Sesi 6">Sesi 6</option>
+                                    <option value="Sesi 7">Sesi 7</option>
+                                    <option value="Sesi 8">Sesi 8</option>
+                                </select>
                             </div>
                             {{-- JAM MULAI --}}
                             <div class="col-md-6">

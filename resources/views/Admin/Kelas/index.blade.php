@@ -35,20 +35,32 @@
         /* Warna header card sesuai tingkat */
         .card-header.bg-kelas7 {
             background-color: #28a745 !important;
-            /* hijau */
             color: white;
+        }
+
+        .card-body.bg-kelas7-soft,
+        .card-footer.bg-kelas7-soft {
+            background-color: #d4edda !important;
         }
 
         .card-header.bg-kelas8 {
             background-color: #fd7e14 !important;
-            /* orange */
             color: white;
+        }
+
+        .card-body.bg-kelas8-soft,
+        .card-footer.bg-kelas8-soft {
+            background-color: #ffe5d0 !important;
         }
 
         .card-header.bg-kelas9 {
             background-color: #0dcaf0 !important;
-            /* biru muda */
             color: white;
+        }
+
+        .card-body.bg-kelas9-soft,
+        .card-footer.bg-kelas9-soft {
+            background-color: #d1f4fb !important;
         }
 
         .table-sm td {
@@ -145,12 +157,17 @@
                 @php
                     // Tentukan kelas warna untuk header berdasarkan tingkat
                     $warnaHeader = '';
+                    $warnaBody = '';
+
                     if ($item->tingkat == '7') {
                         $warnaHeader = 'bg-kelas7';
+                        $warnaBody = 'bg-kelas7-soft';
                     } elseif ($item->tingkat == '8') {
                         $warnaHeader = 'bg-kelas8';
+                        $warnaBody = 'bg-kelas8-soft';
                     } elseif ($item->tingkat == '9') {
                         $warnaHeader = 'bg-kelas9';
+                        $warnaBody = 'bg-kelas9-soft';
                     }
                 @endphp
                 <div class="col-md-6 col-lg-4 kelas-card" data-tingkat="{{ $item->tingkat }}">
@@ -158,7 +175,7 @@
                         <div class="card-header {{ $warnaHeader }}">
                             {{ $item->nama_kelas }}
                         </div>
-                        <div class="card-body">
+                        <div class="card-body {{ $warnaBody }}">
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <td width="35%">Wali Kelas</td>
@@ -174,7 +191,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+                        <div class="card-footer {{ $warnaBody }} d-flex justify-content-end gap-2">
                             <button class="btn btn-sm btn-outline-primary btn-edit" data-id="{{ $item->id_kelas }}"
                                 data-nama="{{ $item->nama_kelas }}" data-guru="{{ $item->id_guru }}"
                                 data-ruang="{{ $item->ruang }}" data-tingkat="{{ $item->tingkat }}">

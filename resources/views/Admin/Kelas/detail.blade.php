@@ -55,12 +55,12 @@
                 <h5>Daftar Siswa</h5>
 
                 <table class="table table-bordered">
-                    <thead>
+                    <thead style="background-color:#7C6FC4;">
                         <tr>
-                            <th>No</th>
-                            <th>NIS</th>
-                            <th>Nama Siswa</th>
-                            <th>Jenis Kelamin</th>
+                            <th style="color: white;">No</th>
+                            <th style="color: white;">NIS</th>
+                            <th style="color: white;">Nama Siswa</th>
+                            <th style="color: white;">Jenis Kelamin</th>
                         </tr>
                     </thead>
 
