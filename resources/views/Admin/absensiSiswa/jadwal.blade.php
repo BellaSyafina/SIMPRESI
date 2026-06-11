@@ -56,6 +56,16 @@
 
         </div>
 
+        @if (isset($jumlahPengajuanBaru) && $jumlahPengajuanBaru > 0)
+            <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-2">
+                <i data-feather="bell"></i>
+                <div>
+                    Ada <strong>{{ $jumlahPengajuanBaru }}</strong> pengajuan izin/sakit baru dari siswa.
+                    Silakan cek pada saat melakukan absensi.
+                </div>
+            </div>
+        @endif
+
         {{-- JADWAL --}}
         <div class="row g-4">
 

@@ -482,12 +482,16 @@
                                             ->whereDate('tanggal', now())
                                             ->first();
 
-                                        $sudahAbsen = $pertemuanHariIni
+                                        $totalSiswa = $jadwal->kelas->siswa()->count();
+
+                                        $totalAbsensi = $pertemuanHariIni
                                             ? \App\Models\Absensi::where(
                                                 'id_pertemuan',
                                                 $pertemuanHariIni->id_pertemuan,
-                                            )->exists()
-                                            : false;
+                                            )->count()
+                                            : 0;
+
+                                        $sudahAbsen = $totalSiswa > 0 && $totalAbsensi >= $totalSiswa;
 
                                         $now = now()->format('H:i:s');
                                         $jamMulai = $jadwal->sesi?->jam_mulai;

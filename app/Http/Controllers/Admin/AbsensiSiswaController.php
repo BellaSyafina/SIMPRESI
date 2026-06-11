@@ -110,7 +110,17 @@ class AbsensiSiswaController extends Controller
                 ],
             );
         }
-        return view('Admin.absensiSiswa.jadwal', compact('jadwalList'));
+        // Hitung pengajuan izin/sakit baru untuk jadwal guru hari ini
+        $kelasGuruHariIni = $jadwalList->pluck('id_kelas')->unique();
+
+        $siswaGuruHariIni = Siswa::whereIn('id_kelas', $kelasGuruHariIni)->pluck('id_siswa');
+
+        $jumlahPengajuanBaru = SuratIzin::whereIn('id_siswa', $siswaGuruHariIni)
+            ->whereDate('tanggal', now()->toDateString())
+            ->where('status_verifikasi', 'pending')
+            ->count();
+
+        return view('Admin.absensiSiswa.jadwal', compact('jadwalList', 'jumlahPengajuanBaru'));
     }
 
     public function formAbsensi($idJadwal, $idPertemuan)

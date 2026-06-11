@@ -1,3 +1,36 @@
+@php
+    $jumlahPengajuanBaru = 0;
+
+    if (Auth::check() && Auth::user()->role == 'guru') {
+        $hariMap = [
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+            'Sunday' => 'Minggu',
+        ];
+
+        $hariIni = $hariMap[now()->format('l')];
+
+        $guru = \App\Models\Guru::where('id_user', Auth::id())->first();
+
+        if ($guru) {
+            $kelasGuruHariIni = \App\Models\JadwalPelajaran::where('id_guru', $guru->id_guru)
+                ->where('hari', $hariIni)
+                ->pluck('id_kelas');
+
+            $siswaGuru = \App\Models\Siswa::whereIn('id_kelas', $kelasGuruHariIni)->pluck('id_siswa');
+
+            $jumlahPengajuanBaru = \App\Models\SuratIzin::whereIn('id_siswa', $siswaGuru)
+                ->whereDate('tanggal', now()->toDateString())
+                ->where('status_verifikasi', 'pending')
+                ->count();
+        }
+    }
+@endphp
+
 <div class="sidebar-wrapper" data-layout="stroke-svg">
     <div>
         <div class="logo-wrapper">
@@ -212,14 +245,22 @@
                     @if (Auth::user()->role == 'guru')
                         <li class="sidebar-list">
                             <i class="fa fa-thumb-tack"></i>
-                            <a class="sidebar-link sidebar-title link-nav" href="/absensi">
+                            <a class="sidebar-link sidebar-title link-nav d-flex align-items-center" href="/absensi">
                                 <svg class="stroke-icon">
                                     <use href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-form"></use>
                                 </svg>
                                 <svg class="fill-icon">
                                     <use href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-form"> </use>
                                 </svg>
-                                <span>Data Absensi Siswa</span>
+                                <span class="flex-grow-1">
+                                    Data Absensi Siswa
+                                </span>
+                                @if (isset($jumlahPengajuanBaru) && $jumlahPengajuanBaru > 0)
+                                    <span class="badge rounded-pill bg-danger ms-2"
+                                        style="font-size:10px; padding:4px 7px;">
+                                        {{ $jumlahPengajuanBaru }}
+                                    </span>
+                                @endif
                             </a>
                         </li>
                     @endif
@@ -252,13 +293,11 @@
                             <i class="fa fa-thumb-tack"></i>
                             <a class="sidebar-link sidebar-title link-nav" href="/setting-sistem">
                                 <svg class="stroke-icon">
-                                    <use
-                                        href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-setting">
+                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#stroke-setting">
                                     </use>
                                 </svg>
                                 <svg class="fill-icon">
-                                    <use
-                                        href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-setting">
+                                    <use href="{{ asset('') }}assets/svg/icon-sprite.svg#fill-setting">
                                     </use>
                                 </svg>
                                 <span>Setting Sistem</span>
