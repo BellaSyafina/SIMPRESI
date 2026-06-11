@@ -24,9 +24,9 @@
             $siswaGuru = \App\Models\Siswa::whereIn('id_kelas', $kelasGuruHariIni)->pluck('id_siswa');
 
             $jumlahPengajuanBaru = \App\Models\SuratIzin::whereIn('id_siswa', $siswaGuru)
-                ->whereDate('tanggal', now()->toDateString())
-                ->where('status_verifikasi', 'pending')
-                ->count();
+            ->whereDate('tanggal', now()->toDateString())
+            ->whereIn('status_verifikasi', ['pending', 'diterima'])
+            ->count();
         }
     }
 @endphp

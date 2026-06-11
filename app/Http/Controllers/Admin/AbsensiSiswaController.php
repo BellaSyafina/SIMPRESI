@@ -117,7 +117,7 @@ class AbsensiSiswaController extends Controller
 
         $jumlahPengajuanBaru = SuratIzin::whereIn('id_siswa', $siswaGuruHariIni)
             ->whereDate('tanggal', now()->toDateString())
-            ->where('status_verifikasi', 'pending')
+            ->whereIn('status_verifikasi', ['pending', 'diterima'])
             ->count();
 
         return view('Admin.absensiSiswa.jadwal', compact('jadwalList', 'jumlahPengajuanBaru'));
