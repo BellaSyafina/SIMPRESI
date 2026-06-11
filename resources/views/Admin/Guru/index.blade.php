@@ -121,16 +121,16 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
-                        <thead class="table">
+                        <thead style="background-color:#7C6FC4;">
                             <tr>
-                                <th style="width: 5%">ID</th>
-                                <th style="width: 15%">Nama Guru</th>
-                                <th style="width: 20%">NUPTK/NIP</th>
-                                <th style="width: 10%">Jenis Kelamin</th>
-                                <th style="width: 20%">Alamat</th>
-                                <th style="width: 10%">Status</th>
-                                <th style="width: 15%">Mata Pelajaran</th>
-                                <th style="width: 15%">Aksi</th>
+                                <th style="width: 5%" class="text-white">ID</th>
+                                <th style="width: 15%" class="text-white">Nama Guru</th>
+                                <th style="width: 20%" class="text-white">NUPTK/NIP</th>
+                                <th style="width: 10%" class="text-white">Jenis Kelamin</th>
+                                <th style="width: 20%" class="text-white">Alamat</th>
+                                <th style="width: 10%" class="text-white">Status</th>
+                                <th style="width: 25%" class="text-white">Mata Pelajaran</th>
+                                <th style="width: 15%" class=" text-center text-white">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -178,11 +178,14 @@
                                     </td>
                                     <td>
                                         @if ($guru->mataPelajaran->count())
-                                            @foreach ($guru->mataPelajaran as $mapel)
-                                                <span class="badge bg-primary mb-1">
-                                                    {{ $mapel->nama_mata_pelajaran }} - {{ $mapel->kode_mapel }}
-                                                </span>
-                                            @endforeach
+                                            <ol class="mb-0 ps-3">
+                                                @foreach ($guru->mataPelajaran as $mapel)
+                                                    <li class="mb-1">
+                                                        {{ $mapel->nama_mata_pelajaran }}
+                                                        <span class="text-muted">({{ $mapel->kode_mapel }})</span>
+                                                    </li>
+                                                @endforeach
+                                            </ol>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
@@ -235,8 +238,43 @@
                                                     {{ $guru->alamat ?? '-' }}
                                                 </div>
 
+                                                <div class="mb-2">
+                                                    <strong>Status:</strong><br>
+                                                    @if ($guru->status == 'aktif')
+                                                        <span class="badge bg-success">Aktif</span>
+                                                    @elseif($guru->status == 'tidak aktif')
+                                                        <span class="badge bg-secondary">Tidak Aktif</span>
+                                                    @elseif($guru->status == 'berhenti')
+                                                        <span class="badge bg-warning">Berhenti</span>
+                                                    @elseif($guru->status == 'meninggal')
+                                                        <span class="badge bg-dark">Meninggal</span>
+                                                    @elseif($guru->status == 'pensiun')
+                                                        <span class="badge bg-info">Pensiun</span>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <strong>Mata Pelajaran yang Diampu:</strong><br>
+
+                                                    @if ($guru->mataPelajaran->count())
+                                                        <ol class="mb-0 ps-3">
+                                                            @foreach ($guru->mataPelajaran as $mapel)
+                                                                <li>
+                                                                    {{ $mapel->nama_mata_pelajaran }}
+                                                                    ({{ $mapel->kode_mapel }})
+                                                                </li>
+                                                            @endforeach
+                                                        </ol>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </div>
+
                                                 <hr>
 
+                                                <h6 class="fw-bold mb-3">Informasi Akun Guru</h6>
                                                 <div class="mb-2">
                                                     <strong>Email:</strong><br>
                                                     {{ $guru->user->email ?? '-' }}

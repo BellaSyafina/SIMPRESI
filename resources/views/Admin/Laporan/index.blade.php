@@ -1,6 +1,6 @@
 @extends('Layouts.template-admin')
 
-@section('title', 'Laporan Kehadiran')
+@section('title', 'Laporan Kehadiran Pembelajaran')
 
 @section('breadcrumb')
     <ol class="breadcrumb justify-content-sm-start align-items-center mb-0">
@@ -170,15 +170,15 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover align-middle mb-0">
-                            <thead class="table">
+                            <thead style="background-color:#7C6FC4;">
                                 <tr>
-                                    <th class="fs-6 py-2" style="width: 15%">NIS</th>
-                                    <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Hadir</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Izin</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Sakit</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Alpa</th>
-                                    <th class="fs-6 py-2" style="width: 10%">% Kehadiran</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 15%">NIS</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 25%">Nama Siswa</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Hadir</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Izin</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Sakit</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Alpa</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">% Kehadiran</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -424,15 +424,15 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover align-middle mb-0">
-                            <thead class="table">
+                            <thead style="background-color:#7C6FC4;">
                                 <tr>
-                                    <th class="fs-6 py-2" style="width: 15%">NIS</th>
-                                    <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Hadir</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Izin</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Sakit</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Alpa</th>
-                                    <th class="fs-6 py-2" style="width: 10%">% Kehadiran</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 15%">NIS</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 25%">Nama Siswa</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Hadir</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Izin</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Sakit</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Alpa</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">% Kehadiran</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -634,15 +634,15 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover align-middle mb-0">
-                            <thead class="table">
+                            <thead style="background-color:#7C6FC4;">
                                 <tr>
-                                    <th class="fs-6 py-2" style="width: 15%">NIS</th>
-                                    <th class="fs-6 py-2" style="width: 25%">Nama Siswa</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Hadir</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Izin</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Sakit</th>
-                                    <th class="fs-6 py-2" style="width: 10%">Alpa</th>
-                                    <th class="fs-6 py-2" style="width: 10%">% Kehadiran</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 15%">NIS</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 25%">Nama Siswa</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Hadir</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Izin</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Sakit</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">Alpa</th>
+                                    <th class="fs-6 py-2 text-white" style="width: 10%">% Kehadiran</th>
                                 </tr>
                             </thead>
                             <tbody>

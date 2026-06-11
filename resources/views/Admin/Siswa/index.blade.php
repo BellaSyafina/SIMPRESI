@@ -166,19 +166,19 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-sm table-hover align-middle mb-0" style="min-width: 1400px">
-                    <thead class="table">
+                    <thead style="background-color:#7C6FC4;">
                         <tr>
-                            <th style="width: 5%">ID</th>
-                            <th style="width: 12%">NISN / NIS</th>
-                            <th style="width: 14%">Nama Siswa</th>
-                            <th style="width: 12%">TTL</th>
-                            <th style="width: 8%">Agama</th>
-                            <th style="width: 8%">Kelas</th>
-                            <th style="width: 10%">Jenis Kelamin</th>
-                            <th style="width: 18%">Orang Tua / Wali</th>
-                            <th style="width: 15%">Alamat</th>
-                            <th style="width: 7%">Status</th>
-                            <th style="width: 14%">Aksi</th>
+                            <th style="width: 5%" class="text-white">ID</th>
+                            <th style="width: 12%" class="text-white">NISN / NIS</th>
+                            <th style="width: 14%" class="text-white">Nama Siswa</th>
+                            <th style="width: 12%" class="text-white">TTL</th>
+                            <th style="width: 8%" class="text-white">Agama</th>
+                            <th style="width: 8%" class="text-white">Kelas</th>
+                            <th style="width: 10%" class="text-white">Jenis Kelamin</th>
+                            <th style="width: 18%" class="text-white">Orang Tua / Wali</th>
+                            <th style="width: 15%" class="text-white">Alamat</th>
+                            <th style="width: 7%" class="text-white">Status</th>
+                            <th style="width: 14%" class="text-center text-white">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>

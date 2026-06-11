@@ -79,14 +79,14 @@
             <div class="card-body p-4">
                 <div class="table-responsive">
                     <table class="table align-middle">
-                        <thead>
+                        <thead style="background-color:#7C6FC4;">
                             <tr>
-                                <th width="5%"> No </th>
-                                <th> Sesi Pertemuan </th>
-                                <th> Jam Mulai </th>
-                                <th> Jam Selesai </th>
-                                <th> Durasi </th>
-                                <th class="text-center"> Action </th>
+                                <th width="5%" class="text-white"> No </th>
+                                <th class="text-white"> Sesi Pertemuan </th>
+                                <th class="text-white"> Jam Mulai </th>
+                                <th class="text-white"> Jam Selesai </th>
+                                <th class="text-white"> Durasi </th>
+                                <th class="text-center text-white"> Action </th>
                             </tr>
                         </thead>
 
