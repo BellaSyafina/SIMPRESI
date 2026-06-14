@@ -12,6 +12,8 @@ use App\Models\SettingSistem;
 use App\Models\Siswa;
 use App\Models\SuratIzin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotifikasiAbsensiMail;
 use Illuminate\Support\Facades\Auth;
 
 class AbsensiSiswaController extends Controller
@@ -41,7 +43,7 @@ class AbsensiSiswaController extends Controller
             $pertemuan = PertemuanPelajaran::findOrFail($request->id_pertemuan);
 
             foreach ($request->status as $idSiswa => $status) {
-                Absensi::updateOrCreate(
+                $absensi = Absensi::updateOrCreate(
                     [
                         'id_pertemuan' => $request->id_pertemuan,
                         'id_siswa' => $idSiswa,
@@ -51,6 +53,28 @@ class AbsensiSiswaController extends Controller
                         'keterangan' => $request->keterangan[$idSiswa] ?? null,
                     ],
                 );
+
+                $siswa = Siswa::with('kelas')->find($idSiswa);
+                $jadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi', 'guru'])->find($pertemuan->id_jadwal_pelajaran);
+
+                if ($siswa && $jadwal && in_array($status, ['izin', 'sakit', 'alpa'])) {
+                    //$emailTujuan = $siswa->email_wali ?: env('MAIL_TEST_RECEIVER');
+                    $emailTujuan = env('MAIL_TEST_RECEIVER');
+
+                    if ($emailTujuan) {
+                        Mail::to($emailTujuan)->send(
+                            new NotifikasiAbsensiMail([
+                                'nama_siswa' => $siswa->nama_siswa,
+                                'kelas' => $siswa->kelas->nama_kelas ?? '-',
+                                'mapel' => $jadwal->mataPelajaran->nama_mata_pelajaran ?? '-',
+                                'guru' => $jadwal->guru->nama_guru ?? '-',
+                                'tanggal' => \Carbon\Carbon::parse($pertemuan->tanggal)->format('d-m-Y'),
+                                'jam' => \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') . ' - ' . \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i'),
+                                'status' => $status,
+                            ]),
+                        );
+                    }
+                }
 
                 $surat = SuratIzin::where('id_siswa', $idSiswa)->whereDate('tanggal', $pertemuan->tanggal)->first();
 

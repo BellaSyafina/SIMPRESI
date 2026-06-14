@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SettingSistemController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Auth\AuthController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -106,4 +107,16 @@ Route::middleware('auth')->group(function () {
     // Pengajuan Izin
     Route::get('/pengajuan-izin', [PengajuanIzinController::class, 'index'])->name('pengajuan-izin.index');
     Route::post('/pengajuan-izin', [PengajuanIzinController::class, 'store'])->name('pengajuan-izin.store');
+
 });
+
+Route::get('/test-email', function () {
+    Mail::raw('Tes Email SIMPRESI Berhasil 🎉', function ($message) {
+        $message->to('goeunbyeoll04@gmail.com')
+            ->subject('Tes Email SIMPRESI');
+    });
+
+    return 'Email berhasil dikirim';
+});
+
+

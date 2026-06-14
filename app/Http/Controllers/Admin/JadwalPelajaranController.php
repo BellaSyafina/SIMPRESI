@@ -233,8 +233,16 @@ class JadwalPelajaranController extends Controller
 
             return redirect()->route('jadwal.pertemuan', $pertemuan->id_jadwal_pelajaran)->with('success', 'Pertemuan berhasil diperbarui.');
         } catch (\Exception $e) {
+            $pertemuan = PertemuanPelajaran::find($id);
+
+            if ($pertemuan) {
+                return redirect()
+                    ->route('jadwal.pertemuan', $pertemuan->id_jadwal_pelajaran)
+                    ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            }
+
             return redirect()
-                ->route('jadwal.pertemuan', $pertemuan->id_jadwal_pelajaran)
+                ->route('jadwal.index')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
