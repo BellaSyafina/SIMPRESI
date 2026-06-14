@@ -49,18 +49,6 @@ class SesiController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
-        try {
-            $sesi = SesiPelajaran::findOrFail($id);
-            $sesi->delete();
-
-            return redirect()->back()->with('success', 'Sesi pelajaran berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
     public function update(Request $request, $id)
     {
         try {

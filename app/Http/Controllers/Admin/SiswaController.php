@@ -273,27 +273,6 @@ class SiswaController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
-        try {
-            $siswa = Siswa::with('user')->findOrFail($id);
-
-            // 🔥 hapus akun user
-            if ($siswa->user) {
-                $siswa->user->delete();
-            }
-
-            // 🔥 hapus siswa
-            $siswa->delete();
-
-            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus');
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('siswa.index')
-                ->with('error', 'Terjadi kesalahan saat menghapus siswa: ' . $e->getMessage());
-        }
-    }
-
     public function import(Request $request)
     {
         $request->validate([

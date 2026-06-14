@@ -128,15 +128,6 @@
                                                 <i data-feather="edit-2"></i>
                                                 Edit
                                             </button>
-                                            {{-- DELETE --}}
-                                            <form action="{{ route('sesi.destroy', $sesi->id_sesi) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i data-feather="trash-2"></i>
-                                                    Hapus
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>

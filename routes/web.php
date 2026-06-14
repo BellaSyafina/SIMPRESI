@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/guru/store', [GuruController::class, 'store'])->name('guru.store');
     Route::get('/guru/{guru}/edit', [GuruController::class, 'show'])->name('guru.show');
     Route::put('/guru/{guru}', [GuruController::class, 'update'])->name('guru.update');
-    Route::delete('/guru/{guru}', [GuruController::class, 'destroy'])->name('guru.destroy');
     Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
 
     // Kelas
@@ -62,7 +61,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/siswa/{siswa}', [SiswaController::class, 'detail'])->name('siswa.detail');
     Route::get('/siswa/{siswa}/edit', [SiswaController::class, 'show'])->name('siswa.show');
     Route::put('/siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
-    Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
     Route::put('/siswa/{siswa}/reset-password', [SiswaController::class, 'resetPassword'])->name('siswa.reset-password');
 
@@ -71,7 +69,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/jadwal', [JadwalPelajaranController::class, 'store'])->name('jadwal.store');
     Route::get('/guru-by-mapel/{id}', [JadwalPelajaranController::class, 'guruByMapel'])->name('guru.by.mapel');
     Route::put('/jadwal/{id}', [JadwalPelajaranController::class, 'update'])->name('jadwal.update');
-    Route::delete('/jadwal/{id}', [JadwalPelajaranController::class, 'destroy'])->name('jadwal.destroy');
     Route::get('/jadwal/{id}/pertemuan', [JadwalPelajaranController::class, 'pertemuan'])->name('jadwal.pertemuan');
     Route::put('/pertemuan/{id}/update', [JadwalPelajaranController::class, 'updatePertemuan'])->name('pertemuan.update');
 
@@ -100,7 +97,6 @@ Route::middleware('auth')->group(function () {
     // Sesi
     Route::get('/sesi', [SesiController::class, 'index'])->name('sesi.index');
     Route::post('/sesi', [SesiController::class, 'store'])->name('sesi.store');
-    Route::delete('/sesi/{id}', [SesiController::class, 'destroy'])->name('sesi.destroy');
     route::put('/sesi/{id}', [SesiController::class, 'update'])->name('sesi.update');
 
     // Setting Sistem

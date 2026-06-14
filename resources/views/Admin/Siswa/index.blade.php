@@ -312,10 +312,6 @@
                                                 Reset
                                             </button>
                                         </form>
-                                        <button class="btn btn-sm btn-outline-danger btn-hapus"
-                                            data-id="{{ $siswa->id_siswa }}" data-nama="{{ $siswa->nama_siswa }}">
-                                            <i data-feather="trash-2"></i> Hapus
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -331,39 +327,6 @@
                 </table>
             </div>
             @include('Components.pagination', ['data' => $siswas])
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalHapusSiswa" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <form id="formHapusSiswa" method="POST">
-                    @csrf
-                    @method('DELETE')
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi Hapus</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        Apakah Anda yakin ingin menghapus siswa
-                        <strong id="namaSiswaHapus"></strong>?
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Batal
-                        </button>
-                        <button type="submit" class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </div>
-
-                </form>
-
-            </div>
         </div>
     </div>
 
@@ -421,32 +384,3 @@
     </div>
 @endsection
 
-@push('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            feather.replace();
-
-            document.querySelectorAll('.btn-hapus').forEach(button => {
-                button.addEventListener('click', function() {
-
-                    let id = this.dataset.id;
-                    let nama = this.dataset.nama;
-
-                    // tampilkan nama di modal
-                    document.getElementById('namaSiswaHapus').innerText = nama;
-
-                    // set action form
-                    document.getElementById('formHapusSiswa').action = '/siswa/' + id;
-
-                    // buka modal
-                    new bootstrap.Modal(document.getElementById('modalHapusSiswa')).show();
-
-                });
-            });
-        });
-
-        document.addEventListener('shown.bs.modal', function() {
-            feather.replace();
-        });
-    </script>
-@endpush

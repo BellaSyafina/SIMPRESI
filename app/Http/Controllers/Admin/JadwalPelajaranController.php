@@ -197,20 +197,6 @@ class JadwalPelajaranController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
-        try {
-            $jadwal = JadwalPelajaran::findOrFail($id);
-            $jadwal->delete();
-
-            return redirect()->route('jadwal.index')->with('success', 'Jadwal pelajaran berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('jadwal.index')
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
     public function pertemuan($id)
     {
         $jadwal = JadwalPelajaran::with(['kelas', 'guru', 'mataPelajaran', 'sesi'])->findOrFail($id);

@@ -147,10 +147,6 @@
                                                         data-tahun_ajaran="{{ $j->tahun_ajaran }}">
                                                         <i data-feather="edit-2"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-danger btn-hapus"
-                                                        data-id="{{ $j->id_jadwal_pelajaran }}">
-                                                        <i data-feather="trash-2"></i>
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -415,43 +411,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="hapusJadwalModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <form method="POST" id="formHapusJadwal">
-                    @csrf
-                    @method('DELETE')
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i data-feather="alert-triangle" class="me-2"></i>
-                            Konfirmasi Hapus
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                        </button>
-                    </div>
-
-                    <div class="modal-body text-center">
-                        <p class="mb-0">
-                            Yakin ingin menghapus jadwal ini?
-                        </p>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-
-                        <button type="submit" class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </div>
-
-                </form>
-
-            </div>
-        </div>
-    </div>
-
     <script>
         console.log('SCRIPT JALAN');
 
@@ -618,36 +577,6 @@
                 });
 
                 // =========================
-                // HAPUS JADWAL
-                // =========================
-
-                document.querySelectorAll(
-                    '.btn-hapus'
-                ).forEach(button => {
-
-                    button.addEventListener(
-                        'click',
-                        function() {
-
-                            const id =
-                                this.dataset.id;
-
-                            document.getElementById(
-                                    'formHapusJadwal'
-                                ).action =
-                                `/jadwal/${id}`;
-
-                            new bootstrap.Modal(
-                                document.getElementById(
-                                    'hapusJadwalModal'
-                                )
-                            ).show();
-
-                        });
-
-                });
-
-                // =========================
                 // CHANGE MAPEL EDIT
                 // =========================
 
@@ -698,6 +627,3 @@
             });
     </script>
 @endsection
-
-@push('script')
-@endpush
