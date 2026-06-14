@@ -625,49 +625,59 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-4">
                     <h5 class="card-title mb-0 fw-semibold">
-                        <i data-feather="list" class="me-2" width="18" height="18"></i>
-                        Rekap Kehadiran Siswa - {{ $rekap[0]['nama'] ?? '-' }}
-                        Semester {{ $selectedSemester }}
-                        {{ $selectedTahunAjaran }}
+                        <i data-feather="calendar" class="me-2" width="18" height="18"></i>
+                        Jadwal Kehadiran Berdasarkan Mata Pelajaran
                     </h5>
+                    <small class="text-muted">
+                        Klik detail untuk melihat kehadiran per pertemuan.
+                    </small>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover align-middle mb-0">
-                            <thead style="background-color:#7C6FC4;">
-                                <tr>
-                                    <th class="fs-6 py-2 text-white" style="width: 15%">NIS</th>
-                                    <th class="fs-6 py-2 text-white" style="width: 25%">Nama Siswa</th>
-                                    <th class="fs-6 py-2 text-white" style="width: 10%">Hadir</th>
-                                    <th class="fs-6 py-2 text-white" style="width: 10%">Izin</th>
-                                    <th class="fs-6 py-2 text-white" style="width: 10%">Sakit</th>
-                                    <th class="fs-6 py-2 text-white" style="width: 10%">Alpa</th>
-                                    <th class="fs-6 py-2 text-white" style="width: 10%">% Kehadiran</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($rekap as $item)
-                                    <tr>
-                                        <td class="fs-6">{{ $item['nis'] }}</td>
-                                        <td class="fs-6">{{ $item['nama'] }}</td>
-                                        <td class="fs-6">{{ $item['hadir'] }}</td>
-                                        <td class="fs-6">{{ $item['izin'] }}</td>
-                                        <td class="fs-6">{{ $item['sakit'] }}</td>
-                                        <td class="fs-6">{{ $item['alpa'] }}</td>
-                                        <td
-                                            class="fs-6 @if ($item['persen'] < 75) text-danger fw-bold @elseif($item['persen'] < 85) text-warning fw-bold @else text-success fw-bold @endif">
-                                            {{ $item['persen'] }}%
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center">Tidak ada data</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- tidak ada pagination karena hanya satu siswa -->
+
+                <div class="card-body">
+                    @forelse ($jadwalMapelOrangTua as $hari => $jadwalList)
+                        <h5 class="fw-bold mt-3 mb-3">{{ $hari }}</h5>
+
+                        <div class="row g-3">
+                            @foreach ($jadwalList as $jadwal)
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm border-0 h-100" style="background:#f6f4ff;">
+                                        <div class="card-body">
+                                            <h5 class="fw-bold mb-2" style="color:#7C6FC4;">
+                                                {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
+                                            </h5>
+
+                                            <p style="color:#2c323f !important;">
+                                                <i data-feather="clock" width="15"></i>
+                                                {{ $jadwal->hari }},
+                                                {{ \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') }}
+                                                -
+                                                {{ \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') }}
+                                            </p>
+
+                                            <p style="color:#2c323f !important;">
+                                                <i data-feather="users" width="15"></i>
+                                                Kelas {{ $jadwal->kelas->nama_kelas }}
+                                            </p>
+
+                                            <p style="color:#2c323f !important;" >
+                                                <i data-feather="user" width="15"></i>
+                                                {{ $jadwal->guru->nama_guru ?? '-' }}
+                                            </p>
+
+                                            <a href="{{ route('laporan.detail', $jadwal->id_jadwal_pelajaran) }}"
+                                                class="btn btn-sm text-white" style="background:#7C6FC4;">
+                                                Detail Kehadiran
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @empty
+                        <div class="text-center text-muted py-4">
+                            Belum ada jadwal pelajaran.
+                        </div>
+                    @endforelse
                 </div>
             </div>
 

@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan-kehadiran', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan-kehadiran/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
     Route::get('/laporan-kehadiran/export/pdf', [LaporanController::class, 'exportPDF'])->name('laporan.export.pdf');
+    Route::get('/laporan-kehadiran/detail/{jadwal}', [LaporanController::class, 'detail'])->name('laporan.detail');
 
     // Akun
     Route::get('/account', [AccountController::class, 'index'])->name('account.index');

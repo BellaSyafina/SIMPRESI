@@ -81,6 +81,19 @@ class LaporanController extends Controller
             $siswaList = Siswa::where('id_kelas', $selectedKelas)->get();
         }
 
+        $jadwalMapelOrangTua = collect();
+
+        if (Auth::user()->role == 'orang_tua' && $anak) {
+            $jadwalMapelOrangTua = JadwalPelajaran::with(['mataPelajaran', 'guru', 'kelas', 'sesi'])
+                ->where('id_kelas', $anak->id_kelas)
+                ->where('semester', $selectedSemester)
+                ->where('tahun_ajaran', $selectedTahunAjaran)
+                ->orderByRaw("FIELD(hari, 'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu')")
+                ->orderBy('id_sesi')
+                ->get()
+                ->groupBy('hari');
+        }
+
         // QUERY ABSENSI
         $pertemuanIds = PertemuanPelajaran::whereHas('jadwalPelajaran', function ($q) use ($selectedSemester, $selectedTahunAjaran) {
             $q->where('semester', $selectedSemester)->where('tahun_ajaran', $selectedTahunAjaran);
@@ -147,7 +160,36 @@ class LaporanController extends Controller
         $totalSemuaPertemuan = $totalHadir + $totalIzin + $totalSakit + $totalAlpa;
         $rataPersen = $totalSemuaPertemuan > 0 ? round(($totalHadir / $totalSemuaPertemuan) * 100, 1) : 0;
 
-        return view('Admin.Laporan.index', compact('mapelList', 'kelasList', 'selectedKelas', 'selectedMapel', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen', 'semesterList', 'tahunAjaranList', 'selectedSemester', 'selectedTahunAjaran'));
+        return view('Admin.Laporan.index', compact('jadwalMapelOrangTua', 'mapelList', 'kelasList', 'selectedKelas', 'selectedMapel', 'rekap', 'totalSiswa', 'totalHadir', 'totalIzin', 'totalSakit', 'totalAlpa', 'rataPersen', 'semesterList', 'tahunAjaranList', 'selectedSemester', 'selectedTahunAjaran'));
+    }
+
+    public function detail($idJadwal)
+    {
+        $anak = Siswa::where('id_user', Auth::id())->firstOrFail();
+
+        $jadwal = JadwalPelajaran::with(['mataPelajaran', 'guru', 'kelas', 'sesi'])
+            ->where('id_jadwal_pelajaran', $idJadwal)
+            ->where('id_kelas', $anak->id_kelas)
+            ->firstOrFail();
+
+        $pertemuanList = PertemuanPelajaran::with([
+            'absensi' => function ($q) use ($anak) {
+                $q->where('id_siswa', $anak->id_siswa);
+            },
+        ])
+            ->where('id_jadwal_pelajaran', $idJadwal)
+            ->orderBy('pertemuan_ke')
+            ->get();
+
+        $totalPertemuan = $pertemuanList->count();
+
+        $totalHadir = $pertemuanList
+            ->filter(function ($p) {
+                return optional($p->absensi->first())->status == 'hadir';
+            })
+            ->count();
+
+        return view('Admin.Laporan.detail', compact('anak', 'jadwal', 'pertemuanList', 'totalPertemuan', 'totalHadir'));
     }
 
     public function exportExcel(Request $request)
