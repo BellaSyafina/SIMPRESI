@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SettingSistemController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -110,13 +111,24 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::get('/test-email', function () {
-    Mail::raw('Tes Email SIMPRESI Berhasil 🎉', function ($message) {
-        $message->to('goeunbyeoll04@gmail.com')
-            ->subject('Tes Email SIMPRESI');
-    });
+// Route::get('/test-email', function () {
+//     Mail::raw('Tes Email SIMPRESI Berhasil 🎉', function ($message) {
+//         $message->to('goeunbyeoll04@gmail.com')
+//             ->subject('Tes Email SIMPRESI');
+//     });
 
-    return 'Email berhasil dikirim';
-});
+//     return 'Email berhasil dikirim';
+// });
 
+// Route::get('/test-wa', function () {
+
+//     $response = Http::withHeaders([
+//         'Authorization' => env('FONNTE_TOKEN')
+//     ])->post('https://api.fonnte.com/send', [
+//         'target' => '6281999548565', //Ganti dengan nomor tujuan
+//         'message' => "📢 SIMPRESI SMPN 2 SARONGGI\n\nTes Notifikasi WhatsApp Berhasil 🎉"
+//     ]);
+
+//     return $response->body();
+// });
 
