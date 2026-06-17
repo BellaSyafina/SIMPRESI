@@ -27,9 +27,7 @@ class NotifikasiAbsensiMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: 'Informasi Kehadiran Siswa - SIMPRESI',
-        );
+        return new Envelope(subject: 'Informasi Kehadiran Siswa - SIMPRESI');
     }
 
     /**
@@ -37,9 +35,7 @@ class NotifikasiAbsensiMail extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.notifikasi-absensi',
-        );
+        return new Content(view: 'Admin.Emails.notifikasi-absensi');
     }
 
     /**

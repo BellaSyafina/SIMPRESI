@@ -13,7 +13,9 @@ use App\Models\Siswa;
 use App\Models\SuratIzin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use App\Mail\NotifikasiAbsensiMail;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class AbsensiSiswaController extends Controller
@@ -73,6 +75,57 @@ class AbsensiSiswaController extends Controller
                                 'status' => $status,
                             ]),
                         );
+                    }
+
+                    // Notifikasi WhatsApp Fonnte
+                    $nomorTujuan = $siswa->no_hp_wali ?: ($siswa->no_hp_ayah ?: $siswa->no_hp_ibu);
+
+                    // Untuk testing ke nomor teman dulu, aktifkan baris ini:
+                    $nomorTujuan = '6281999548565';
+
+                    if ($nomorTujuan) {
+                        $nomorTujuan = preg_replace('/[^0-9]/', '', $nomorTujuan);
+
+                        if (substr($nomorTujuan, 0, 1) == '0') {
+                            $nomorTujuan = '62' . substr($nomorTujuan, 1);
+                        }
+
+                        $pesanWa = "📢 SIMPRESI SMPN 2 SARONGGI\n\n" . "Yth. Orang Tua/Wali Siswa\n\n" . "Berikut informasi kehadiran siswa:\n\n" . "Nama Siswa : {$siswa->nama_siswa}\n" . 'Kelas : ' . ($siswa->kelas->nama_kelas ?? '-') . "\n" . 'Mata Pelajaran : ' . ($jadwal->mataPelajaran->nama_mata_pelajaran ?? '-') . "\n" . 'Guru : ' . ($jadwal->guru->nama_guru ?? '-') . "\n" . 'Tanggal : ' . \Carbon\Carbon::parse($pertemuan->tanggal)->format('d-m-Y') . "\n" . 'Jam Sesi : ' . \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') . ' - ' . \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') . "\n" . 'Status Kehadiran : ' . strtoupper($status) . "\n\n" . 'Pesan ini dikirim otomatis oleh Sistem Monitoring Kehadiran Siswa.';
+
+                        $notifikasi = Notification::create([
+                            'id_siswa' => $siswa->id_siswa,
+                            'pesan' => $pesanWa,
+                            'status' => 'pending',
+                            'retry_count' => 0,
+                        ]);
+
+                        try {
+                            $response = Http::withHeaders([
+                                'Authorization' => env('FONNTE_TOKEN'),
+                            ])->post('https://api.fonnte.com/send', [
+                                'target' => $nomorTujuan,
+                                'message' => $pesanWa,
+                            ]);
+
+                            if ($response->successful()) {
+                                $notifikasi->update([
+                                    'status' => 'terkirim',
+                                    'waktu_kirim' => now(),
+                                ]);
+                            } else {
+                                $notifikasi->update([
+                                    'status' => 'gagal',
+                                    'retry_count' => $notifikasi->retry_count + 1,
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            $notifikasi->update([
+                                'status' => 'gagal',
+                                'retry_count' => $notifikasi->retry_count + 1,
+                            ]);
+                        }
+
+                        sleep(5); // Delay 5 detik antar pengiriman untuk menghindari rate limit
                     }
                 }
 
