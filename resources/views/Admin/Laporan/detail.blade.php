@@ -72,6 +72,7 @@
                                 <th class="text-white">Tanggal</th>
                                 <th class="text-white">Jam Sesi</th>
                                 <th class="text-white">Status</th>
+                                <th class="text-white">Keterangan</th>
                             </tr>
                         </thead>
 
@@ -126,11 +127,14 @@
                                             </span>
                                         @endif
                                     </td>
+                                    <td>
+                                        {{ $absen->keterangan ?? '-' }}
+                                    </td>
                                 </tr>
                             @empty
 
                                 <tr>
-                                    <td colspan="5" class="text-center">
+                                    <td colspan="6" class="text-center">
                                         Belum ada data pertemuan.
                                     </td>
                                 </tr>
