@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Http;
 use App\Mail\NotifikasiAbsensiMail;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use App\Jobs\SendWhatsAppJob; // <- Tambahkan ini
 
 class AbsensiSiswaController extends Controller
 {
@@ -60,7 +61,7 @@ class AbsensiSiswaController extends Controller
                 $jadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'sesi', 'guru'])->find($pertemuan->id_jadwal_pelajaran);
 
                 if ($siswa && $jadwal && in_array($status, ['izin', 'sakit', 'alpa'])) {
-                    //$emailTujuan = $siswa->email_wali ?: env('MAIL_TEST_RECEIVER');
+                    // ===== EMAIL (TIDAK DIUBAH) =====
                     $emailTujuan = env('MAIL_TEST_RECEIVER');
 
                     if ($emailTujuan) {
@@ -77,21 +78,24 @@ class AbsensiSiswaController extends Controller
                         );
                     }
 
-                    // Notifikasi WhatsApp Fonnte
+                    // ===== WHATSAPP (QUEUE + DELAY) =====
+                    // Ambil nomor HP wali
                     $nomorTujuan = $siswa->no_hp_wali ?: ($siswa->no_hp_ayah ?: $siswa->no_hp_ibu);
 
-                    // Untuk testing ke nomor teman dulu, aktifkan baris ini:
-                    $nomorTujuan = '6281999548565';
+                    // (Opsional) Untuk testing ke nomor teman, aktifkan baris ini:
+                    $nomorTujuan = '6285933073356';
 
                     if ($nomorTujuan) {
+                        // Bersihkan nomor
                         $nomorTujuan = preg_replace('/[^0-9]/', '', $nomorTujuan);
-
                         if (substr($nomorTujuan, 0, 1) == '0') {
                             $nomorTujuan = '62' . substr($nomorTujuan, 1);
                         }
 
+                        // Buat pesan WhatsApp
                         $pesanWa = "📢 SIMPRESI SMPN 2 SARONGGI\n\n" . "Yth. Orang Tua/Wali Siswa\n\n" . "Berikut informasi kehadiran siswa:\n\n" . "Nama Siswa : {$siswa->nama_siswa}\n" . 'Kelas : ' . ($siswa->kelas->nama_kelas ?? '-') . "\n" . 'Mata Pelajaran : ' . ($jadwal->mataPelajaran->nama_mata_pelajaran ?? '-') . "\n" . 'Guru : ' . ($jadwal->guru->nama_guru ?? '-') . "\n" . 'Tanggal : ' . \Carbon\Carbon::parse($pertemuan->tanggal)->format('d-m-Y') . "\n" . 'Jam Sesi : ' . \Carbon\Carbon::parse($jadwal->sesi->jam_mulai)->format('H:i') . ' - ' . \Carbon\Carbon::parse($jadwal->sesi->jam_selesai)->format('H:i') . "\n" . 'Status Kehadiran : ' . strtoupper($status) . "\n\n" . 'Pesan ini dikirim otomatis oleh Sistem Monitoring Kehadiran Siswa.';
 
+                        // Simpan notifikasi ke database
                         $notifikasi = Notification::create([
                             'id_siswa' => $siswa->id_siswa,
                             'pesan' => $pesanWa,
@@ -99,36 +103,20 @@ class AbsensiSiswaController extends Controller
                             'retry_count' => 0,
                         ]);
 
-                        try {
-                            $response = Http::withHeaders([
-                                'Authorization' => env('FONNTE_TOKEN'),
-                            ])->post('https://api.fonnte.com/send', [
-                                'target' => $nomorTujuan,
-                                'message' => $pesanWa,
-                            ]);
-
-                            if ($response->successful()) {
-                                $notifikasi->update([
-                                    'status' => 'terkirim',
-                                    'waktu_kirim' => now(),
-                                ]);
-                            } else {
-                                $notifikasi->update([
-                                    'status' => 'gagal',
-                                    'retry_count' => $notifikasi->retry_count + 1,
-                                ]);
-                            }
-                        } catch (\Exception $e) {
-                            $notifikasi->update([
-                                'status' => 'gagal',
-                                'retry_count' => $notifikasi->retry_count + 1,
-                            ]);
-                        }
-
-                        sleep(5); // Delay 5 detik antar pengiriman untuk menghindari rate limit
+                        // Dispatch ke queue dengan delay acak 2-5 menit
+                        $delay = rand(120, 300);
+                        dispatch(
+                            new SendWhatsAppJob(
+                                $nomorTujuan,
+                                $pesanWa,
+                                $notifikasi->id_notifikasi, // Primary key tabel notification
+                            ),
+                        )->delay(now()->addSeconds($delay));
                     }
+                    // ===== AKHIR WHATSAPP =====
                 }
 
+                // ===== SURAT IZIN (TIDAK DIUBAH) =====
                 $surat = SuratIzin::where('id_siswa', $idSiswa)->whereDate('tanggal', $pertemuan->tanggal)->first();
 
                 if ($surat) {
@@ -152,6 +140,7 @@ class AbsensiSiswaController extends Controller
         }
     }
 
+    // ===== METHOD JADWAL MENGAJAR (TIDAK DIUBAH) =====
     public function jadwalMengajar()
     {
         $guru = Guru::where('id_user', Auth::id())->first();
@@ -200,6 +189,7 @@ class AbsensiSiswaController extends Controller
         return view('Admin.absensiSiswa.jadwal', compact('jadwalList', 'jumlahPengajuanBaru'));
     }
 
+    // ===== METHOD FORM ABSENSI =====
     public function formAbsensi($idJadwal, $idPertemuan)
     {
         $guru = Auth::user()->guru;
