@@ -62,6 +62,8 @@ class AbsensiSiswaController extends Controller
 
                 if ($siswa && $jadwal && in_array($status, ['izin', 'sakit', 'alpa'])) {
                     // ===== EMAIL (TIDAK DIUBAH) =====
+
+                    // $emailTujuan = $siswa->email_wali ?: env('MAIL_TEST_RECEIVER');
                     $emailTujuan = env('MAIL_TEST_RECEIVER');
 
                     if ($emailTujuan) {
@@ -79,8 +81,9 @@ class AbsensiSiswaController extends Controller
                     }
 
                     // ===== WHATSAPP (QUEUE + DELAY) =====
+
                     // Ambil nomor HP wali
-                    $nomorTujuan = $siswa->no_hp_wali ?: ($siswa->no_hp_ayah ?: $siswa->no_hp_ibu);
+                    //$nomorTujuan = $siswa->no_hp_wali ?: ($siswa->no_hp_ayah ?: $siswa->no_hp_ibu);
 
                     // (Opsional) Untuk testing ke nomor teman, aktifkan baris ini:
                     $nomorTujuan = '6285933073356';
