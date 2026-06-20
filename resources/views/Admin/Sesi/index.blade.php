@@ -288,7 +288,7 @@
                         </button>
                         <button type="submit" class="btn btn-primary rounded-pill px-4">
                             <i data-feather="save" class="me-1"></i>
-                            Update Sesi
+                            Simpan Sesi
                         </button>
                     </div>
                 </form>

@@ -40,21 +40,21 @@
 
                         {{-- NISN --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">NISN</label>
+                            <label class="form-label fw-semibold text-dark">NISN</label>
                             <input type="text" name="nisn" class="form-control"
                                 value="{{ old('nisn', $siswa->nisn) }}" placeholder="Masukkan NISN" required>
                         </div>
 
                         {{-- NIS --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">NIS</label>
+                            <label class="form-label fw-semibold text-dark">NIS</label>
                             <input type="text" name="nis" class="form-control" value="{{ old('nis', $siswa->nis) }}"
                                 placeholder="Masukkan NIS" required>
                         </div>
 
                         {{-- Nama --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label fw-semibold text-dark">
                                 Nama Siswa
                                 <span class="text-danger">*</span>
                             </label>
@@ -65,7 +65,7 @@
 
                         {{-- Jenis Kelamin --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label fw-semibold text-dark">
                                 Jenis Kelamin
                                 <span class="text-danger">*</span>
                             </label>
@@ -86,7 +86,7 @@
 
                         {{-- Tempat Lahir --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label fw-semibold text-dark">
                                 Tempat Lahir
                             </label>
                             <input type="text" name="tempat_lahir" class="form-control"
@@ -95,7 +95,7 @@
 
                         {{-- Tanggal Lahir --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label fw-semibold text-dark">
                                 Tanggal Lahir
                             </label>
                             <input type="date" name="tanggal_lahir" class="form-control"
@@ -104,7 +104,7 @@
 
                         {{-- Agama --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label fw-semibold text-dark">
                                 Agama
                             </label>
                             <select name="agama" class="form-select">
@@ -129,7 +129,7 @@
 
                         {{-- Kelas --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Kelas <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-dark">Kelas <span class="text-danger">*</span></label>
                             <select name="id_kelas" class="form-select" required>
                                 <option value="" {{ !old('id_kelas') ? 'selected' : '' }}>Pilih Kelas</option>
                                 @foreach ($kelas as $id => $nama)
@@ -143,7 +143,7 @@
 
                         {{-- Status --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Status</label>
+                            <label class="form-label fw-semibold text-dark">Status</label>
                             <select name="status" class="form-select">
                                 <option value="aktif" {{ old('status', $siswa->status) == 'aktif' ? 'selected' : '' }}>
                                     Aktif</option>
@@ -158,7 +158,7 @@
 
                         {{-- Alamat --}}
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Alamat</label>
+                            <label class="form-label fw-semibold text-dark">Alamat</label>
                             <textarea name="alamat" class="form-control" rows="3" placeholder="Masukkan alamat siswa">{{ old('alamat', $siswa->alamat) }}</textarea>
                         </div>
 
@@ -177,21 +177,21 @@
                                 <div class="row g-3">
                                     {{-- Ayah --}}
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Nama Ayah
                                         </label>
                                         <input type="text" name="nama_ayah" class="form-control"
                                             value="{{ old('nama_ayah', $siswa->nama_ayah) }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             No HP Ayah
                                         </label>
                                         <input type="tel" name="no_hp_ayah" class="form-control"
                                             value="{{ old('no_hp_ayah', $siswa->no_hp_ayah) }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Pekerjaan Ayah
                                         </label>
                                         <input type="text" name="pekerjaan_ayah" class="form-control"
@@ -209,21 +209,21 @@
                                 <div class="row g-3">
                                     {{-- Ibu --}}
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Nama Ibu
                                         </label>
                                         <input type="text" name="nama_ibu" class="form-control"
                                             value="{{ old('nama_ibu', $siswa->nama_ibu) }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             No HP Ibu
                                         </label>
                                         <input type="tel" name="no_hp_ibu" class="form-control"
                                             value="{{ old('no_hp_ibu', $siswa->no_hp_ibu) }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Pekerjaan Ibu
                                         </label>
                                         <input type="text" name="pekerjaan_ibu" class="form-control"
@@ -241,21 +241,21 @@
                                 <div class="row g-3">
                                     {{-- Wali --}}
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Nama Wali
                                         </label>
                                         <input type="text" name="nama_wali" class="form-control"
                                             value="{{ old('nama_wali', $siswa->nama_wali) }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             No HP Wali
                                         </label>
                                         <input type="tel" name="no_hp_wali" class="form-control"
                                             value="{{ old('no_hp_wali', $siswa->no_hp_wali) }}">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Email Wali
                                         </label>
                                         <input type="email" name="email_wali"
@@ -268,7 +268,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Pekerjaan Wali
                                         </label>
                                         <input type="text" name="pekerjaan_wali" class="form-control"
@@ -277,7 +277,7 @@
 
 
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
+                                        <label class="form-label fw-semibold text-dark">
                                             Alamat Orang Tua / Wali
                                         </label>
                                         <textarea name="alamat_orang_tua" class="form-control" rows="2">{{ old('alamat_orang_tua', $siswa->alamat_orang_tua) }}</textarea>
@@ -293,7 +293,7 @@
                             Batal
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            Update Data
+                            Simpan Data
                         </button>
                     </div>
 

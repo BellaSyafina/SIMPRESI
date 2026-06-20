@@ -370,7 +370,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
             </div>
