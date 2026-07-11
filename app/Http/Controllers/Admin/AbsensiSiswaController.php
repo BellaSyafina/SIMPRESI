@@ -86,7 +86,7 @@ class AbsensiSiswaController extends Controller
                     //$nomorTujuan = $siswa->no_hp_wali ?: ($siswa->no_hp_ayah ?: $siswa->no_hp_ibu);
 
                     // (Opsional) Untuk testing ke nomor teman, aktifkan baris ini:
-                    $nomorTujuan = '6285933073356';
+                    $nomorTujuan = '6287714358035';
 
                     if ($nomorTujuan) {
                         // Bersihkan nomor
